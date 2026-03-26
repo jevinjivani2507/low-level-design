@@ -187,9 +187,23 @@ public:
     }
 };
 
-class FileSearch {
+class FileStorage {
 private:
     unordered_map<string, int> files;
+
+public:
+    void putFile(const string& path, int sizeMb) {
+        files[path] = sizeMb;
+    }
+
+    const unordered_map<string, int>& getAllFiles() const {
+        return files;
+    }
+};
+
+class FileSearch {
+private:
+    FileStorage storage;
     unordered_map<int, SearchStrategy*> strategies;
 
     bool isUnderDirectory(const string& path, const string& dir) {
@@ -207,7 +221,7 @@ public:
     }
 
     void putFile(string path, int sizeMb) {
-        files[path] = sizeMb;
+        storage.putFile(path, sizeMb);
     }
 
     vector<string> search(int searchCriteriaId, string dirPath, string args) {
@@ -217,6 +231,8 @@ public:
         if (!strategies.count(searchCriteriaId)) return result;
 
         SearchStrategy* strategy = strategies[searchCriteriaId];
+
+        auto& files = storage.getAllFiles();
 
         for (auto& [path, size] : files) {
 
@@ -236,6 +252,35 @@ public:
             delete strategy;
     }
 };
+
+int main() {
+    FileSearch fs;
+
+    // Adding files
+    fs.putFile("/office/reports/a.xml", 5);
+    fs.putFile("/office/reports/b.xml", 15);
+    fs.putFile("/office/reports/c.txt", 20);
+    fs.putFile("/office/data/d.xml", 25);
+    fs.putFile("/home/user/e.xml", 30);
+
+    cout << "---- Search: Size > 10 in /office ----\n";
+
+    vector<string> res1 = fs.search(1, "/office", "10");
+
+    for (auto& file : res1) {
+        cout << file << "\n";
+    }
+
+    cout << "\n---- Search: Extension .xml in /office/reports ----\n";
+
+    vector<string> res2 = fs.search(2, "/office/reports", ".xml");
+
+    for (auto& file : res2) {
+        cout << file << "\n";
+    }
+
+    return 0;
+}
 ```
 
 ---
@@ -308,5 +353,3 @@ size > 10 AND extension = ".xml"
 Use **directory index (Trie)** instead of scanning all files.
 
 ---
-
-✅ If you'd like, I can also show the **Amazon/Google senior-level solution** using a **Trie-based filesystem index** that makes search **O(files_in_directory)** instead of **O(all_files)**.
