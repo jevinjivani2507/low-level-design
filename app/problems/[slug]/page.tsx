@@ -31,13 +31,13 @@ export default async function ProblemPage({
 
       <div className="grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2">
         <div className="overflow-y-auto border-b p-6 md:border-r md:border-b-0">
-          <div className="mb-3 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+          <div className="mb-3 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
             Question
           </div>
           <Markdown content={problem.question} />
         </div>
         <div className="overflow-y-auto p-6">
-          <div className="mb-3 text-[11px] font-medium uppercase tracking-widest text-muted-foreground">
+          <div className="mb-3 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
             Solution
           </div>
           <Markdown content={problem.solution} />
