@@ -27,9 +27,27 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int searchInsert(vector<int>& nums, int x) {
+        int N = nums.size();
+        int l = 0;
+        int r = N - 1;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] >= x) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return l;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -57,9 +75,46 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+
+private:
+    int lower_bound(vector<int>& v, int x) {
+        int N = v.size();
+        int l = 0;
+        int r = N - 1;
+
+        int ans = N;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (v[mid] >= x) {
+                ans = mid;
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+
+public:
+    vector<int> searchRange(vector<int>& v, int x) {
+        int N = v.size();
+        if (N == 0)
+            return {-1, -1};
+        int first = lower_bound(v, x);
+
+        if (first == N || v[first] != x) {
+            return {-1, -1};
+        }
+        int last = lower_bound(v, x + 1);
+
+        return {first, last - 1};
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -87,9 +142,37 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int search(vector<int>& v, int k) {
+        int N = v.size();
+        int l = 0;
+        int r = N-1;
+
+        while(l<=r){
+            int mid = l + (r-l)/2;
+            if(v[mid]==k) return mid;
+
+            if(v[l]<=v[mid]){
+                if(v[l]<=k && k<=v[mid]){
+                    r = mid-1;
+                }else{
+                    l = mid+1;
+                }
+            }else{
+                if(v[mid]<=k && k<=v[r]){
+                    l = mid+1;
+                }else{
+                    r = mid-1;
+                }
+            }
+        }
+
+        return -1;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -112,9 +195,40 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    bool search(vector<int>& v, int k) {
+        int N = v.size();
+        int l = 0;
+        int r = N-1;
+
+        while(l<=r){
+            int mid = l + (r-l)/2;
+            if(v[mid]==k) return true;
+
+            if(v[l]==v[mid] && v[mid]==v[r]){
+                l++;
+                r--;
+            }else if(v[l]<=v[mid]){
+                if(v[l]<=k && k<=v[mid]){
+                    r = mid-1;
+                }else{
+                    l = mid+1;
+                }
+            }else{
+                if(v[mid]<=k && k<=v[r]){
+                    l = mid+1;
+                }else{
+                    r = mid-1;
+                }
+            }
+        }
+
+        return false;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -144,9 +258,31 @@ export const binarySearch: DsaTopic = {
             "The original array was [11,13,15,17] and it was rotated 4 times.",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int findMin(vector<int>& v) {
+        int N = v.size();
+        int l = 0;
+        int r = N - 1;
+
+        int ans = INT_MAX;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (v[l] <= v[mid]) {
+                ans = min(ans, v[l]);
+                l = mid + 1;
+            } else {
+                ans = min(ans, v[mid]);
+                r = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -169,7 +305,39 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
+      code: `class Solution {
+public:
+    int singleNonDuplicate(vector<int>& v) {
+        int N = v.size();
+        if(N==1) return v[0];
+        if (v[0] != v[1]) return v[0];
+        if (v[N-1] != v[N-2]) return v[N-1];
+
+
+        int l = 0;
+        int r = N-1;
+        while(l<=r){
+            int mid = l + (r-l)/2;
+            int isEven = mid%2==0;
+
+            if(isEven){
+                if(v[mid]==v[mid+1]){
+                    l = mid+1;
+                }else{
+                    r = mid-1;
+                }
+            }else{
+                if(v[mid]==v[mid-1]){
+                    l = mid+1;
+                }else{
+                    r = mid-1;
+                }
+            }
+        }
+
+        return v[l];
+    }
+};`,
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
@@ -195,9 +363,35 @@ export const binarySearch: DsaTopic = {
             "Your function can return either index number 1 where the peak element is 2, or index number 5 where the peak element is 6.",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int findPeakElement(vector<int>& v) {
+        int N = v.size();
+        if (N == 1)
+            return 0;
+        if (N == 2)
+            return v[0] > v[1] ? 0 : 1;
+        if (v[0] > v[1])
+            return 0;
+        if (v[N - 2] < v[N - 1])
+            return N - 1;
+        int l = 1;
+        int r = N - 2;
+
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            if (v[mid] > v[mid + 1]) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
+            }
+        }
+
+        return l;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -224,9 +418,37 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    long long calculateTotalHours(vector<int>& piles, int speed) {
+        long long totalH = 0;
+        for (int bananas : piles) {
+            totalH += (bananas + speed - 1) / speed;
+        }
+        return totalH;
+    }
+
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int maxPile = *max_element(piles.begin(), piles.end());
+
+        int low = 1, high = maxPile;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            long long totalH = calculateTotalHours(piles, mid);
+
+            if (totalH <= h) {
+                high = mid - 1;
+            }
+            else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+};`,
+      timeComplexity: "O(N log M)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -257,9 +479,50 @@ export const binarySearch: DsaTopic = {
             "We need 2 bouquets each should have 3 flowers.\nHere is the garden after the 7 and 12 days:\nAfter day 7: [x, x, x, x, _, x, x]\nWe can make one bouquet of the first three flowers that bloomed. We cannot make another bouquet from the last three flowers that bloomed because they are not adjacent.\nAfter day 12: [x, x, x, x, x, x, x]\nIt is obvious that we can make two bouquets in different ways.",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    long long helper(vector<int>& v, int k, long long q){
+        vector<long long> vv;
+        long long ans = 0;
+        for(int i : v) i<=q ? vv.push_back(1) : vv.push_back(0);
+        int ct=0;
+        for(long long i : vv){
+            if(i==1) ct++;
+            else{
+                ans+=ct/k;
+                ct=0;
+            }
+
+        }
+        ans+=ct/k;
+        return ans;
+    }
+    int minDays(vector<int>& v, int m, int k) {
+        int n = v.size();
+        long long tt = (long long)m*(long long)k;
+        if(tt>n) return -1;
+
+        long long l = INT_MAX;
+        long long r = INT_MIN;
+        for(int i : v){
+            l = min((int)l,i);
+            r = max((int)r,i);
+        }
+
+        while(l<=r){
+            long long mid = l + (r-l)/2;
+            long long days = helper(v,k,mid);
+            if((int)days>=m){
+                r = mid-1;
+            }else{
+                l = mid+1;
+            }
+        }
+        return (int)l;
+    }
+};`,
+      timeComplexity: "O(N log R)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -283,9 +546,40 @@ export const binarySearch: DsaTopic = {
           explanation: "",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int helper(vector<int>& nums, int divider){
+        int res = 0;
+        for(int i:nums){
+            res += (i+divider-1)/divider;
+        }
+
+        return res;
+    }
+
+    int smallestDivisor(vector<int>& nums, int threshold) {
+        sort(nums.begin(),nums.end());
+
+        int low = 1;
+        int high = *max_element(nums.begin(),nums.end());
+
+        while(low<=high){
+            int mid = low + (high-low)/2;
+
+            int res = helper(nums,mid);
+
+            if(res<=threshold){
+                high = mid-1;
+            }else{
+                low = mid+1;
+            }
+        }
+
+        return low;
+    }
+};`,
+      timeComplexity: "O(N log R)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -315,7 +609,46 @@ export const binarySearch: DsaTopic = {
           explanation: "1st day: 1\n2nd day: 2\n3rd day: 3\n4th day: 1, 1",
         },
       ],
-      code: "",
+      code: `class Solution {
+public:
+    int helper(vector<int>& weights, int weight){
+        int curr = 0;
+        int res = 1;
+        for(int i:weights){
+            if(i+curr<=weight){
+                curr+=i;
+            }else{
+                res++;
+                curr = i;
+            }
+        }
+
+        return res;
+    }
+
+    int shipWithinDays(vector<int>& weights, int days) {
+        int low = 0;
+        int high = 0;
+
+        for(int i : weights){
+            low = max(low,i); high+=i;
+        }
+
+
+        while(low<=high){
+            int mid = low + (high-low)/2;
+            int res = helper(weights,mid);
+
+            if(res<=days){
+                high = mid-1;
+            }else{
+                low = mid+1;
+            }
+        }
+
+        return low;
+    }
+};`,
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
@@ -341,9 +674,29 @@ export const binarySearch: DsaTopic = {
             "The missing positive integers are [5,6,7,...]. The 2nd missing positive integer is 6.",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int low = 0;
+        int high = arr.size()-1;
+
+        while(low<=high){
+            int mid = low + (high-low)/2;
+
+            int missing = arr[mid] - (mid+1);
+            
+            if(missing<k){
+                low = mid+1;
+            }else{
+                high = mid-1;
+            }
+        }
+
+        return low + k;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
       notes: "",
     },
     {
@@ -367,7 +720,42 @@ export const binarySearch: DsaTopic = {
             "There are four ways to split nums into two subarrays.\nThe best way is to split it into [1,2,3] and [4,5], where the largest sum among the two subarrays is only 9.",
         },
       ],
-      code: "",
+      code: `class Solution {
+public:
+    int helper(vector<int>& nums, int maxSum){
+        int parts = 1;
+        int sum = 0;
+        for(int i:nums){
+            if(sum+i<=maxSum){
+                sum+=i;
+            }else{
+                parts++;
+                sum = i;
+            }
+        }
+
+
+        return parts;
+    }
+    int splitArray(vector<int>& nums, int k) {
+        int low = *max_element(nums.begin(),nums.end());
+        int high = accumulate(nums.begin(),nums.end(),0);
+
+        while(low<=high){
+            int mid = low + (high-low)/2;
+
+            int parts = helper(nums,mid);
+
+            if(parts<=k){
+                high = mid-1;
+            }else{
+                low = mid+1;
+            }
+        }
+
+        return low;
+    }
+};`,
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
@@ -392,9 +780,45 @@ export const binarySearch: DsaTopic = {
             "merged array = [1,2,3,4] and median is (2 + 3) / 2 = 2.5.",
         },
       ],
-      code: "",
-      timeComplexity: "",
-      spaceComplexity: "",
+      code: `class Solution {
+public:
+    double findMedianSortedArrays(vector<int>& v1, vector<int>& v2) {
+        int N = v1.size();
+        int M = v2.size();
+        if(M<N) return findMedianSortedArrays(v2,v1);
+
+        int low = 0;
+        int high = N;
+
+        int K = (N+M+1)/2;
+
+        while(low<=high){
+            int cut1 = low + (high-low)/2;
+            int cut2 = K-cut1;
+
+            int l1 = cut1==0 ? INT_MIN : v1[cut1-1];
+            int l2 = cut2==0 ? INT_MIN : v2[cut2-1];
+
+            int r1 = cut1==N ? INT_MAX : v1[cut1];
+            int r2 = cut2==M ? INT_MAX : v2[cut2];
+
+            if(l1<=r2 && l2<=r1){
+                return (N+M)%2 ? max(l1,l2) : (((max(l1,l2) + min(r1,r2))/2.0));
+            }else{
+                if(l1>r2){
+                    high = cut1-1;
+                }else{
+                    low = cut1+1;
+                }
+            }
+
+        }
+
+        return 0.0;
+    }
+};`,
+      timeComplexity: "O(log (min(N,M)))",
+      spaceComplexity: "O(1)",
       notes: "",
     },
   ],
