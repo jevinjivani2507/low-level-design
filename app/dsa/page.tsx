@@ -38,12 +38,20 @@ export default function DsaPage() {
             Practice problems for coding interviews.
           </p>
         </div>
-        <Link
-          href="/"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          &larr; LLD
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            LLD
+          </Link>
+          <Link
+            href="/blogs"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Blogs
+          </Link>
+        </div>
       </div>
 
       <div className="mt-8">
