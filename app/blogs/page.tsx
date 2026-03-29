@@ -21,18 +21,28 @@ export default function BlogsPage() {
             Notes and write-ups.
           </p>
         </div>
-        <Link
-          href="/"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          &larr; LLD
-        </Link>
+        <div className="flex gap-4">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            LLD
+          </Link>
+          <Link
+            href="/dsa"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            DSA
+          </Link>
+        </div>
       </div>
 
       {blogs.length === 0 ? (
         <div className="mt-12 text-center text-sm text-muted-foreground">
-          No blogs yet. Add a <code className="rounded bg-muted px-1.5 py-0.5">.md</code> file
-          under <code className="rounded bg-muted px-1.5 py-0.5">blogs/</code> to get started.
+          No blogs yet. Add a{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5">.md</code> file under{" "}
+          <code className="rounded bg-muted px-1.5 py-0.5">blogs/</code> to get
+          started.
         </div>
       ) : (
         <div className="mt-8">
