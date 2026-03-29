@@ -14,12 +14,22 @@ export default function Page() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-lg font-semibold tracking-tight">
-        Low-Level Design Prep
-      </h1>
-      <p className="mt-1 text-sm text-muted-foreground">
-        Practice problems for system design interviews.
-      </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold tracking-tight">
+            Low-Level Design Prep
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Practice problems for system design interviews.
+          </p>
+        </div>
+        <Link
+          href="/dsa"
+          className="text-sm text-muted-foreground hover:text-foreground"
+        >
+          DSA &rarr;
+        </Link>
+      </div>
 
       {problems.length === 0 ? (
         <div className="mt-12 text-center text-sm text-muted-foreground">
