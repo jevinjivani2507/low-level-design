@@ -1,5 +1,6 @@
 import { slidingWindow } from "./dsa/sliding-window"
 import { binarySearch } from "./dsa/binary-search"
+import { binaryTree } from "./dsa/binary-tree"
 
 export interface TestCase {
   input: string
@@ -25,4 +26,4 @@ export interface DsaTopic {
   questions: DsaQuestion[]
 }
 
-export const dsaTopics: DsaTopic[] = [slidingWindow, binarySearch]
+export const dsaTopics: DsaTopic[] = [slidingWindow, binarySearch, binaryTree]
