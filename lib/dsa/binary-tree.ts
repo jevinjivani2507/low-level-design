@@ -16,6 +16,7 @@ export const binaryTree: DsaTopic = {
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
+      tags: ["striver-a2z"],
     },
     {
       id: "binary-tree-inorder-traversal",
@@ -30,6 +31,7 @@ export const binaryTree: DsaTopic = {
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
+      tags: ["neetcode-150", "striver-a2z"],
     },
     {
       id: "binary-tree-postorder-traversal",
