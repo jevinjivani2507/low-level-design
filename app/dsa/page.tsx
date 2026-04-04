@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo, useState, useSyncExternalStore } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import {
   Accordion,
@@ -29,91 +29,16 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip"
-import { dsaTopics, getAllTags, type DsaQuestion, type DsaTopic } from "@/lib/dsa-data"
-import { ArrowSquareOut } from "@phosphor-icons/react"
+import { tags } from "@/lib/dsa-data"
+import { dsaTopics, type DsaQuestion, type DsaTopic } from "@/lib/dsa-data"
+import { ArrowSquareOutIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
+import { useDsaSelectedTags } from "@/hooks/use-dsa-selected-tags"
 
-const STORAGE_KEY = "dsa-selected-tags"
-
-const emptyTags: string[] = []
-
-function parseStoredTags(raw: string | null): string[] {
-  if (!raw) return emptyTags
-  try {
-    const parsed = JSON.parse(raw) as unknown
-    if (Array.isArray(parsed) && parsed.every((x) => typeof x === "string")) {
-      return parsed
-    }
-  } catch {
-    /* ignore */
-  }
-  return emptyTags
-}
-
-let tagStoreEpoch = 0
-const tagStoreListeners = new Set<() => void>()
-
-function subscribeTagStore(onChange: () => void) {
-  if (typeof window === "undefined") return () => {}
-  const onStorage = (e: StorageEvent) => {
-    if (e.key === STORAGE_KEY || e.key === null) onChange()
-  }
-  window.addEventListener("storage", onStorage)
-  tagStoreListeners.add(onChange)
-  return () => {
-    window.removeEventListener("storage", onStorage)
-    tagStoreListeners.delete(onChange)
-  }
-}
-
-function bumpTagStore() {
-  tagStoreEpoch += 1
-  tagStoreListeners.forEach((l) => l())
-}
-
-/** Stable snapshot token: changes when localStorage key or same-tab writes update */
-function getTagStoreSnapshot(): string {
-  if (typeof window === "undefined") return "0"
-  void tagStoreEpoch
-  return `${tagStoreEpoch}\0${localStorage.getItem(STORAGE_KEY) ?? ""}`
-}
-
-function usePersistedSelectedTags(): [
-  string[],
-  (u: string[] | ((prev: string[]) => string[])) => void,
-] {
-  const snapshot = useSyncExternalStore(
-    subscribeTagStore,
-    getTagStoreSnapshot,
-    () => "0"
-  )
-
-  const selectedTags = useMemo(() => {
-    const raw = snapshot.includes("\0")
-      ? snapshot.slice(snapshot.indexOf("\0") + 1)
-      : ""
-    return parseStoredTags(raw || null)
-  }, [snapshot])
-
-  const setSelectedTags = useCallback(
-    (update: string[] | ((prev: string[]) => string[])) => {
-      if (typeof window === "undefined") return
-      const prev = parseStoredTags(localStorage.getItem(STORAGE_KEY))
-      const next = typeof update === "function" ? update(prev) : update
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
-      } catch {
-        /* ignore */
-      }
-      bumpTagStore()
-    },
-    []
-  )
-
-  return [selectedTags, setSelectedTags]
-}
-
-function filterTopics(topics: DsaTopic[], selectedTags: string[]): DsaTopic[] {
+const filterTopics = (
+  topics: DsaTopic[],
+  selectedTags: string[]
+): DsaTopic[] => {
   if (selectedTags.length === 0) {
     return topics
   }
@@ -124,24 +49,22 @@ function filterTopics(topics: DsaTopic[], selectedTags: string[]): DsaTopic[] {
       questions: topic.questions.filter((q) => {
         const tags = q.tags ?? []
         if (tags.length === 0) return false
-        return tags.some((t) => selected.has(t))
+        return tags.some((t) => selected.has(t.toString()))
       }),
     }))
     .filter((topic) => topic.questions.length > 0)
 }
 
-export default function DsaPage() {
+const DsaPage = () => {
   const [selected, setSelected] = useState<DsaQuestion | null>(null)
-  const [selectedTags, setSelectedTags] = usePersistedSelectedTags()
-
-  const allTags = useMemo(() => getAllTags(dsaTopics), [])
+  const [selectedTags, setSelectedTags] = useDsaSelectedTags()
 
   const filteredTopics = useMemo(
     () => filterTopics(dsaTopics, selectedTags),
     [selectedTags]
   )
 
-  function toggleTag(tag: string) {
+  const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     )
@@ -173,13 +96,13 @@ export default function DsaPage() {
           </div>
         </div>
 
-        {allTags.length > 0 && (
+        {tags.length > 0 && (
           <div className="mt-6 flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Tags
             </span>
             <div className="flex flex-wrap gap-1.5">
-              {allTags.map((tag) => {
+              {tags.map((tag) => {
                 const on = selectedTags.includes(tag)
                 return (
                   <button
@@ -255,7 +178,7 @@ export default function DsaPage() {
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
                             >
-                              <ArrowSquareOut className="size-3.5" />
+                              <ArrowSquareOutIcon className="size-3.5" />
                             </a>
                           </TableCell>
                         </TableRow>
@@ -299,7 +222,7 @@ export default function DsaPage() {
                         className="inline-flex items-center gap-1 underline underline-offset-4 hover:text-foreground"
                       >
                         LeetCode
-                        <ArrowSquareOut className="size-3" />
+                        <ArrowSquareOutIcon className="size-3" />
                       </a>
                     </span>
                   </SheetDescription>
@@ -404,14 +327,15 @@ export default function DsaPage() {
     </TooltipProvider>
   )
 }
+export default DsaPage
 
-function QuestionTitleCell({
+const QuestionTitleCell = ({
   q,
   onOpen,
 }: {
   q: DsaQuestion
   onOpen: () => void
-}) {
+}) => {
   const tags = q.tags ?? []
   const hidden = tags.length > 3 ? tags.slice(3) : []
   const visible = tags.slice(0, 3)
@@ -448,9 +372,7 @@ function QuestionTitleCell({
                   </span>
                 )}
               />
-              <TooltipContent side="top">
-                {hidden.join(", ")}
-              </TooltipContent>
+              <TooltipContent side="top">{hidden.join(", ")}</TooltipContent>
             </Tooltip>
           )}
         </span>
@@ -459,15 +381,18 @@ function QuestionTitleCell({
   )
 }
 
-function DifficultyBadge({ difficulty }: { difficulty: string }) {
-  const color =
-    difficulty === "Easy"
-      ? "text-green-600 dark:text-green-400"
-      : difficulty === "Medium"
-        ? "text-yellow-600 dark:text-yellow-400"
-        : difficulty === "Hard"
-          ? "text-red-600 dark:text-red-400"
-          : "text-muted-foreground"
-
-  return <span className={color}>{difficulty}</span>
+const DifficultyBadge = ({ difficulty }: { difficulty: string }) => {
+  const getColor = (difficulty: string) => {
+    switch (difficulty) {
+      case "Easy":
+        return "text-green-600 dark:text-green-400"
+      case "Medium":
+        return "text-yellow-600 dark:text-yellow-400"
+      case "Hard":
+        return "text-red-600 dark:text-red-400"
+      default:
+        return "text-muted-foreground"
+    }
+  }
+  return <span className={getColor(difficulty)}>{difficulty}</span>
 }

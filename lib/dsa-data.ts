@@ -2,6 +2,8 @@ import { slidingWindow } from "./dsa/sliding-window"
 import { binarySearch } from "./dsa/binary-search"
 import { binaryTree } from "./dsa/binary-tree"
 
+export const tags: string[] = ["striver-a2z", "neetcode-150"]
+
 export interface TestCase {
   input: string
   output: string
@@ -20,7 +22,7 @@ export interface DsaQuestion {
   spaceComplexity: string
   notes: string
   /** Curated lists (e.g. striver-a2z, neetcode-150); omit or [] if none */
-  tags?: string[]
+  tags?: typeof tags
 }
 
 export interface DsaTopic {
@@ -29,16 +31,3 @@ export interface DsaTopic {
 }
 
 export const dsaTopics: DsaTopic[] = [slidingWindow, binarySearch, binaryTree]
-
-/** Distinct tag strings across all questions, sorted for stable UI */
-export function getAllTags(topics: DsaTopic[]): string[] {
-  const seen = new Set<string>()
-  for (const t of topics) {
-    for (const q of t.questions) {
-      for (const tag of q.tags ?? []) {
-        seen.add(tag)
-      }
-    }
-  }
-  return [...seen].sort((a, b) => a.localeCompare(b))
-}
