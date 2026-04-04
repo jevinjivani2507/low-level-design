@@ -51,6 +51,10 @@ public:
         return arr;
     }
 };`,
+      codeLineHighlights: [
+        { line: 5, tone: "green" },
+        { line: 6, tone: "green" },
+      ],
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",

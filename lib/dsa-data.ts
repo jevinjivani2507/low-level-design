@@ -29,6 +29,7 @@ export interface DsaQuestion {
   tags?: typeof tags
   /** Optional marker for tree problems; diagrams use `testCases[].diagrams` */
   type?: DsaQuestionDisplayType
+  codeLineHighlights?: { line: number; tone: "green" | "red" }[]
 }
 
 export interface DsaTopic {

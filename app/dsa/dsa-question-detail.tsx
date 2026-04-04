@@ -128,10 +128,7 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
                     {diagrams !== undefined && diagrams.length > 0 && (
                       <div className="mt-3 flex flex-col gap-4 rounded-md border border-border/60 bg-background/50 px-2 py-3">
                         {diagrams.map((levelOrder, di) => (
-                          <BinaryTreeDiagram
-                            key={di}
-                            levelOrder={levelOrder}
-                          />
+                          <BinaryTreeDiagram key={di} levelOrder={levelOrder} />
                         ))}
                       </div>
                     )}
@@ -172,7 +169,10 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
           <h3 className="mb-1.5 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
             Code
           </h3>
-          <DsaCodeBlock code={selected.code} />
+          <DsaCodeBlock
+            code={selected.code}
+            codeLineHighlights={selected.codeLineHighlights}
+          />
         </section>
 
         <section>
