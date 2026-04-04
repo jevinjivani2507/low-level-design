@@ -34,6 +34,7 @@ import { dsaTopics, type DsaQuestion, type DsaTopic } from "@/lib/dsa-data"
 import { ArrowSquareOutIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { useDsaSelectedTags } from "@/hooks/use-dsa-selected-tags"
+import { BinaryTreeDiagram } from "@/components/dsa/binary-tree-diagram"
 
 const filterTopics = (
   topics: DsaTopic[],
@@ -246,33 +247,46 @@ const DsaPage = () => {
                         Examples
                       </h3>
                       <div className="flex flex-col gap-2">
-                        {selected.testCases.map((tc, i) => (
-                          <div
-                            key={i}
-                            className="rounded-md border bg-muted/50 px-3 py-2 text-xs leading-relaxed"
-                          >
-                            <div>
-                              <span className="text-muted-foreground">
-                                Input:{" "}
-                              </span>
-                              <code>{tc.input}</code>
-                            </div>
-                            <div>
-                              <span className="text-muted-foreground">
-                                Output:{" "}
-                              </span>
-                              <code>{tc.output}</code>
-                            </div>
-                            {tc.explanation && (
-                              <div className="mt-1 text-muted-foreground">
-                                <span className="font-medium">
-                                  Explanation:{" "}
+                        {selected.testCases.map((tc, i) => {
+                          const diagrams = tc.diagrams
+                          return (
+                            <div
+                              key={i}
+                              className="rounded-md border bg-muted/50 px-3 py-2 text-xs leading-relaxed"
+                            >
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Input:{" "}
                                 </span>
-                                {tc.explanation}
+                                <code>{tc.input}</code>
                               </div>
-                            )}
-                          </div>
-                        ))}
+                              <div>
+                                <span className="text-muted-foreground">
+                                  Output:{" "}
+                                </span>
+                                <code>{tc.output}</code>
+                              </div>
+                              {diagrams !== undefined && diagrams.length > 0 && (
+                                <div className="mt-3 flex flex-col gap-4 rounded-md border border-border/60 bg-background/50 px-2 py-3">
+                                  {diagrams.map((levelOrder, di) => (
+                                    <BinaryTreeDiagram
+                                      key={di}
+                                      levelOrder={levelOrder}
+                                    />
+                                  ))}
+                                </div>
+                              )}
+                              {tc.explanation && (
+                                <div className="mt-1 text-muted-foreground">
+                                  <span className="font-medium">
+                                    Explanation:{" "}
+                                  </span>
+                                  {tc.explanation}
+                                </div>
+                              )}
+                            </div>
+                          )
+                        })}
                       </div>
                     </section>
                   )}

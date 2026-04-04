@@ -4,10 +4,15 @@ import { binaryTree } from "./dsa/binary-tree"
 
 export const tags: string[] = ["striver-a2z", "neetcode-150"]
 
+/** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
+export type DsaQuestionDisplayType = "TREE"
+
 export interface TestCase {
   input: string
   output: string
   explanation?: string
+  /** One or more level-order trees for `BinaryTreeDiagram`; not shown as text */
+  diagrams?: (number | null)[][]
 }
 
 export interface DsaQuestion {
@@ -21,8 +26,9 @@ export interface DsaQuestion {
   timeComplexity: string
   spaceComplexity: string
   notes: string
-  /** Curated lists (e.g. striver-a2z, neetcode-150); omit or [] if none */
   tags?: typeof tags
+  /** Optional marker for tree problems; diagrams use `testCases[].diagrams` */
+  type?: DsaQuestionDisplayType
 }
 
 export interface DsaTopic {
