@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/sheet"
 import { DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { BinaryTreeDiagram } from "@/components/dsa/binary-tree-diagram"
+import { DsaCodeBlock } from "@/components/dsa/dsa-code-block"
 import { ArrowSquareOutIcon } from "@phosphor-icons/react"
 import type { DsaQuestion } from "@/lib/dsa-data"
 import { cn } from "@/lib/utils"
@@ -171,9 +172,7 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
           <h3 className="mb-1.5 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
             Code
           </h3>
-          <pre className="overflow-x-auto rounded-md border bg-muted/50 p-3 text-xs leading-relaxed">
-            <code>{selected.code}</code>
-          </pre>
+          <DsaCodeBlock code={selected.code} />
         </section>
 
         <section>
