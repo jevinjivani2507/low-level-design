@@ -158,7 +158,7 @@ const DsaPage = () => {
                       {topic.questions.map((q, i) => (
                         <TableRow key={q.id}>
                           <TableCell className="text-muted-foreground">
-                            {i + 1}
+                            {i}
                           </TableCell>
                           <TableCell>
                             <QuestionTitleCell

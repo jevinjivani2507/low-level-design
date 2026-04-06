@@ -175,14 +175,16 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
           />
         </section>
 
-        <section>
-          <h3 className="mb-1.5 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
-            Notes
-          </h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">
-            {selected.notes}
-          </p>
-        </section>
+        {selected.notes && (
+          <section>
+            <h3 className="mb-1.5 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
+              Notes
+            </h3>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {selected.notes}
+            </p>
+          </section>
+        )}
       </div>
     </>
   )

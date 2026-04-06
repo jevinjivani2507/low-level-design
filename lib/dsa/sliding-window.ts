@@ -4,11 +4,63 @@ export const slidingWindow: DsaTopic = {
   topic: "Sliding Window",
   questions: [
     {
+      id: "template",
+      title: "Template",
+      difficulty: "Medium",
+      leetcodeUrl: "",
+      question: `Sliding window means using two pointers to form a window: expand with \`right\`, and if it breaks the condition, shrink with \`left\` until it's valid again.
+At each valid step, update your answer.`,
+      testCases: [],
+      code: `class Solution {
+public:
+    int template(string s) {
+        int n = s.size();
+
+        int left = 0, right = 0;
+
+        // 0. INITIALIZE variables
+        int ans = 0;
+        unordered_map<char, int> freq; // or any structure
+
+        while (right < n) {
+
+            // 1. INCLUDE current right element
+            freq[s[right]]++;
+
+            // 2. SHRINK window until valid
+            // if -> in future dont have good answer 
+            // while -> in future we can have good answer with smaller window
+            while (/* window is invalid */) {
+                // undo what right pointer did
+                freq[s[left]]--;
+
+                // increment left
+                left++;
+            }
+
+            // 3. UPDATE answer (valid window)
+            if (condition) {
+                ans = max(ans, right - left + 1);
+            }
+
+            // 4. INCREMENT right
+            right++;
+        }
+
+        return ans;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      notes: "",
+    },
+    {
       id: "longest-substring-without-repeating-characters",
       title: "Longest Substring Without Repeating Characters",
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "Given a string s, find the length of the longest substring without duplicate characters.",
       testCases: [
@@ -53,6 +105,10 @@ public:
         return ans;
     }
 };`,
+      codeLineHighlights: [
+        { line: 13, tone: "green" },
+        { line: 17, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
       notes: "",
@@ -62,6 +118,7 @@ public:
       title: "Max Consecutive Ones III",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/max-consecutive-ones-iii/",
+      tags: ["striver-a2z"],
       question:
         "Given a binary array nums and an integer k, return the maximum number of consecutive 1's in the array if you can flip at most k 0's.",
       testCases: [
@@ -90,8 +147,10 @@ public:
         int zero = 0;
 
         while (r < N) {
-            if (nums[r] == 0)
+            if (nums[r] == 0) {
                 zero++;
+            }
+            
             if (zero > k) {
                 if (nums[l] == 0) {
                     zero--;
@@ -107,6 +166,11 @@ public:
         return ans;
     }
 };`,
+      codeLineHighlights: [
+        { line: 10, tone: "green" },
+        { line: 14, tone: "green" },
+        { line: 19, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
       notes: "",
@@ -116,6 +180,7 @@ public:
       title: "Fruit Into Baskets",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/fruit-into-baskets/",
+      tags: ["striver-a2z"],
       question:
         "You are visiting a farm that has a single row of fruit trees arranged from left to right. The trees are represented by an integer array fruits where fruits[i] is the type of fruit the ith tree produces. You want to collect as much fruit as possible. However, the owner has some strict rules that you must follow: You only have two baskets, and each basket can only hold a single type of fruit. There is no limit on the amount of fruit each basket can hold. Starting from any tree of your choice, you must pick exactly one fruit from every tree (including the start tree) while moving to the right. The picked fruits must fit in one of your baskets. Once you reach a tree with fruit that cannot fit in your baskets, you must stop. Given the integer array fruits, return the maximum number of fruits you can pick.",
       testCases: [
@@ -170,9 +235,17 @@ public:
         return ans;
     }
 };`,
+      codeLineHighlights: [
+        { line: 10, tone: "green" },
+        { line: 15, tone: "green" },
+        { line: 18, tone: "green" },
+        { line: 19, tone: "green" },
+        { line: 20, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "Here we have used while, because we can have good answer with smaller window.",
     },
     {
       id: "longest-repeating-character-replacement",
@@ -180,6 +253,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-repeating-character-replacement/",
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times. Return the length of the longest substring containing the same letter you can get after performing the above operations.",
       testCases: [
@@ -205,11 +279,11 @@ public:
         int maxLen = 0;
         int maxCount = 0;
 
-        while (right < N) {
+        while (right < N) { // O(N)
             freq[s[right] - 'A']++;
             maxCount = max(maxCount, freq[s[right] - 'A']);
 
-            while ((right - left + 1) - maxCount > k) {
+            while ((right - left + 1) - maxCount > k) { // O(1)
                 freq[s[left] - 'A']--;
                 left++;
             }
@@ -223,13 +297,19 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "Same as Max Consecutive Ones III. Remember to use in-place `right - left + 1` to get the length of the window.",
+      codeLineHighlights: [
+        { line: 13, tone: "green" },
+        { line: 15, tone: "green" },
+      ],
     },
     {
       id: "binary-subarrays-with-sum",
       title: "Binary Subarrays With Sum",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/binary-subarrays-with-sum/",
+      tags: ["striver-a2z"],
       question:
         "Given a binary array nums and an integer goal, return the number of non-empty subarrays with a sum goal. A subarray is a contiguous part of the array.",
       testCases: [
@@ -258,7 +338,7 @@ public:
             return 0;
         }
 
-        while(right < N){
+        while(right < N){ // O(N)
             currSum += nums[right];
 
             while(currSum > goal){
@@ -266,7 +346,9 @@ public:
                 left++;
             }
 
-            ans += (right - left + 1);
+            // all subarray will have sum <= goal
+            ans += (right - left + 1); // O(1)
+
             right++;
         }
 
@@ -276,9 +358,11 @@ public:
         return maxSubarraysSum(nums,  goal) - maxSubarraysSum(nums,  goal-1);
     }
 };`,
+      codeLineHighlights: [{ line: 23, tone: "green" }],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "We can't find exact thing with sliding window, so we use two sliding windows to find the number of subarrays with sum equal to `goal` and `goal - 1`. The reason is we can't decide whome to move forward, might get good answer if we move left pointer, might get good answer if we move right pointer.",
     },
     {
       id: "count-number-of-nice-subarrays",
@@ -286,6 +370,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/count-number-of-nice-subarrays/",
+      tags: ["striver-a2z"],
       question:
         "Given an array of integers nums and an integer k. A continuous subarray is called nice if there are k odd numbers on it. Return the number of nice sub-arrays.",
       testCases: [
@@ -338,6 +423,7 @@ public:
         return helper(nums, k) - helper(nums, k-1);
     }
 };`,
+      codeLineHighlights: [{ line: 22, tone: "green" }],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
       notes: "",
@@ -348,6 +434,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/number-of-substrings-containing-all-three-characters/",
+      tags: ["striver-a2z"],
       question:
         "Given a string s consisting only of characters a, b and c. Return the number of substrings containing at least one occurrence of all these characters a, b and c.",
       testCases: [
@@ -395,9 +482,14 @@ public:
         return ans;
     }
 };`,
+      codeLineHighlights: [
+        { line: 13, tone: "green" },
+        { line: 15, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "If we met condition, all subarray from right are valid as we left one is valid.",
     },
     {
       id: "maximum-points-you-can-obtain-from-cards",
@@ -405,6 +497,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/",
+      tags: ["striver-a2z"],
       question:
         "There are several cards arranged in a row, and each card has an associated number of points. The points are given in the integer array cardPoints. In one step, you can take one card from the beginning or from the end of the row. You have to take exactly k cards. Your score is the sum of the points of the cards you have taken. Given the integer array cardPoints and the integer k, return the maximum score you can obtain.",
       testCases: [
@@ -454,9 +547,15 @@ public:
         return score;
     }
 };`,
+      codeLineHighlights: [
+        { line: 9, tone: "green" },
+        { line: 16, tone: "green" },
+        { line: 17, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "First we calculate sum of first k elements, and store in left, then we move right pointer and update left sum and right sum.",
     },
     {
       id: "longest-substring-with-at-most-k-distinct-characters",
@@ -464,6 +563,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-substring-with-at-most-k-distinct-characters/",
+      tags: ["striver-a2z"],
       question: `You are given a string s consisting only lowercase alphabets and an integer k. Your task is to find the length of the longest substring that contains exactly k distinct characters.
 
 Note : If no such substring exists, return -1. 
@@ -521,7 +621,7 @@ Note : If no such substring exists, return -1.
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: "Same as Maximum consecutive ones III.",
     },
     {
       id: "subarrays-with-k-different-integers",
@@ -529,6 +629,7 @@ Note : If no such substring exists, return -1.
       difficulty: "Hard",
       leetcodeUrl:
         "https://leetcode.com/problems/subarrays-with-k-different-integers/",
+      tags: ["striver-a2z"],
       question:
         "Given an integer array nums and an integer k, return the number of good subarrays of nums. A good array is an array where the number of different integers in that array is exactly k. For example, [1,2,3,1,2] has 3 different integers: 1, 2, and 3. A subarray is a contiguous part of an array.",
       testCases: [
@@ -584,13 +685,21 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      codeLineHighlights: [
+        { line: 14, tone: "green" },
+        { line: 15, tone: "green" },
+        { line: 16, tone: "green" },
+        { line: 35, tone: "green" },
+      ],
+      notes:
+        "Mixture of `Maximum Consecutive Ones III` and `Binary Subarrays With Sum`.",
     },
     {
       id: "minimum-window-substring",
       title: "Minimum Window Substring",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/minimum-window-substring/",
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         'Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "". The testcases will be generated such that the answer is unique.',
       testCases: [
@@ -653,15 +762,25 @@ public:
         return idx == -1 ? "" : s.substr(idx,len);
     }
 };`,
+      codeLineHighlights: [
+        { line: 12, tone: "green" },
+        { line: 13, tone: "green" },
+        { line: 23, tone: "green" },
+        { line: 24, tone: "green" },
+        { line: 25, tone: "green" },
+        { line: 30, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes:
+        "We will maintain `idx` and `len`. Count of characters in `t`. If we met condition, we update `idx` and `len`.",
     },
     {
       id: "permutation-in-string",
       title: "Permutation in String",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/permutation-in-string/",
+      tags: ["neetcode-150"],
       question:
         "Given two strings s1 and s2, return true if s2 contains a permutation of s1, or false otherwise. In other words, return true if one of s1's permutations is the substring of s2.",
       testCases: [
@@ -707,15 +826,20 @@ public:
         return false;
     }
 };`,
+      codeLineHighlights: [
+        { line: 8, tone: "green" },
+        { line: 17, tone: "green" },
+      ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: "Simple and straightforward sliding window.",
     },
     {
       id: "sliding-window-maximum",
       title: "Sliding Window Maximum",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/sliding-window-maximum/",
+      tags: ["neetcode-150"],
       question:
         "You are given an array of integers nums, there is a sliding window of size k which is moving from the very left of the array to the very right. You can only see the k numbers in the window. Each time the sliding window moves right by one position. Return the max sliding window.",
       testCases: [
@@ -759,7 +883,8 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(N)",
-      notes: "",
+      notes:
+        "We will just push element in deque if it is greater than the last element in deque. And if the element is out of window, we will pop the front element.",
     },
   ],
 }
