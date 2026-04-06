@@ -886,5 +886,228 @@ public:
       notes:
         "We will just push element in deque if it is greater than the last element in deque. And if the element is out of window, we will pop the front element.",
     },
+    {
+      id: "two-sum-ii-input-array-is-sorted",
+      title: "Two Sum II - Input Array Is Sorted",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+      question:
+        "Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, find two numbers such that they add up to a specific target number. Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length. Return the indices of the two numbers index1 and index2, each incremented by one, as an integer array [index1, index2] of length 2. The tests are generated such that there is exactly one solution. You may not use the same element twice. Your solution must use only constant extra space.",
+      tags: ["neetcode-150"],
+      testCases: [
+        {
+          input: "numbers = [2,7,11,15], target = 9",
+          output: "[1,2]",
+          explanation:
+            "The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].",
+        },
+        {
+          input: "numbers = [2,3,4], target = 6",
+          output: "[1,3]",
+          explanation:
+            "The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].",
+        },
+        {
+          input: "numbers = [-1,0], target = -1",
+          output: "[1,2]",
+          explanation:
+            "The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We return [1, 2].",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        int N = numbers.size();
+
+        int left = 0, right = N - 1;
+
+        int sum = 0;
+
+        while (left < right) {
+            sum = numbers[right] + numbers[left];
+            if (sum == target) {
+                return {left + 1, right + 1};
+            } else if (sum < target) {
+                left++;
+            } else {
+                right--;
+            }
+
+        }
+
+        return {-1, -1};
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      codeLineHighlights: [
+        { line: 12, tone: "green" },
+        { line: 14, tone: "green" },
+        { line: 16, tone: "green" },
+      ],
+      notes: "",
+    },
+    {
+      id: "3sum",
+      title: "3Sum",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/3sum/",
+      tags: ["neetcode-150"],
+      question:
+        "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0. Notice that the solution set must not contain duplicate triplets.",
+      testCases: [
+        {
+          input: "nums = [-1,0,1,2,-1,-4]",
+          output: "[[-1,-1,2],[-1,0,1]]",
+          explanation:
+            "nums[0] + nums[1] + nums[2] = (-1) + 0 + 1 = 0.\nnums[1] + nums[2] + nums[4] = 0 + 1 + (-1) = 0.\nnums[0] + nums[3] + nums[4] = (-1) + 2 + (-1) = 0.\nThe distinct triplets are [-1,0,1] and [-1,-1,2].\nNotice that the order of the output and the order of the triplets does not matter.",
+        },
+        {
+          input: "nums = [0,1,1]",
+          output: "[]",
+          explanation: "The only possible triplet does not sum up to 0.",
+        },
+        {
+          input: "nums = [0,0,0]",
+          output: "[[0,0,0]]",
+          explanation: "The only possible triplet sums up to 0.",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>> res;
+        sort(nums.begin(), nums.end());
+
+        for (int i = 0; i < nums.size(); i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            int j = i + 1;
+            int k = nums.size() - 1;
+
+            while (j < k) {
+                int total = nums[i] + nums[j] + nums[k];
+
+                if (total > 0) {
+                    k--;
+                } else if (total < 0) {
+                    j++;
+                } else {
+                    res.push_back({nums[i], nums[j], nums[k]});
+                    j++;
+
+                    while (nums[j] == nums[j - 1] && j < k) {
+                        j++;
+                    }
+                }
+            }
+        }
+        return res;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      codeLineHighlights: [
+        { line: 5, tone: "green" },
+        { line: 26, tone: "green" },
+      ],
+      notes: "",
+    },
+    {
+      id: "container-with-most-water",
+      title: "Container With Most Water",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/container-with-most-water/",
+      tags: ["neetcode-150"],
+      question:
+        "You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]). Find two lines that together with the x-axis form a container, such that the container contains the most water. Return the maximum amount of water a container can store. Notice that you may not slant the container.",
+      testCases: [
+        {
+          input: "height = [1,8,6,2,5,4,8,3,7]",
+          output: "49",
+          explanation: "",
+        },
+        {
+          input: "height = [1,1]",
+          output: "1",
+          explanation: "",
+        },
+      ],
+      code: `class Solution {
+public:
+    int maxArea(vector<int>& height) {
+        int left = 0;
+        int right = height.size() - 1;
+        int maxArea = 0;
+
+        while (left <= right) {
+            int currentArea = min(height[left], height[right]) * (right - left);
+            maxArea = max(maxArea, currentArea);
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+            }
+        }
+
+        return maxArea;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      codeLineHighlights: [
+        { line: 9, tone: "green" },
+        { line: 10, tone: "green" },
+      ],
+      notes: "",
+    },
+    {
+      id: "trapping-rain-water",
+      title: "Trapping Rain Water",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/trapping-rain-water/",
+      tags: ["neetcode-150"],
+      question:
+        "Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining.",
+      testCases: [
+        {
+          input: "height = [4,2,0,3,2,5]",
+          output: "9",
+          explanation: "",
+        },
+      ],
+      code: `class Solution {
+public:
+    int trap(vector<int>& height) {
+        int N = height.size();
+        vector<int> l(N), r(N);
+        l[0] = height[0];
+        r[N - 1] = height[N - 1];
+        for (int i = 1; i < N; i++) {
+            l[i] = max(l[i - 1], height[i]);
+        }
+        for (int i = N - 2; i >= 0; i--) {
+            r[i] = max(r[i + 1], height[i]);
+        }
+        int ans = 0;
+        for (int i = 0; i < N; i++) {
+            ans += min(l[i], r[i]) - height[i];
+        }
+        return ans;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      codeLineHighlights: [
+        { line: 5, tone: "green" },
+        { line: 9, tone: "green" },
+        { line: 12, tone: "green" },
+        { line: 16, tone: "green" },
+      ],
+      notes: "",
+    },
   ],
 }
