@@ -6,7 +6,7 @@ export const slidingWindow: DsaTopic = {
     {
       id: "template",
       title: "Template",
-      difficulty: "Medium",
+      difficulty: "Easy",
       leetcodeUrl: "",
       question: `Sliding window means using two pointers to form a window: expand with \`right\`, and if it breaks the condition, shrink with \`left\` until it's valid again.
 At each valid step, update your answer.`,

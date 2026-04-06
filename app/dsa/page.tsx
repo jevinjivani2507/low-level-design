@@ -166,19 +166,23 @@ const DsaPage = () => {
                               onOpen={() => setSelected(q)}
                             />
                           </TableCell>
-                          <TableCell>
-                            <DifficultyBadge difficulty={q.difficulty} />
-                          </TableCell>
-                          <TableCell className="text-center">
-                            <a
-                              href={q.leetcodeUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                            >
-                              <ArrowSquareOutIcon className="size-3.5" />
-                            </a>
-                          </TableCell>
+                          {q.difficulty && (
+                            <TableCell>
+                              <DifficultyBadge difficulty={q.difficulty} />
+                            </TableCell>
+                          )}
+                          {q.leetcodeUrl && (
+                            <TableCell className="text-center">
+                              <a
+                                href={q.leetcodeUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                              >
+                                <ArrowSquareOutIcon className="size-3.5" />
+                              </a>
+                            </TableCell>
+                          )}
                         </TableRow>
                       ))}
                     </TableBody>
