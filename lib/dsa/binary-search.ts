@@ -4,9 +4,74 @@ export const binarySearch: DsaTopic = {
   topic: "Binary Search",
   questions: [
     {
+      id: "template",
+      title: "Template",
+      difficulty: "Easy",
+      leetcodeUrl: "https://leetcode.com/problems/search-insert-position/",
+      question: `Patterns
+=> FFFTTT (First TRUE → Minimize)
+  - Example: minimum capacity, minimum speed
+  - Move:
+    - valid(mid) → high = mid - 1
+    - invalid(mid) → low = mid + 1
+  - Answer = low (first TRUE)
+
+=> TTTFFF (Last TRUE → Maximize)
+  - Example: maximum distance
+  - Move:
+    - valid(mid) → low = mid + 1
+    - invalid(mid) → high = mid - 1
+  - Answer = high (last TRUE)
+
+=> Ask:
+  If I increase my answer, does it become easier or harder?
+    - Easier → FFFTTT
+    - Harder → TTTFFF`,
+      testCases: [],
+      code: `class Solution {
+public:
+    bool valid(vector<int>& nums, int mid) {
+        // 0. CHECK if mid is a valid answer
+        // return true / false
+    }
+
+    int template(vector<int>& nums) {
+        int low = ...;   // minimum possible answer
+        int high = ...;  // maximum possible answer
+
+        while (low <= high) { // O(log N)
+            int mid = low + (high - low) / 2;
+
+            int ans = valid(nums, mid);
+
+            // 1. CHECK validity
+            if (condition) {
+
+                high = mid - 1; // or low = mid + 1
+                
+            } else {
+
+                // 2B. MOVE RIGHT (need bigger answer)
+                low = mid + 1; // or high = mid - 1
+            }
+        }
+
+        // 3. RETURN answer
+        return low;  // or high (depends on problem)
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
+      notes: `- Binary search over an answer space: ask "does mid satisfy?" and shrink halves.
+- FFFTTT (first TRUE → minimize): valid → \`high = mid - 1\`; invalid → \`low = mid + 1\`; answer = \`low\`.
+- TTTFFF (last TRUE → maximize): valid → \`low = mid + 1\`; invalid → \`high = mid - 1\`; answer = \`high\`.
+- Always use \`mid = low + (high - low) / 2\` to avoid integer overflow.`,
+    },
+    {
       id: "search-insert-position",
       title: "Search Insert Position",
       difficulty: "Easy",
+      tags: ["striver-a2z"],
       leetcodeUrl: "https://leetcode.com/problems/search-insert-position/",
       question:
         "Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order. You must write an algorithm with O(log n) runtime complexity.",
@@ -34,7 +99,7 @@ public:
         int l = 0;
         int r = N - 1;
 
-        while (l <= r) {
+        while (l <= r) { // O(log N)
             int mid = l + (r - l) / 2;
             if (nums[mid] >= x) {
                 r = mid - 1;
@@ -48,12 +113,15 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Classic \`lower_bound\`: find the first index where \`nums[i] >= x\`.
+- FFFTTT pattern — valid (\`nums[mid] >= x\`) shrinks right, invalid shrinks left.
+- When loop ends, \`l\` points to the insert position (may equal \`N\` if x is larger than all).`,
     },
     {
       id: "find-first-and-last-position-of-element-in-sorted-array",
       title: "Find First and Last Position of Element in Sorted Array",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl:
         "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
       question:
@@ -85,7 +153,7 @@ private:
 
         int ans = N;
 
-        while (l <= r) {
+        while (l <= r) { // O(log N)
             int mid = l + (r - l) / 2;
             if (v[mid] >= x) {
                 ans = mid;
@@ -115,12 +183,15 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Use \`lower_bound\` twice: first = lower_bound(x), last = lower_bound(x+1) - 1.
+- If \`first == N\` or \`v[first] != x\`, the target doesn't exist → return {-1, -1}.
+- Each call is O(log N); avoids having to write a separate upper_bound helper.`,
     },
     {
       id: "search-in-rotated-sorted-array",
       title: "Search in Rotated Sorted Array",
       difficulty: "Medium",
+      tags: ["striver-a2z", "neetcode-150"],
       leetcodeUrl:
         "https://leetcode.com/problems/search-in-rotated-sorted-array/",
       question:
@@ -149,7 +220,7 @@ public:
         int l = 0;
         int r = N-1;
 
-        while(l<=r){
+        while(l<=r){ // O(log N)
             int mid = l + (r-l)/2;
             if(v[mid]==k) return mid;
 
@@ -173,12 +244,16 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- At any mid, at least one half (\`[l..mid]\` or \`[mid..r]\`) is sorted — identify which.
+- Check \`v[l] <= v[mid]\`: if true, left half is sorted; otherwise right half is sorted.
+- Move into the sorted half only if target lies within its range; otherwise go the other way.
+- Distinct values — no ambiguity between left/right halves.`,
     },
     {
       id: "search-in-rotated-sorted-array-ii",
       title: "Search in Rotated Sorted Array II",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl:
         "https://leetcode.com/problems/search-in-rotated-sorted-array-ii/",
       question:
@@ -202,7 +277,7 @@ public:
         int l = 0;
         int r = N-1;
 
-        while(l<=r){
+        while(l<=r){ // O(log N) avg, O(N) worst
             int mid = l + (r-l)/2;
             if(v[mid]==k) return true;
 
@@ -227,14 +302,17 @@ public:
         return false;
     }
 };`,
-      timeComplexity: "O(log N)",
+      timeComplexity: "O(log N) avg, O(N) worst",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Same as \`Search in Rotated Sorted Array\` but with duplicates breaking the sorted-half check.
+- When \`v[l] == v[mid] == v[r]\`, we can't decide — shrink both ends by 1 and retry.
+- Worst case degrades to O(N) when the array is all duplicates; average still O(log N).`,
     },
     {
       id: "find-minimum-in-rotated-sorted-array",
       title: "Find Minimum in Rotated Sorted Array",
       difficulty: "Medium",
+      tags: ["striver-a2z", "neetcode-150"],
       leetcodeUrl:
         "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
       question:
@@ -267,7 +345,7 @@ public:
 
         int ans = INT_MAX;
 
-        while (l <= r) {
+        while (l <= r) { // O(log N)
             int mid = l + (r - l) / 2;
             if (v[l] <= v[mid]) {
                 ans = min(ans, v[l]);
@@ -283,12 +361,15 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- One half is always sorted — take its leftmost value as a candidate min, then recurse into the other half.
+- If \`v[l] <= v[mid]\` the left half is sorted → candidate \`v[l]\`, move \`l = mid + 1\`.
+- Otherwise the right half (including mid) contains the minimum → candidate \`v[mid]\`, move \`r = mid - 1\`.`,
     },
     {
       id: "single-element-in-a-sorted-array",
       title: "Single Element in a Sorted Array",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl:
         "https://leetcode.com/problems/single-element-in-a-sorted-array/",
       question:
@@ -316,7 +397,7 @@ public:
 
         int l = 0;
         int r = N-1;
-        while(l<=r){
+        while(l<=r){ // O(log N)
             int mid = l + (r-l)/2;
             int isEven = mid%2==0;
 
@@ -338,14 +419,18 @@ public:
         return v[l];
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
+      notes: `- In a fully-paired array, first of each pair sits at an even index, second at an odd index.
+- Before the single element, pairs follow (even, odd); after it the parity flips.
+- At \`mid\`: if \`mid\` is even and \`v[mid] == v[mid+1]\`, single is to the right; otherwise to the left.
+- Handle N == 1 and the two end cases up front to avoid out-of-bounds in the loop.`,
     },
     {
       id: "find-peak-element",
       title: "Find Peak Element",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl: "https://leetcode.com/problems/find-peak-element/",
       question:
         "A peak element is an element that is strictly greater than its neighbors. Given a 0-indexed integer array nums, find a peak element, and return its index. If the array contains multiple peaks, return the index to any of the peaks. You may imagine that nums[-1] = nums[n] = -∞. In other words, an element is always considered to be strictly greater than a neighbor that is outside the array. You must write an algorithm that runs in O(log n) time.",
@@ -378,7 +463,7 @@ public:
         int l = 1;
         int r = N - 2;
 
-        while (l <= r) {
+        while (l <= r) { // O(log N)
             int mid = l + (r - l) / 2;
             if (v[mid] > v[mid + 1]) {
                 r = mid - 1;
@@ -392,12 +477,15 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Compare \`v[mid]\` with \`v[mid+1]\`: descending → peak is at mid or left; ascending → peak is right.
+- FFFTTT pattern where "valid" means \`v[mid] > v[mid+1]\` (start of descending slope).
+- Handle N == 1, N == 2, and both ends first so the inner search stays within \`[1, N-2]\`.`,
     },
     {
       id: "koko-eating-bananas",
       title: "Koko Eating Bananas",
       difficulty: "Medium",
+      tags: ["striver-a2z", "neetcode-150"],
       leetcodeUrl: "https://leetcode.com/problems/koko-eating-bananas/",
       question:
         "Koko loves to eat bananas. There are n piles of bananas, the ith pile has piles[i] bananas. The guards have gone and will come back in h hours. Koko can decide her bananas-per-hour eating speed of k. Each hour, she chooses some pile of bananas and eats k bananas from that pile. If the pile has less than k bananas, she eats all of them instead and will not eat any more bananas during this hour. Koko likes to eat slowly but still wants to finish eating all the bananas before the guards return. Return the minimum integer k such that she can eat all the bananas within h hours.",
@@ -420,7 +508,7 @@ public:
       ],
       code: `class Solution {
 public:
-    long long calculateTotalHours(vector<int>& piles, int speed) {
+    long long calculateTotalHours(vector<int>& piles, int speed) { // O(N)
         long long totalH = 0;
         for (int bananas : piles) {
             totalH += (bananas + speed - 1) / speed;
@@ -429,11 +517,11 @@ public:
     }
 
     int minEatingSpeed(vector<int>& piles, int h) {
-        int maxPile = *max_element(piles.begin(), piles.end());
+        int maxPile = *max_element(piles.begin(), piles.end()); // O(N)
 
         int low = 1, high = maxPile;
 
-        while (low <= high) {
+        while (low <= high) { // O(log M)
             int mid = (low + high) / 2;
             long long totalH = calculateTotalHours(piles, mid);
 
@@ -449,7 +537,10 @@ public:
 };`,
       timeComplexity: "O(N log M)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Binary search on the answer space (eating speed), not on the array.
+- FFFTTT: bigger speed → fewer hours → easier to finish; minimize the first speed where \`totalH <= h\`.
+- Search range: \`[1, max(piles)]\`; for each \`mid\` sum \`ceil(pile / mid)\` across piles.
+- \`(bananas + speed - 1) / speed\` is integer ceiling division.`,
     },
     {
       id: "minimum-number-of-days-to-make-m-bouquets",
@@ -481,7 +572,7 @@ public:
       ],
       code: `class Solution {
 public:
-    long long helper(vector<int>& v, int k, long long q){
+    long long helper(vector<int>& v, int k, long long q){ // O(N)
         vector<long long> vv;
         long long ans = 0;
         for(int i : v) i<=q ? vv.push_back(1) : vv.push_back(0);
@@ -504,12 +595,12 @@ public:
 
         long long l = INT_MAX;
         long long r = INT_MIN;
-        for(int i : v){
+        for(int i : v){ // O(N)
             l = min((int)l,i);
             r = max((int)r,i);
         }
 
-        while(l<=r){
+        while(l<=r){ // O(log R)
             long long mid = l + (r-l)/2;
             long long days = helper(v,k,mid);
             if((int)days>=m){
@@ -523,12 +614,16 @@ public:
 };`,
       timeComplexity: "O(N log R)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Binary search on \`day\`; helper counts how many bouquets are possible by that day.
+- FFFTTT: more days → more bloomed → more bouquets → minimize the first day where \`bouquets >= m\`.
+- Early exit: if \`m * k > n\`, it's impossible → return -1.
+- Helper marks bloomed flowers (\`v[i] <= day\`) and counts runs of k adjacent bloomed.`,
     },
     {
       id: "find-the-smallest-divisor-given-a-threshold",
       title: "Find the Smallest Divisor Given a Threshold",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl:
         "https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/",
       question:
@@ -548,7 +643,7 @@ public:
       ],
       code: `class Solution {
 public:
-    int helper(vector<int>& nums, int divider){
+    int helper(vector<int>& nums, int divider){ // O(N)
         int res = 0;
         for(int i:nums){
             res += (i+divider-1)/divider;
@@ -558,12 +653,12 @@ public:
     }
 
     int smallestDivisor(vector<int>& nums, int threshold) {
-        sort(nums.begin(),nums.end());
+        sort(nums.begin(),nums.end()); // O(N log N)
 
         int low = 1;
-        int high = *max_element(nums.begin(),nums.end());
+        int high = *max_element(nums.begin(),nums.end()); // O(N)
 
-        while(low<=high){
+        while(low<=high){ // O(log R)
             int mid = low + (high-low)/2;
 
             int res = helper(nums,mid);
@@ -580,12 +675,15 @@ public:
 };`,
       timeComplexity: "O(N log R)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Binary search on divisor; helper sums \`ceil(nums[i] / divisor)\` across the array.
+- FFFTTT: bigger divisor → smaller sum → easier to stay under threshold; minimize.
+- Search range: \`[1, max(nums)]\`. The initial \`sort\` is not required for correctness.`,
     },
     {
       id: "capacity-to-ship-packages-within-d-days",
       title: "Capacity To Ship Packages Within D Days",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl:
         "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
       question:
@@ -611,7 +709,7 @@ public:
       ],
       code: `class Solution {
 public:
-    int helper(vector<int>& weights, int weight){
+    int helper(vector<int>& weights, int weight){ // O(N)
         int curr = 0;
         int res = 1;
         for(int i:weights){
@@ -630,12 +728,12 @@ public:
         int low = 0;
         int high = 0;
 
-        for(int i : weights){
+        for(int i : weights){ // O(N)
             low = max(low,i); high+=i;
         }
 
 
-        while(low<=high){
+        while(low<=high){ // O(log S)
             int mid = low + (high-low)/2;
             int res = helper(weights,mid);
 
@@ -649,14 +747,17 @@ public:
         return low;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N log S)",
+      spaceComplexity: "O(1)",
+      notes: `- Binary search on ship capacity; helper simulates greedy day-by-day loading.
+- FFFTTT: bigger capacity → fewer days needed; minimize capacity where \`days_used <= days\`.
+- Search range: \`[max(weights), sum(weights)]\` — the minimum feasible floor and ceiling.`,
     },
     {
       id: "kth-missing-positive-number",
       title: "Kth Missing Positive Number",
       difficulty: "Easy",
+      tags: ["striver-a2z"],
       leetcodeUrl: "https://leetcode.com/problems/kth-missing-positive-number/",
       question:
         "Given an array arr of positive integers sorted in a strictly increasing order, and an integer k. Return the kth positive integer that is missing from this array.",
@@ -680,7 +781,7 @@ public:
         int low = 0;
         int high = arr.size()-1;
 
-        while(low<=high){
+        while(low<=high){ // O(log N)
             int mid = low + (high-low)/2;
 
             int missing = arr[mid] - (mid+1);
@@ -697,12 +798,83 @@ public:
 };`,
       timeComplexity: "O(log N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- At index \`mid\`, missing count = \`arr[mid] - (mid + 1)\` (how many positives are skipped).
+- FFFTTT on missing count: shrink right when \`missing >= k\`, left when \`missing < k\`.
+- Answer is \`low + k\` — \`low\` points to the first index where enough numbers are missing.`,
+    },
+    {
+      id: "aggressive-cows",
+      title: "Aggressive Cows",
+      difficulty: "Medium",
+      tags: ["striver-a2z"],
+      leetcodeUrl: "https://www.geeksforgeeks.org/problems/aggressive-cows/1",
+      question:
+        "You are given an array with unique elements of stalls[], which denote the positions of stalls. You are also given an integer k which denotes the number of aggressive cows. The task is to assign stalls to k cows such that the minimum distance between any two of them is the maximum possible.",
+      testCases: [
+        {
+          input: "stalls = [1,2,4,8,9], k = 3",
+          output: "3",
+          explanation:
+            "The first cow can be placed at stalls[0], the second cow can be placed at stalls[2] and the third cow can be placed at stalls[3]. The minimum distance between cows in this case is 3, which is the largest among all possible ways.",
+        },
+        {
+          input: "stalls = [10, 1, 2, 7, 5], k = 3",
+          output: "4",
+          explanation:
+            "The first cow can be placed at stalls[0], the second cow can be placed at stalls[1] and the third cow can be placed at stalls[4]. The minimum distance between cows in this case is 4, which is the largest among all possible ways.",
+        },
+        {
+          input: "stalls = [2, 12, 11, 3, 26, 7], k = 5",
+          output: "1",
+          explanation:
+            "There are 6 stalls and only 5 cows, we try to place the cows such that the minimum distance between any two cows is as large as possible. The minimum distance between cows in this case is 1, which is the largest among all possible ways.",
+        },
+      ],
+      code: `class Solution {
+  public:
+    int helper(vector<int> stalls, int dist){
+        int last = 0;
+        int cows = 1;
+        for(int i=1;i<stalls.size();i++){
+            if(stalls[i]-stalls[last]>=dist){
+                cows++;
+                last = i;
+            }
+        }
+        
+        return cows;
+    }
+  
+    int aggressiveCows(vector<int> &stalls, int k) {
+        sort(stalls.begin(),stalls.end());
+        int low = 1;
+        int high = stalls.back() - stalls.front();
+        
+        while(low<=high){
+            int mid = low + (high-low)/2;
+            
+            int cows = helper(stalls,mid);
+
+            if(cows>=k){
+                low = mid+1;
+            }else{
+                high = mid-1;
+            }       
+        }
+        
+        
+        return high;
+    }
+};`,
+      timeComplexity: "",
+      spaceComplexity: "",
+      notes: ``,
     },
     {
       id: "split-array-largest-sum",
       title: "Split Array Largest Sum",
       difficulty: "Hard",
+      tags: ["striver-a2z"],
       leetcodeUrl: "https://leetcode.com/problems/split-array-largest-sum/",
       question:
         "Given an integer array nums and an integer k, split nums into k non-empty subarrays such that the largest sum of any subarray is minimized. Return the minimized largest sum of the split. A subarray is a contiguous part of the array.",
@@ -722,7 +894,7 @@ public:
       ],
       code: `class Solution {
 public:
-    int helper(vector<int>& nums, int maxSum){
+    int helper(vector<int>& nums, int maxSum){ // O(N)
         int parts = 1;
         int sum = 0;
         for(int i:nums){
@@ -738,10 +910,10 @@ public:
         return parts;
     }
     int splitArray(vector<int>& nums, int k) {
-        int low = *max_element(nums.begin(),nums.end());
-        int high = accumulate(nums.begin(),nums.end(),0);
+        int low = *max_element(nums.begin(),nums.end()); // O(N)
+        int high = accumulate(nums.begin(),nums.end(),0); // O(N)
 
-        while(low<=high){
+        while(low<=high){ // O(log S)
             int mid = low + (high-low)/2;
 
             int parts = helper(nums,mid);
@@ -756,14 +928,18 @@ public:
         return low;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N log S)",
+      spaceComplexity: "O(1)",
+      notes: `- Binary search on the answer: the minimum possible "largest subarray sum".
+- FFFTTT: larger maxSum → fewer parts needed; minimize maxSum where \`parts <= k\`.
+- Search range: \`[max(nums), sum(nums)]\` — single element floor, whole-array ceiling.
+- Same pattern as \`Capacity To Ship Packages Within D Days\`.`,
     },
     {
       id: "median-of-two-sorted-arrays",
       title: "Median of Two Sorted Arrays",
       difficulty: "Hard",
+      tags: ["striver-a2z", "neetcode-150"],
       leetcodeUrl: "https://leetcode.com/problems/median-of-two-sorted-arrays/",
       question:
         "Given two sorted arrays nums1 and nums2 of size m and n respectively, return the median of the two sorted arrays. The overall run time complexity should be O(log (m+n)).",
@@ -785,14 +961,14 @@ public:
     double findMedianSortedArrays(vector<int>& v1, vector<int>& v2) {
         int N = v1.size();
         int M = v2.size();
-        if(M<N) return findMedianSortedArrays(v2,v1);
+        if(M<N) return findMedianSortedArrays(v2,v1); // ensure v1 is smaller
 
         int low = 0;
         int high = N;
 
         int K = (N+M+1)/2;
 
-        while(low<=high){
+        while(low<=high){ // O(log min(N,M))
             int cut1 = low + (high-low)/2;
             int cut2 = K-cut1;
 
@@ -819,6 +995,61 @@ public:
 };`,
       timeComplexity: "O(log (min(N,M)))",
       spaceComplexity: "O(1)",
+      notes: `- Binary search on the smaller array for a cut \`cut1\`; \`cut2 = K - cut1\` is derived.
+- Goal: left partition has \`K = (N+M+1)/2\` elements; all left elements ≤ all right elements.
+- Check \`l1 <= r2 && l2 <= r1\`: if true, median found; else move cut1 toward the violating side.
+- Use \`INT_MIN\` / \`INT_MAX\` sentinels when a cut is at array boundary.`,
+    },
+    {
+      id: "search-a-2d-matrix",
+      title: "Search a 2D Matrix",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/search-a-2d-matrix/",
+      question:
+        "You are given an m x n integer matrix matrix with the following two properties: Each row is sorted in non-decreasing order. The first integer of each row is greater than the last integer of the previous row. Given an integer target, return true if target is in matrix or false otherwise. You must write a solution in O(log(m * n)) time complexity.",
+      testCases: [],
+      code: "",
+      timeComplexity: "",
+      spaceComplexity: "",
+      notes: "",
+    },
+    {
+      id: "search-a-2d-matrix-ii",
+      title: "Search a 2D Matrix II",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/search-a-2d-matrix-ii/",
+      question:
+        "Write an efficient algorithm that searches for a value target in an m x n integer matrix matrix. This matrix has the following properties: Integers in each row are sorted in ascending from left to right. Integers in each column are sorted in ascending from top to bottom.",
+      testCases: [],
+      code: "",
+      timeComplexity: "",
+      spaceComplexity: "",
+      notes: "",
+    },
+    {
+      id: "find-a-peak-element-ii",
+      title: "Find a Peak Element II",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/find-a-peak-element-ii/",
+      question:
+        "A peak element in a 2D grid is an element that is strictly greater than all of its adjacent neighbors to the left, right, top, and bottom. Given a 0-indexed m x n matrix mat where no two adjacent cells are equal, find any peak element mat[i][j] and return the length 2 array [i,j]. You may assume that the entire matrix is surrounded by an outer perimeter with the value -1 in each cell. You must write an algorithm that runs in O(m log(n)) or O(n log(m)) time.",
+      testCases: [
+        {
+          input: "mat = [[1,4],[3,2]]",
+          output: "[0,1]",
+          explanation:
+            "Both 3 and 4 are peak elements so [1,0] and [0,1] are both acceptable answers.",
+        },
+        {
+          input: "mat = [[10,20,15],[21,30,14],[7,16,32]]",
+          output: "[1,1]",
+          explanation:
+            "Both 30 and 32 are peak elements so [1,1] and [2,2] are both acceptable answers.",
+        },
+      ],
+      code: "",
+      timeComplexity: "",
+      spaceComplexity: "",
       notes: "",
     },
   ],
