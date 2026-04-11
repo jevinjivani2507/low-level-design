@@ -55,9 +55,11 @@ public:
         { line: 5, tone: "green" },
         { line: 6, tone: "green" },
       ],
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Visit root → recurse left → recurse right (Root, Left, Right).
+- Call stack depth equals the tree height H; O(N) worst case on a skewed tree.
+- Compare: preorder visits root first; inorder = Left, Root, Right; postorder = Left, Right, Root.`,
       tags: ["striver-a2z"],
     },
     {
@@ -108,9 +110,11 @@ public:
         return arr;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Visit left subtree → root → right subtree (Left, Root, Right).
+- Inorder of a BST gives nodes in sorted ascending order — useful for BST validation and kth-smallest.
+- Same recursive structure as preorder and postorder; just reorder the three operations.`,
       tags: ["striver-a2z"],
     },
     {
@@ -160,9 +164,11 @@ public:
         return arr;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Visit left subtree → right subtree → root (Left, Right, Root).
+- Postorder is natural for bottom-up problems: compute children before parent (e.g., tree height, diameter).
+- Used in \`Balanced Binary Tree\`, \`Diameter of Binary Tree\`, \`Binary Tree Maximum Path Sum\`.`,
       tags: ["striver-a2z"],
     },
     {
@@ -206,19 +212,19 @@ public:
 
         q.push(root);
 
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int n = q.size();
             vector<int> level;
-            while (n--) {
+            while (n--) { // O(N) amortized
                 TreeNode* node = q.front();
-                q.pop();
+                q.pop(); // O(1)
 
                 if (node->left != NULL) {
-                    q.push(node->left);
+                    q.push(node->left); // O(1)
                 }
-                
+
                 if (node->right != NULL) {
-                    q.push(node->right);
+                    q.push(node->right); // O(1)
                 }
 
                 level.push_back(node->val);
@@ -228,9 +234,11 @@ public:
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- BFS with a queue; snapshot \`q.size()\` at the start of each iteration to process one level at a time.
+- Each node is enqueued and dequeued exactly once → O(N) total.
+- Foundation for many BFS variants: zigzag, right-side-view, level averages, etc.`,
       tags: ["striver-a2z"],
     },
     {
@@ -266,9 +274,11 @@ public:
         return 1 + max(maxDepth(root->left), maxDepth(root->right));
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Recursive post-order: depth of a node = 1 + max(left depth, right depth).
+- Base case: NULL node has depth 0.
+- Classic divide-and-conquer — the pattern is reused in \`Balanced Binary Tree\` and \`Diameter of Binary Tree\`.`,
       tags: ["striver-a2z"],
     },
     {
@@ -317,9 +327,11 @@ private:
 public:
     bool isBalanced(TreeNode* root) { return helper(root) != -1; }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Use -1 as a sentinel to propagate "unbalanced" up the tree — avoids recomputing heights.
+- A naive O(N²) solution calls height() at every node; this post-order DFS is O(N) by doing it in one pass.
+- A node is unbalanced if either child returned -1 or the height difference exceeds 1.`,
       tags: ["striver-a2z"],
     },
     {
@@ -365,9 +377,11 @@ public:
         return 1 + max(lh, rh);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Diameter through a node = left height + right height; track the global max via a reference parameter.
+- The helper returns the height (longest path going down), not the diameter.
+- Same pattern as \`Binary Tree Maximum Path Sum\` — compute the "through-root" value locally, propagate the "chain" value upward.`,
       tags: ["striver-a2z"],
     },
     {
@@ -413,9 +427,12 @@ public:
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Clamp negative child contributions to 0 with \`max(0, ...)\` — a negative branch is never worth including.
+- At each node, the "through-root" path = left + root->val + right; update global ans.
+- Return only the best single-branch path (root + max(left, right)) for the parent to use.
+- Initialize ans to INT_MIN to handle all-negative trees.`,
       tags: ["striver-a2z"],
     },
     {
@@ -457,9 +474,11 @@ public:
                isSameTree(p->right, q->right);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Simultaneously recurse both trees; if both NULL they match, if only one is NULL they don't.
+- Short-circuit evaluation means we stop as soon as a mismatch is found.
+- Identical structure to \`Symmetric Tree\` — just change how left/right subtrees are paired.`,
       tags: ["striver-a2z"],
     },
     {
@@ -500,12 +519,12 @@ public:
 
         bool flag = true;
 
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int N = q.size();
             vector<int> level(N);
-            for (int i = 0; i < N; i++) {
+            for (int i = 0; i < N; i++) { // O(N) amortized
                 TreeNode* node = q.front();
-                q.pop();
+                q.pop(); // O(1)
                 int val = node->val;
                 if (flag) {
                     level[i] = val;
@@ -514,9 +533,9 @@ public:
                 }
 
                 if (node->left)
-                    q.push(node->left);
+                    q.push(node->left); // O(1)
                 if (node->right)
-                    q.push(node->right);
+                    q.push(node->right); // O(1)
             }
             flag = !flag;
             ans.push_back(level);
@@ -525,9 +544,11 @@ public:
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- BFS level order with a boolean flag toggled each level to control fill direction.
+- Pre-allocate \`level\` vector of size N; write forward (flag=true) or backward (flag=false) by index.
+- Avoids reversing the vector — write directly to the correct position using \`level[N-i-1]\`.`,
       tags: ["striver-a2z"],
     },
     {
@@ -571,27 +592,27 @@ public:
         q.push({root, 0});
         map<int, vector<vector<int>>> mp;
 
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int level = 0;
             int N = q.size();
 
-            while (N--) {
+            while (N--) { // O(N) amortized
                 auto [node, col] = q.front();
-                q.pop();
+                q.pop(); // O(1)
 
-                mp[col].push_back({col, level, node->val});
+                mp[col].push_back({col, level, node->val}); // O(log N)
 
                 if (node->left)
-                    q.push({node->left, col - 1});
+                    q.push({node->left, col - 1}); // O(1)
                 if (node->right)
-                    q.push({node->right, col + 1});
+                    q.push({node->right, col + 1}); // O(1)
             }
 
             level++;
         }
-        
-        for (auto i : mp) {
-            sort(i.second.begin(), i.second.end());
+
+        for (auto i : mp) { // O(C) where C = number of columns
+            sort(i.second.begin(), i.second.end()); // O(N log N) total
             vector<int> v;
             for (auto j : i.second) {
                 v.push_back(j[2]);
@@ -602,9 +623,12 @@ public:
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N log N)",
+      spaceComplexity: "O(N)",
+      notes: `- Assign each node a column index (root=0, left child=col-1, right child=col+1) via BFS.
+- Use a \`map<int, ...>\` (ordered by column) so columns are iterated left to right.
+- Within each column, nodes at the same (row, col) must be sorted by value — hence the per-column sort.
+- Overall O(N log N) due to sorting; O(N) if no same-position ties.`,
       tags: ["striver-a2z"],
     },
     {
@@ -644,17 +668,17 @@ public:
             return {};
         }
         q.push(root);
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int n = q.size();
             TreeNode* node;
-            while (n--) {
+            while (n--) { // O(N) amortized
                 node = q.front();
-                q.pop();
+                q.pop(); // O(1)
                 if (node->left != NULL) {
-                    q.push(node->left);
+                    q.push(node->left); // O(1)
                 }
                 if (node->right != NULL) {
-                    q.push(node->right);
+                    q.push(node->right); // O(1)
                 }
             }
             result.push_back(node->val);
@@ -662,9 +686,11 @@ public:
         return result;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- BFS level order; at the end of processing each level, the last dequeued node is the rightmost.
+- No special reversal needed — \`node\` naturally holds the last node after the inner loop.
+- For left-side view, collect the first node of each level instead of the last.`,
       tags: ["striver-a2z"],
     },
     {
@@ -702,9 +728,11 @@ public:
 
     bool isSymmetric(TreeNode* root) { return helper(root->left, root->right); }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- A tree is symmetric if the left subtree mirrors the right subtree.
+- Mirror check: left-outer with right-outer, left-inner with right-inner (cross-pair the children).
+- Same structure as \`Same Tree\` but the recursive calls swap left/right for the mirroring.`,
       tags: ["striver-a2z"],
     },
     {
@@ -755,9 +783,12 @@ public:
         }
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- If root is NULL, p, or q — return root (base case / found a target).
+- If only one side returns non-null, the LCA is in that subtree.
+- If both sides return non-null, the current root is the LCA (p and q are in different subtrees).
+- Compare with \`LCA of a BST\` which uses BST ordering to avoid searching both subtrees.`,
       tags: ["striver-a2z"],
     },
     {
@@ -800,18 +831,18 @@ public:
 
         q.push({root, 0});
 
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int size = q.size();
             int minIndex = q.front().second;
 
             int first = 0;
             int last = 0;
 
-            for (int i = 0; i < size; i++) {
+            for (int i = 0; i < size; i++) { // O(N) amortized
                 int currIndex = q.front().second - minIndex;
                 TreeNode* node = q.front().first;
 
-                q.pop();
+                q.pop(); // O(1)
 
                 if (i == 0)
                     first = currIndex;
@@ -819,9 +850,9 @@ public:
                     last = currIndex;
 
                 if (node->left)
-                    q.push({node->left, (long long)2 * currIndex + 1});
+                    q.push({node->left, (long long)2 * currIndex + 1}); // O(1)
                 if (node->right)
-                    q.push({node->right, (long long)2 * currIndex + 2});
+                    q.push({node->right, (long long)2 * currIndex + 2}); // O(1)
             }
 
             maxWidth = max(maxWidth, last - first + 1);
@@ -830,9 +861,12 @@ public:
         return maxWidth;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- Assign each node a 1-indexed position: left child = 2*i+1, right child = 2*i+2 (complete binary tree numbering).
+- Width of a level = last index - first index + 1 (includes virtual null nodes between endpoints).
+- Subtract \`minIndex\` at each level to prevent integer overflow on deep/skewed trees.
+- Use \`long long\` for child indices to avoid overflow before the subtraction.`,
       tags: ["striver-a2z"],
     },
     {
@@ -865,64 +899,66 @@ public:
         queue<TreeNode*> q;
         q.push(root);
 
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             int N = q.size();
-            while (N--) {
+            while (N--) { // O(N) amortized
                 TreeNode* node = q.front();
-                q.pop();
+                q.pop(); // O(1)
 
                 if (node->left) {
-                    q.push(node->left);
-                    mp[node->left] = node;
+                    q.push(node->left); // O(1)
+                    mp[node->left] = node; // O(1) avg
                 }
                 if (node->right) {
-                    q.push(node->right);
-                    mp[node->right] = node;
+                    q.push(node->right); // O(1)
+                    mp[node->right] = node; // O(1) avg
                 }
             }
         }
 
         q.push(target);
         map<TreeNode*, bool> visited;
-        visited[target] = true;
-        while (!q.empty() && k > 0) {
+        visited[target] = true; // O(log N)
+        while (!q.empty() && k > 0) { // O(N)
             int N = q.size();
             k--;
-            while (N--) {
+            while (N--) { // O(N) amortized
                 TreeNode* node = q.front();
-                q.pop();
+                q.pop(); // O(1)
                 TreeNode* leftNode = node->left;
                 TreeNode* rightNode = node->right;
-                TreeNode* parentNode = mp[node];
+                TreeNode* parentNode = mp[node]; // O(1) avg
 
-                if (leftNode && !visited[leftNode]) {
-                    q.push(leftNode);
-                    visited[leftNode] = true;
+                if (leftNode && !visited[leftNode]) { // O(log N)
+                    q.push(leftNode); // O(1)
+                    visited[leftNode] = true; // O(log N)
                 }
-                if (rightNode && !visited[rightNode]) {
-                    q.push(rightNode);
-                    visited[rightNode] = true;
+                if (rightNode && !visited[rightNode]) { // O(log N)
+                    q.push(rightNode); // O(1)
+                    visited[rightNode] = true; // O(log N)
                 }
-                if (parentNode && !visited[parentNode]) {
-                    q.push(parentNode);
-                    visited[parentNode] = true;
+                if (parentNode && !visited[parentNode]) { // O(log N)
+                    q.push(parentNode); // O(1)
+                    visited[parentNode] = true; // O(log N)
                 }
             }
         }
 
         vector<int> ans;
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             TreeNode* node = q.front();
-            q.pop();
+            q.pop(); // O(1)
             ans.push_back(node->val);
         }
 
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- Two-phase approach: BFS to build a parent map (makes edges bidirectional), then BFS from target for k steps.
+- Parent map lets us traverse upward — without it, we can only go down.
+- \`visited\` map prevents revisiting nodes; BFS naturally explores all nodes at distance k simultaneously.`,
       tags: ["striver-a2z"],
     },
     {
@@ -971,7 +1007,7 @@ public:
     int leftHeight(TreeNode* node) {
         int height = 0;
 
-        while (node) {
+        while (node) { // O(log N)
             node = node->left;
             height++;
         }
@@ -982,7 +1018,7 @@ public:
     int rightHeight(TreeNode* node) {
         int height = 0;
 
-        while (node) {
+        while (node) { // O(log N)
             node = node->right;
             height++;
         }
@@ -990,9 +1026,12 @@ public:
         return height;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(log² N)",
+      spaceComplexity: "O(log N)",
+      notes: `- If left height == right height, the subtree is a perfect binary tree with exactly \`2^h - 1\` nodes.
+- Otherwise, recurse on both children — but this only happens O(log N) times (at the "incomplete" path).
+- Each recursion computes heights in O(log N), giving O(log N × log N) = O(log² N) overall.
+- Naive O(N) traversal works but misses the complete-tree property; this beats it for large N.`,
     },
     {
       id: "construct-binary-tree-from-preorder-and-inorder-traversal",
@@ -1043,8 +1082,8 @@ public:
         int N = inorder.size();
         unordered_map<int, int> mp;
 
-        for (int i = 0; i < N; i++) {
-            mp[inorder[i]] = i;
+        for (int i = 0; i < N; i++) { // O(N)
+            mp[inorder[i]] = i; // O(1) avg
         }
 
         int idx = 0;
@@ -1052,9 +1091,11 @@ public:
         return solve(preorder, inorder, 0, N - 1, idx, mp);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- Preorder[0] is always the root; find it in inorder to split into left/right subtrees.
+- Use an \`unordered_map\` for O(1) inorder index lookup — reduces overall time from O(N²) to O(N).
+- Recurse with shrinking [start, end] bounds in inorder; advance \`idx\` in preorder each call.`,
       tags: ["striver-a2z"],
     },
     {
@@ -1092,7 +1133,7 @@ private:
         int rootVal = postorder[idx];
 
         int i = start;
-        while (i <= end) {
+        while (i <= end) { // O(N) per call → O(N²) total
             if (inorder[i] == rootVal) {
                 break;
             }
@@ -1115,9 +1156,12 @@ public:
         return build(inorder, postorder, 0, N - 1, idx);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N²)",
+      spaceComplexity: "O(H)",
+      notes: `- Postorder's last element is always the root; iterate from the end of the array.
+- Linear scan in inorder to find the root position — O(N) per call, O(N²) overall.
+- Optimise to O(N) by using an \`unordered_map\` for inorder lookups (as done in the preorder version).
+- Must build right subtree before left because \`idx\` decrements and postorder is [left][right][root].`,
       tags: ["striver-a2z"],
     },
     {
@@ -1149,15 +1193,15 @@ public:
         string s = "";
         queue<TreeNode*> q;
         q.push(root);
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             TreeNode* curNode = q.front();
-            q.pop();
+            q.pop(); // O(1)
             if (curNode == nullptr) {
                 s += "#,";
             } else {
                 s += to_string(curNode->val) + ",";
-                q.push(curNode->left);
-                q.push(curNode->right);
+                q.push(curNode->left); // O(1)
+                q.push(curNode->right); // O(1)
             }
         }
         return s;
@@ -1172,29 +1216,32 @@ public:
         TreeNode* root = new TreeNode(stoi(str));
         queue<TreeNode*> q;
         q.push(root);
-        while (!q.empty()) {
+        while (!q.empty()) { // O(N)
             TreeNode* node = q.front();
-            q.pop();
+            q.pop(); // O(1)
             getline(s, str, ',');
             if (str != "#") {
                 TreeNode* leftNode = new TreeNode(stoi(str));
                 node->left = leftNode;
-                q.push(leftNode);
+                q.push(leftNode); // O(1)
             }
             getline(s, str, ',');
             if (str != "#") {
                 TreeNode* rightNode = new TreeNode(stoi(str));
                 node->right = rightNode;
-                q.push(rightNode);
+                q.push(rightNode); // O(1)
             }
         }
         return root;
     }
 };
 `,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- BFS serialization with '#' as a null sentinel; comma-delimited for easy parsing with \`getline\`.
+- Deserialize by reading tokens in the same BFS order and assigning left/right children from the queue.
+- Null nodes are encoded but not enqueued, so the queue only holds actual nodes.
+- Level-order format matches LeetCode's own tree serialization.`,
       tags: ["striver-a2z"],
     },
     {
@@ -1243,9 +1290,12 @@ public:
         prev = root;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Reverse postorder (right → left → root): build the linked list from back to front using a \`prev\` pointer.
+- At each node, set \`right = prev\` and \`left = NULL\`, then advance \`prev = root\`.
+- This is the O(H) space recursive approach; an O(1) space iterative approach uses the "Morris" technique.
+- The resulting order is preorder (root, left, right) because we process in the reverse of that.`,
       tags: ["striver-a2z"],
     },
   ],

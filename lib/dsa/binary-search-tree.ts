@@ -9,6 +9,7 @@ export const binarySearchTree: DsaTopic = {
       difficulty: "Easy",
       leetcodeUrl:
         "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+      tags: ["striver-a2z"],
       question:
         "You are given the root of a binary search tree (BST) and an integer val. Find the node in the BST that the node's value equals val and return the subtree rooted with that node. If such a node does not exist, return null.",
       testCases: [
@@ -28,16 +29,18 @@ export const binarySearchTree: DsaTopic = {
       code: `class Solution {
 public:
     TreeNode* searchBST(TreeNode* root, int val) {
-        while (root != NULL && root->val != val) {
+        while (root != NULL && root->val != val) { // O(H)
             root = root->val > val ? root->left : root->right;
         }
         return root;
     }
 };`,
       type: "TREE",
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(H)",
+      spaceComplexity: "O(1)",
+      notes: `- Iteratively exploit the BST invariant: go left if val < root, right if val > root.
+- Terminates when root is NULL (not found) or root->val == val (found).
+- O(H) where H = log N on a balanced BST, O(N) worst case on a skewed tree.`,
     },
     {
       id: "insert-into-a-binary-search-tree",
@@ -45,6 +48,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/insert-into-a-binary-search-tree/",
+      tags: ["striver-a2z"],
       question:
         "You are given the root node of a binary search tree (BST) and a value to insert into the tree. Return the root node of the BST after the insertion. It is guaranteed that the new value does not exist in the original BST. Notice that there may exist multiple valid ways for the insertion, as long as the tree remains a BST after insertion. You can return any of them.",
       testCases: [
@@ -76,7 +80,7 @@ public:
 
         TreeNode* curr = root;
 
-        while (true) {
+        while (true) { // O(H)
             int rootVal = curr->val;
             if (rootVal < val) {
                 if (curr->right == NULL) {
@@ -99,15 +103,18 @@ public:
     }
 };`,
       type: "TREE",
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(H)",
+      spaceComplexity: "O(1)",
+      notes: `- Always insert a new node as a leaf — BST structure ensures correct position.
+- Traverse left/right following BST invariant until an empty slot is found.
+- O(H) time: log N balanced, N worst case (skewed tree).`,
     },
     {
       id: "delete-node-in-a-bst",
       title: "Delete Node in a BST",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/delete-node-in-a-bst/",
+      tags: ["striver-a2z"],
       question:
         "Given a root node reference of a BST and a key, delete the node with the given key in the BST. Return the root node reference (possibly updated) of the BST. Basically, the deletion can be divided into two stages: Search for a node to remove. If the node is found, delete the node.",
       testCases: [
@@ -160,7 +167,7 @@ public:
             }
 
             TreeNode* temp = root->left;
-            while (temp->right != NULL)
+            while (temp->right != NULL) // O(H)
                 temp = temp->right;
             root->val = temp->val;
             root->left = deleteNode(root->left, temp->val);
@@ -169,9 +176,11 @@ public:
         return root;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(H)",
+      spaceComplexity: "O(H)",
+      notes: `- Three deletion cases: leaf → return NULL; one child → return that child; two children → replace with inorder predecessor.
+- Inorder predecessor = rightmost node of the left subtree (largest value smaller than root).
+- Recursive approach makes each case concise; stack depth is O(H).`,
     },
     {
       id: "kth-smallest-element-in-a-bst",
@@ -179,6 +188,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+      tags: ["striver-a2z"],
       question:
         "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
       testCases: [
@@ -218,15 +228,18 @@ public:
         return ans;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(H + k)",
+      spaceComplexity: "O(H)",
+      notes: `- Inorder traversal of a BST yields nodes in sorted ascending order.
+- Increment a counter on each visit; stop and record when counter reaches k.
+- O(H + k) time: traverse height to reach leftmost node, then k steps along inorder.`,
     },
     {
       id: "validate-binary-search-tree",
       title: "Validate Binary Search Tree",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/validate-binary-search-tree/",
+      tags: ["striver-a2z"],
       question:
         "Given the root of a binary tree, determine if it is a valid binary search tree (BST). A valid BST is defined as follows: The left subtree of a node contains only nodes with keys strictly less than the node's key. The right subtree of a node contains only nodes with keys strictly greater than the node's key. Both the left and right subtrees must also be binary search trees.",
       testCases: [
@@ -266,9 +279,11 @@ public:
         return validate(root, LONG_MIN, LONG_MAX);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Checking only parent–child pairs is insufficient; propagate a valid (min, max) range down the tree.
+- Left subtree values must be strictly < current node; right subtree values must be strictly > current node.
+- Use \`long\` bounds to handle INT_MIN / INT_MAX edge cases correctly.`,
     },
     {
       id: "lowest-common-ancestor-of-a-binary-search-tree",
@@ -276,6 +291,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+      tags: ["striver-a2z"],
       question:
         "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST. According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”",
       testCases: [
@@ -312,9 +328,12 @@ public:
         return root;
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(H)",
+      spaceComplexity: "O(H)",
+      notes: `- Exploit BST ordering: if both p and q are smaller, LCA is in the left subtree; if both larger, go right.
+- The first node where p and q diverge (or one equals root) is the LCA.
+- Simpler than the general binary tree LCA because BST ordering eliminates need to search both sides.
+- Compare with \`Lowest Common Ancestor of a Binary Tree\` which requires checking both subtrees.`,
     },
     {
       id: "construct-binary-search-tree-from-preorder-traversal",
@@ -322,6 +341,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/construct-binary-search-tree-from-preorder-traversal/",
+      tags: ["striver-a2z"],
       question:
         "Given an array of integers preorder, which represents the preorder traversal of a BST (i.e., binary search tree), construct the tree and return its root. It is guaranteed that there is always possible to find a binary search tree with the given requirements for the given test cases. A binary search tree is a binary tree where for every node, any descendant of Node.left has a value strictly less than Node.val, and any descendant of Node.right has a value strictly greater than Node.val. A preorder traversal of a binary tree displays the value of the node first, then traverses Node.left, then traverses Node.right.",
       testCases: [
@@ -360,11 +380,11 @@ public:
     TreeNode* bstFromPreorder(vector<int>& preorder) {
         int N = preorder.size();
         vector<int> inorder(preorder.begin(), preorder.end());
-        sort(inorder.begin(), inorder.end());
+        sort(inorder.begin(), inorder.end()); // O(N log N)
 
         unordered_map<int, int> mp;
-        for (int i = 0; i < N; i++) {
-            mp[inorder[i]] = i;
+        for (int i = 0; i < N; i++) { // O(N)
+            mp[inorder[i]] = i; // O(1) avg
         }
 
         int idx = 0;
@@ -372,14 +392,17 @@ public:
         return solve(idx, 0, N - 1, inorder, preorder, mp);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N log N)",
+      spaceComplexity: "O(N)",
+      notes: `- Sort preorder to get inorder; use an index map for O(1) root lookup in inorder.
+- Recursive divide-and-conquer: root from preorder[idx], split inorder around it into left and right subtrees.
+- Same approach as \`Construct Binary Tree from Preorder and Inorder Traversal\`.`,
     },
     {
       id: "binary-search-tree-iterator",
       title: "Binary Search Tree Iterator",
       difficulty: "Medium",
+      tags: ["striver-a2z"],
       leetcodeUrl: "https://leetcode.com/problems/binary-search-tree-iterator/",
       question:
         "Implement the BSTIterator class that represents an iterator over the in-order traversal of a binary search tree (BST): BSTIterator(TreeNode root) Initializes an object of the BSTIterator class. The root of the BST is given as part of the constructor. The pointer should be initialized to a non-existent number smaller than any element in the BST. boolean hasNext() Returns true if there exists a number in the traversal to the right of the pointer, otherwise returns false. int next() Moves the pointer to the right, then returns the number at the pointer. Notice that by initializing the pointer to a non-existent smallest number, the first call to next() will return the smallest element in the BST. You may assume that next() calls will always be valid. That is, there will be at least a next number in the in-order traversal when next() is called.",
@@ -401,7 +424,7 @@ public:
         N = v.size();
     }
 
-    void inorder(TreeNode* root) {
+    void inorder(TreeNode* root) { // O(N) total
         if (root == NULL) {
             return;
         }
@@ -419,15 +442,18 @@ public:
     bool hasNext() { return i < N; }
 };`,
       type: "TREE",
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N) init",
+      spaceComplexity: "O(N)",
+      notes: `- Flatten the BST into a sorted vector via inorder traversal at construction time.
+- \`next()\` and \`hasNext()\` are then O(1) — just index into the precomputed vector.
+- Trade-off: O(N) space to achieve O(1) amortized operations (vs O(H) space with a controlled stack).`,
     },
     {
       id: "two-sum-iv-input-is-a-bst",
       title: "Two Sum IV - Input is a BST",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/two-sum-iv-input-is-a-bst/",
+      tags: ["striver-a2z"],
       question:
         "Given the root of a binary search tree and an integer k, return true if there exist two elements in the BST such that their sum is equal to k, or false otherwise.",
       testCases: [
@@ -450,11 +476,11 @@ private:
         if(root==NULL){
             return false;
         }
-        if(st.count(k-root->val)){
+        if(st.count(k-root->val)){ // O(1) avg
             return true;
         }
 
-        st.insert(root->val);
+        st.insert(root->val); // O(1) avg
 
         return solve(root->left,k,st) || solve(root->right,k,st);
     }
@@ -464,15 +490,18 @@ public:
         return solve(root,k,st);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- Same as Two Sum I: use a hash set to check if the complement (k - val) was seen before.
+- DFS traversal visits every node once; BST ordering is not needed here.
+- An alternative BST-specific approach uses the iterator + two-pointer technique in O(N) time O(H) space.`,
     },
     {
       id: "recover-binary-search-tree",
       title: "Recover Binary Search Tree",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/recover-binary-search-tree/",
+      tags: ["striver-a2z"],
       question:
         "You are given the root of a binary search tree (BST), where the values of exactly two nodes of the tree were swapped by mistake. Recover the tree without changing its structure.",
       testCases: [
@@ -514,9 +543,12 @@ public:
         swap(first->val, second->val);
     }
 };`,
-      timeComplexity: "",
-      spaceComplexity: "",
-      notes: "",
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Inorder traversal of a valid BST is strictly ascending — two swapped nodes cause exactly 1 or 2 violations.
+- First violation: \`prev->val > curr->val\` — record \`first = prev\`.
+- Second violation (if adjacent swap, only 1 violation): record \`second = curr\` each time a violation is found.
+- Swap the values of \`first\` and \`second\` at the end to restore the BST.`,
     },
     {
       id: "maximum-sum-bst-in-binary-tree",
@@ -524,6 +556,7 @@ public:
       difficulty: "Hard",
       leetcodeUrl:
         "https://leetcode.com/problems/maximum-sum-bst-in-binary-tree/",
+      tags: ["striver-a2z"],
       question:
         "Given a binary tree root, return the maximum sum of all keys of any sub-tree which is also a Binary Search Tree (BST). Assume a BST is defined as follows: The left subtree of a node contains only nodes with keys less than the node's key. The right subtree of a node contains only nodes with keys greater than the node's key. Both the left and right subtrees must also be binary search trees.",
       testCases: [
@@ -548,7 +581,10 @@ public:
       code: "",
       timeComplexity: "",
       spaceComplexity: "",
-      notes: "",
+      notes: `- Post-order DFS: process left and right subtrees first, then check if current subtree is a valid BST.
+- Each recursive call returns (isBST, minVal, maxVal, sum) for its subtree.
+- Current node forms a valid BST subtree only if left.isBST, right.isBST, left.max < root < right.min.
+- Track global max sum; update whenever a valid BST subtree is found.`,
     },
   ],
 }
