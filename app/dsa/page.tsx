@@ -17,7 +17,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Drawer, DrawerContent } from "@/components/ui/drawer"
+import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer"
 import {
   TooltipProvider,
   Tooltip,
@@ -26,7 +26,11 @@ import {
 } from "@/components/ui/tooltip"
 import { tags } from "@/lib/dsa-data"
 import { dsaTopics, type DsaQuestion, type DsaTopic } from "@/lib/dsa-data"
-import { ArrowSquareOutIcon } from "@phosphor-icons/react"
+import {
+  ArrowSquareOutIcon,
+  CaretLeftIcon,
+  CaretRightIcon,
+} from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { useDsaSelectedTags } from "@/hooks/use-dsa-selected-tags"
 import { DsaQuestionDetail } from "./dsa-question-detail"
@@ -52,6 +56,25 @@ const filterTopics = (
     .filter((topic) => topic.questions.length > 0)
 }
 
+/** Topic + index of `selected` within `filteredTopics` (same list as the table). */
+function topicQuestionContext(
+  selected: DsaQuestion | null,
+  filteredTopics: DsaTopic[]
+): { topicLabel: string; questions: DsaQuestion[]; index: number } | null {
+  if (!selected) return null
+  for (const topic of filteredTopics) {
+    const index = topic.questions.findIndex((q) => q.id === selected.id)
+    if (index !== -1) {
+      return {
+        topicLabel: topic.topic,
+        questions: topic.questions,
+        index,
+      }
+    }
+  }
+  return null
+}
+
 const DsaPage = () => {
   const [selected, setSelected] = useState<DsaQuestion | null>(null)
   const [selectedTags, setSelectedTags] = useDsaSelectedTags()
@@ -60,6 +83,11 @@ const DsaPage = () => {
   const filteredTopics = useMemo(
     () => filterTopics(dsaTopics, selectedTags),
     [selectedTags]
+  )
+
+  const drawerNav = useMemo(
+    () => topicQuestionContext(selected, filteredTopics),
+    [selected, filteredTopics]
   )
 
   const toggleTag = (tag: string) => {
@@ -212,7 +240,59 @@ const DsaPage = () => {
           >
             <DrawerContent className="flex max-h-[92vh] flex-col overflow-hidden p-0">
               {selected && (
-                <DsaQuestionDetail selected={selected} variant="drawer" />
+                <>
+                  <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+                    <DsaQuestionDetail selected={selected} variant="drawer" />
+                  </div>
+                  {drawerNav && (
+                    <DrawerFooter className="shrink-0 border-t border-border py-3">
+                      <div className="flex items-center justify-between gap-3">
+                        <button
+                          type="button"
+                          disabled={drawerNav.index <= 0}
+                          onClick={() =>
+                            setSelected(
+                              drawerNav.questions[drawerNav.index - 1] ?? null
+                            )
+                          }
+                          aria-label="Previous problem in topic"
+                          className={cn(
+                            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+                            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+                          )}
+                        >
+                          <CaretLeftIcon className="size-4" aria-hidden />
+                          Previous
+                        </button>
+                        <span
+                          className="min-w-[4rem] text-center text-xs tabular-nums text-muted-foreground"
+                          aria-live="polite"
+                        >
+                          {drawerNav.index + 1} / {drawerNav.questions.length}
+                        </span>
+                        <button
+                          type="button"
+                          disabled={
+                            drawerNav.index >= drawerNav.questions.length - 1
+                          }
+                          onClick={() =>
+                            setSelected(
+                              drawerNav.questions[drawerNav.index + 1] ?? null
+                            )
+                          }
+                          aria-label="Next problem in topic"
+                          className={cn(
+                            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+                            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+                          )}
+                        >
+                          Next
+                          <CaretRightIcon className="size-4" aria-hidden />
+                        </button>
+                      </div>
+                    </DrawerFooter>
+                  )}
+                </>
               )}
             </DrawerContent>
           </Drawer>
