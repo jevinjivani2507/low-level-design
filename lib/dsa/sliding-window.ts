@@ -22,15 +22,15 @@ public:
         int ans = 0;
         unordered_map<char, int> freq; // or any structure
 
-        while (right < n) {
+        while (right < n) { // O(N)
 
             // 1. INCLUDE current right element
             freq[s[right]]++;
 
             // 2. SHRINK window until valid
-            // if -> in future dont have good answer 
+            // if -> in future dont have good answer
             // while -> in future we can have good answer with smaller window
-            while (/* window is invalid */) {
+            while (/* window is invalid */) { // O(N) amortized
                 // undo what right pointer did
                 freq[s[left]]--;
 
@@ -52,7 +52,10 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- 4-step pattern: init variables → include right → shrink left until valid → update answer.
+- Use \`if\` to shrink once when future windows can't improve; \`while\` when a smaller window may help later.
+- Undo exactly what the right pointer did when advancing left.
+- Outer \`while (right < n)\` drives expansion; \`right++\` always at end of loop.`,
     },
     {
       id: "longest-substring-without-repeating-characters",
@@ -92,13 +95,13 @@ public:
         int ans = 0;
         unordered_map<char, int> mp;
 
-        while (right < N) {
-            if (mp.count(s[right])) {
+        while (right < N) { // O(N)
+            if (mp.count(s[right])) { // O(1) avg
                 left = max(left, mp[s[right]] + 1);
             }
 
             ans = max(ans, right - left + 1);
-            mp[s[right]] = right;
+            mp[s[right]] = right; // O(1) avg
             right++;
         }
 
@@ -111,7 +114,9 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Store each char's last seen index in map; on repeat, jump \`left = max(left, mp[s[right]] + 1)\`.
+- Use \`max\` so left never moves backward (duplicate may be outside the current window).
+- Update the map after adjusting left; window length = \`right - left + 1\`.`,
     },
     {
       id: "max-consecutive-ones-iii",
@@ -146,7 +151,7 @@ public:
         int ans = 0;
         int zero = 0;
 
-        while (r < N) {
+        while (r < N) { // O(N)
             if (nums[r] == 0) {
                 zero++;
             }
@@ -173,7 +178,9 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Count zeros in window; when \`zero > k\`, shrink with \`if\` (not \`while\`) to slide the window.
+- Using \`if\` ensures the window never shrinks below the best seen so far — size only grows or stays same.
+- Pattern: longest subarray with at most k zeros; generalizes to \`Longest Repeating Character Replacement\`.`,
     },
     {
       id: "fruit-into-baskets",
@@ -213,14 +220,14 @@ public:
         int ans = 0;
         unordered_map<int, int> freq;
 
-        while (right < N) {
-            freq[fruits[right]]++;
+        while (right < N) { // O(N)
+            freq[fruits[right]]++; // O(1) avg
 
-            while (freq.size() > 2) {
-                freq[fruits[left]]--;
+            while (freq.size() > 2) { // O(N) amortized
+                freq[fruits[left]]--; // O(1) avg
 
                 if (freq[fruits[left]] == 0) {
-                    freq.erase(fruits[left]);
+                    freq.erase(fruits[left]); // O(1) avg
                 }
 
                 left++;
@@ -244,8 +251,10 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "Here we have used while, because we can have good answer with smaller window.",
+      notes: `- Longest subarray with at most 2 distinct values — generalize with k for the K-distinct variant.
+- Use \`while\` to shrink (not \`if\`) because a smaller window can lead to a longer valid window later.
+- Erase a fruit type from the map only when its count drops to 0 to correctly track distinct count.
+- Pattern: same as \`Longest Substring with At Most K Distinct Characters\` with k=2.`,
     },
     {
       id: "longest-repeating-character-replacement",
@@ -297,8 +306,10 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "Same as Max Consecutive Ones III. Remember to use in-place `right - left + 1` to get the length of the window.",
+      notes: `- Condition: \`(window_size - maxCount) > k\` means more than k replacements needed — shrink.
+- \`maxCount\` only increases (never recomputed down) — safe because we only care about max window size.
+- Use \`if\` (not \`while\`) to shrink — window slides without decreasing, same as \`Max Consecutive Ones III\`.
+- \`freq\` is a fixed-size array of 26 ints; index with \`s[i] - 'A'\`.`,
       codeLineHighlights: [
         { line: 13, tone: "green" },
         { line: 15, tone: "green" },
@@ -361,8 +372,10 @@ public:
       codeLineHighlights: [{ line: 23, tone: "green" }],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "We can't find exact thing with sliding window, so we use two sliding windows to find the number of subarrays with sum equal to `goal` and `goal - 1`. The reason is we can't decide whome to move forward, might get good answer if we move left pointer, might get good answer if we move right pointer.",
+      notes: `- Can't use a single window for "exactly goal" — zeros mean we can't decide which pointer to move.
+- Trick: count(sum ≤ goal) − count(sum ≤ goal−1) = count(sum == goal).
+- Helper counts subarrays with sum ≤ k; each valid \`right\` adds \`right - left + 1\` subarrays.
+- Same helper pattern as \`Count Number of Nice Subarrays\`.`,
     },
     {
       id: "count-number-of-nice-subarrays",
@@ -400,12 +413,12 @@ public:
         int ans = 0;
         int oddCount = 0;
 
-        while(right < N){
+        while(right < N){ // O(N)
             if(nums[right] % 2 == 1) {
                 oddCount++;
             }
 
-            while(oddCount > k){
+            while(oddCount > k){ // O(N) amortized
                 if(nums[left] % 2 == 1) {
                     oddCount--;
                 }
@@ -426,7 +439,9 @@ public:
       codeLineHighlights: [{ line: 22, tone: "green" }],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "",
+      notes: `- Count subarrays with exactly k odd numbers using: helper(k) − helper(k−1).
+- Same two-helper trick as \`Binary Subarrays With Sum\` — convert "exactly k" to "at most k".
+- Treat odd numbers as 1, even as 0; reduces to a sum-at-most problem.`,
     },
     {
       id: "number-of-substrings-containing-all-three-characters",
@@ -465,10 +480,10 @@ public:
         vector<int> freq(3, 0);
         int ans = 0;
 
-        while(right < N){
+        while(right < N){ // O(N)
             freq[s[right] - 'a']++;
 
-            while(freq[0] > 0 && freq[1] > 0 && freq[2] > 0){
+            while(freq[0] > 0 && freq[1] > 0 && freq[2] > 0){ // O(N) amortized
 
                 ans += (N - right);
 
@@ -488,8 +503,9 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "If we met condition, all subarray from right are valid as we left one is valid.",
+      notes: `- When window has all 3 chars, every rightward extension stays valid — add \`N - right\` at once.
+- Shrink from left inside the \`while\` to count all minimal valid windows before moving right.
+- Counting \`N - right\` per shrink step is O(1) instead of iterating all extensions.`,
     },
     {
       id: "maximum-points-you-can-obtain-from-cards",
@@ -528,13 +544,13 @@ public:
         int left = k-1, right = N - 1;
         int leftSum = 0, rightSum = 0;
 
-        for (int i = 0; i < k; i++) {
+        for (int i = 0; i < k; i++) { // O(k)
                 leftSum += cardPoints[i];
         }
 
         int score = leftSum;
 
-        while (k--) {
+        while (k--) { // O(k)
             leftSum -= cardPoints[left];
             rightSum += cardPoints[right];
 
@@ -554,8 +570,9 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "First we calculate sum of first k elements, and store in left, then we move right pointer and update left sum and right sum.",
+      notes: `- Invert the problem: picking k cards from two ends = removing a contiguous subarray of size N−k.
+- Start with sum of first k cards (all from left), then slide: remove leftmost, add rightmost.
+- Track max \`leftSum + rightSum\` across all k+1 splits; \`left\` and \`right\` pointers move inward together.`,
     },
     {
       id: "longest-substring-with-at-most-k-distinct-characters",
@@ -597,13 +614,13 @@ Note : If no such substring exists, return -1.
         unordered_map<char, int> mp;
         int ans = -1;
         
-        while(right < N){
-            mp[s[right]]++;
-            
-            while(mp.size()>k){
-                mp[s[left]]--;
+        while(right < N){ // O(N)
+            mp[s[right]]++; // O(1) avg
+
+            while(mp.size()>k){ // O(N) amortized
+                mp[s[left]]--; // O(1) avg
                 if(mp[s[left]] == 0){
-                    mp.erase(s[left]);
+                    mp.erase(s[left]); // O(1) avg
                 }
                 left++;
             }
@@ -621,7 +638,10 @@ Note : If no such substring exists, return -1.
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "Same as Maximum consecutive ones III.",
+      notes: `- Longest window with at most k distinct chars tracked via frequency map.
+- Shrink with \`while\` when \`map.size() > k\`; erase entry when its count hits 0.
+- Update answer only when \`map.size() == k\` (exactly k distinct, not just at-most).
+- Same pattern as \`Fruit Into Baskets\` with k=2 generalized to arbitrary k.`,
     },
     {
       id: "subarrays-with-k-different-integers",
@@ -655,14 +675,14 @@ public:
         unordered_map<int, int> freq;
         int ans = 0;
 
-        while(right < N){
-            freq[nums[right]]++;
+        while(right < N){ // O(N)
+            freq[nums[right]]++; // O(1) avg
 
-            while(freq.size() > k){
-                freq[nums[left]]--;
+            while(freq.size() > k){ // O(N) amortized
+                freq[nums[left]]--; // O(1) avg
 
                 if(freq[nums[left]] == 0){
-                    freq.erase(nums[left]);
+                    freq.erase(nums[left]); // O(1) avg
                 }
                 
                 left++;
@@ -691,8 +711,9 @@ public:
         { line: 16, tone: "green" },
         { line: 35, tone: "green" },
       ],
-      notes:
-        "Mixture of `Maximum Consecutive Ones III` and `Binary Subarrays With Sum`.",
+      notes: `- Exactly k distinct = at-most k distinct minus at-most (k−1) distinct.
+- Helper counts subarrays with at most k distinct; each valid step adds \`right - left + 1\`.
+- Combines the two-helper trick from \`Binary Subarrays With Sum\` with the k-distinct window from \`Fruit Into Baskets\`.`,
     },
     {
       id: "minimum-window-substring",
@@ -728,21 +749,21 @@ public:
         int left = 0, right = 0;
 
         unordered_map<char, int> freq;
-        for(char i : t) {
-            freq[i]++;
+        for(char i : t) { // O(M) where M = t.size()
+            freq[i]++; // O(1) avg
         }
 
         int idx = -1;
         int len = INT_MAX;
         int ct = 0;
 
-        while(right < N){
-            freq[s[right]]--;
+        while(right < N){ // O(N)
+            freq[s[right]]--; // O(1) avg
             if(freq[s[right]]>=0){
                 ct++;
             }
 
-            while(ct == t.size()){
+            while(ct == t.size()){ // O(N) amortized
                 if((right - left + 1) < len){
                     idx = left;
                     len = right - left + 1;
@@ -759,7 +780,7 @@ public:
             right++;
         }
 
-        return idx == -1 ? "" : s.substr(idx,len);
+        return idx == -1 ? "" : s.substr(idx,len); // O(len)
     }
 };`,
       codeLineHighlights: [
@@ -772,8 +793,10 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes:
-        "We will maintain `idx` and `len`. Count of characters in `t`. If we met condition, we update `idx` and `len`.",
+      notes: `- Preload \`freq\` with chars from \`t\`; decrement as window includes them.
+- \`ct\` counts satisfied chars (freq ≥ 0); shrink when \`ct == t.size()\` to minimize window.
+- Track best window with \`idx\` (start index) and \`len\`; return \`s.substr(idx, len)\`.
+- Inner \`while\` shrinks greedily to find the smallest valid window before moving right.`,
     },
     {
       id: "permutation-in-string",
@@ -804,11 +827,11 @@ public:
 
         vector<int> freq(26), freq2(26);
         
-        for(char c : s1) {
+        for(char c : s1) { // O(M) where M = s1.size()
             freq[c - 'a']++;
         }
 
-        while(right < N){
+        while(right < N){ // O(N)
             freq2[s2[right] - 'a']++;
 
             if((right - left + 1) > s1.size()) {
@@ -832,7 +855,9 @@ public:
       ],
       timeComplexity: "O(N)",
       spaceComplexity: "O(1)",
-      notes: "Simple and straightforward sliding window.",
+      notes: `- Fixed-size window of length \`s1.size()\` slides over \`s2\`; compare frequency vectors each step.
+- Shrink by removing \`s2[left]\` when window exceeds \`s1.size()\`, not by a condition.
+- Vector comparison \`freq == freq2\` is O(26) = O(1) since alphabet is fixed size.`,
     },
     {
       id: "sliding-window-maximum",
@@ -862,16 +887,16 @@ public:
         deque<int> dq;
         vector<int> ans;
 
-        for(int right = 0; right < N; right++) {
+        for(int right = 0; right < N; right++) { // O(N)
             if(!dq.empty() && dq.front() <= right - k){
-                dq.pop_front();
+                dq.pop_front(); // O(1)
             }
 
-            while(!dq.empty() && nums[dq.back()] <= nums[right]){
-                dq.pop_back();
+            while(!dq.empty() && nums[dq.back()] <= nums[right]){ // O(N) amortized
+                dq.pop_back(); // O(1)
             }
 
-            dq.push_back(right);
+            dq.push_back(right); // O(1)
 
             if(right >= k-1) {
                 ans.push_back(nums[dq.front()]);
@@ -883,8 +908,10 @@ public:
 };`,
       timeComplexity: "O(N)",
       spaceComplexity: "O(N)",
-      notes:
-        "We will just push element in deque if it is greater than the last element in deque. And if the element is out of window, we will pop the front element.",
+      notes: `- Monotonic deque stores *indices* in decreasing order of their element values.
+- Pop front if the index is outside the current window (\`dq.front() <= right - k\`).
+- Pop back while the back element is ≤ current — it can never be the window's max.
+- Front of deque is always the index of the current window maximum.`,
     },
     {
       id: "two-sum-ii-input-array-is-sorted",
@@ -924,7 +951,7 @@ public:
 
         int sum = 0;
 
-        while (left < right) {
+        while (left < right) { // O(N)
             sum = numbers[right] + numbers[left];
             if (sum == target) {
                 return {left + 1, right + 1};
@@ -946,7 +973,9 @@ public:
         { line: 14, tone: "green" },
         { line: 16, tone: "green" },
       ],
-      notes: "",
+      notes: `- Classic two-pointer on sorted array: if sum < target move left++, if sum > target move right--.
+- Sorted order guarantees correctness — no need to check all pairs.
+- Returns 1-indexed positions; add 1 to both pointers before returning.`,
     },
     {
       id: "3sum",
@@ -978,9 +1007,9 @@ public:
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
         vector<vector<int>> res;
-        sort(nums.begin(), nums.end());
+        sort(nums.begin(), nums.end()); // O(N log N)
 
-        for (int i = 0; i < nums.size(); i++) {
+        for (int i = 0; i < nums.size(); i++) { // O(N)
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
@@ -988,7 +1017,7 @@ public:
             int j = i + 1;
             int k = nums.size() - 1;
 
-            while (j < k) {
+            while (j < k) { // O(N) per i
                 int total = nums[i] + nums[j] + nums[k];
 
                 if (total > 0) {
@@ -999,7 +1028,7 @@ public:
                     res.push_back({nums[i], nums[j], nums[k]});
                     j++;
 
-                    while (nums[j] == nums[j - 1] && j < k) {
+                    while (nums[j] == nums[j - 1] && j < k) { // O(N) amortized
                         j++;
                     }
                 }
@@ -1014,7 +1043,9 @@ public:
         { line: 5, tone: "green" },
         { line: 26, tone: "green" },
       ],
-      notes: "",
+      notes: `- Sort first O(N log N), then fix each \`i\` and run two-pointer (\`j\`, \`k\`) on the remainder.
+- Skip duplicate \`nums[i]\` with \`if (i > 0 && nums[i] == nums[i-1]) continue\` to avoid repeat triplets.
+- Skip duplicate \`nums[j]\` after finding a triplet to avoid repeat results in the inner loop.`,
     },
     {
       id: "container-with-most-water",
@@ -1043,7 +1074,7 @@ public:
         int right = height.size() - 1;
         int maxArea = 0;
 
-        while (left <= right) {
+        while (left <= right) { // O(N)
             int currentArea = min(height[left], height[right]) * (right - left);
             maxArea = max(maxArea, currentArea);
             if (height[left] < height[right]) {
@@ -1062,7 +1093,9 @@ public:
         { line: 9, tone: "green" },
         { line: 10, tone: "green" },
       ],
-      notes: "",
+      notes: `- Two pointers from both ends; move the pointer with the shorter height inward each step.
+- Area = \`min(height[left], height[right]) * (right - left)\`; update max each step.
+- Moving the taller pointer inward can only decrease area — always move the shorter one.`,
     },
     {
       id: "trapping-rain-water",
@@ -1086,14 +1119,14 @@ public:
         vector<int> l(N), r(N);
         l[0] = height[0];
         r[N - 1] = height[N - 1];
-        for (int i = 1; i < N; i++) {
+        for (int i = 1; i < N; i++) { // O(N)
             l[i] = max(l[i - 1], height[i]);
         }
-        for (int i = N - 2; i >= 0; i--) {
+        for (int i = N - 2; i >= 0; i--) { // O(N)
             r[i] = max(r[i + 1], height[i]);
         }
         int ans = 0;
-        for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) { // O(N)
             ans += min(l[i], r[i]) - height[i];
         }
         return ans;
@@ -1107,7 +1140,9 @@ public:
         { line: 12, tone: "green" },
         { line: 16, tone: "green" },
       ],
-      notes: "",
+      notes: `- Precompute \`l[i]\` = max height to the left of i, \`r[i]\` = max height to the right.
+- Water trapped at bar i = \`min(l[i], r[i]) - height[i]\`.
+- Three O(N) passes: build l[], build r[], accumulate water. O(N) space for the two arrays.`,
     },
   ],
 }
