@@ -9,6 +9,7 @@ import { DsaCodeBlock } from "@/components/dsa/dsa-code-block"
 import { ArrowSquareOutIcon } from "@phosphor-icons/react"
 import type { DsaQuestion } from "@/lib/dsa-data"
 import { cn } from "@/lib/utils"
+import { Markdown } from "@/components/markdown"
 
 type QuestionDetailProps = {
   selected: DsaQuestion
@@ -180,9 +181,7 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
             <h3 className="mb-1.5 text-[11px] font-medium tracking-widest text-muted-foreground uppercase">
               Notes
             </h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              {selected.notes}
-            </p>
+            <Markdown content={selected.notes} />
           </section>
         )}
       </div>
