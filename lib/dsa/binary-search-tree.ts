@@ -17,13 +17,13 @@ export const binarySearchTree: DsaTopic = {
           input: "root = [4,2,7,1,3], val = 2",
           output: "[2,1,3]",
           explanation: "",
-          diagrams: [[4, 2, 7, 1, 3]],
+          trees: [[4, 2, 7, 1, 3]],
         },
         {
           input: "root = [4,2,7,1,3], val = 5",
           output: "null",
           explanation: "",
-          diagrams: [[4, 2, 7, 1, 3]],
+          trees: [[4, 2, 7, 1, 3]],
         },
       ],
       code: `class Solution {
@@ -56,7 +56,7 @@ public:
           input: "root = [40,20,60,10,30,50,70], val = 25",
           output: "[40,20,60,10,30,50,70,null,null,25]",
           explanation: "",
-          diagrams: [
+          trees: [
             [40, 20, 60, 10, 30, 50, 70],
             [40, 20, 60, 10, 30, 50, 70, null, null, 25],
           ],
@@ -65,7 +65,7 @@ public:
           input: "root = [4,2,7,1,3,null,null,null,null,null,null], val = 5",
           output: "[4,2,7,1,3,5]",
           explanation: "",
-          diagrams: [
+          trees: [
             [4, 2, 7, 1, 3, null, null, null, null, null, null],
             [4, 2, 7, 1, 3, 5],
           ],
@@ -122,7 +122,7 @@ public:
           input: "root = [5,3,6,2,4,null,7], key = 3",
           output: "[5,4,6,2,null,null,7]",
           explanation: "",
-          diagrams: [
+          trees: [
             [5, 3, 6, 2, 4, null, 7],
             [5, 4, 6, 2, null, null, 7],
           ],
@@ -131,7 +131,7 @@ public:
           input: "root = [5,3,6,2,4,null,7], key = 0",
           output: "[5,3,6,2,4,null,7]",
           explanation: "",
-          diagrams: [
+          trees: [
             [5, 3, 6, 2, 4, null, 7],
             [5, 3, 6, 2, 4, null, 7],
           ],
@@ -140,7 +140,7 @@ public:
           input: "root = [], key = 0",
           output: "[]",
           explanation: "",
-          diagrams: [[]],
+          trees: [[]],
         },
       ],
       code: `class Solution {
@@ -196,13 +196,13 @@ public:
           input: "root = [3,1,4,null,2], k = 1",
           output: "1",
           explanation: "",
-          diagrams: [[3, 1, 4, null, 2]],
+          trees: [[3, 1, 4, null, 2]],
         },
         {
           input: "root = [5,3,6,2,4,null,7], k = 3",
           output: "3",
           explanation: "",
-          diagrams: [[5, 3, 6, 2, 4, null, 7]],
+          trees: [[5, 3, 6, 2, 4, null, 7]],
         },
       ],
       code: `class Solution {
@@ -247,13 +247,13 @@ public:
           input: "root = [2,1,3]",
           output: "true",
           explanation: "",
-          diagrams: [[2, 1, 3]],
+          trees: [[2, 1, 3]],
         },
         {
           input: "root = [5,1,4,null,null,3,6]",
           output: "false",
           explanation: "",
-          diagrams: [[5, 1, 4, null, null, 3, 6]],
+          trees: [[5, 1, 4, null, null, 3, 6]],
         },
       ],
       type: "TREE",
@@ -299,19 +299,19 @@ public:
           input: "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 8",
           output: "6",
           explanation: "",
-          diagrams: [[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]],
+          trees: [[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]],
         },
         {
           input: "root = [6,2,8,0,4,7,9,null,null,3,5], p = 2, q = 4",
           output: "2",
           explanation: "",
-          diagrams: [[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]],
+          trees: [[6, 2, 8, 0, 4, 7, 9, null, null, 3, 5]],
         },
         {
           input: "root = [2,null,3], p = 2, q = 3",
           output: "2",
           explanation: "",
-          diagrams: [[2, null, 3]],
+          trees: [[2, null, 3]],
         },
       ],
       type: "TREE",
@@ -349,13 +349,13 @@ public:
           input: "preorder = [8,5,1,7,10,12]",
           output: "[8,5,10,1,7,null,12]",
           explanation: "",
-          diagrams: [[8, 5, 10, 1, 7, null, 12]],
+          trees: [[8, 5, 10, 1, 7, null, 12]],
         },
         {
           input: "preorder = [1,3]",
           output: "[1,null,3]",
           explanation: "",
-          diagrams: [[1, null, 3]],
+          trees: [[1, null, 3]],
         },
       ],
       code: `class Solution {
@@ -411,7 +411,7 @@ public:
           input: `["BSTIterator", "next", "next", "hasNext", "next", "hasNext", "next", "hasNext", "next", "hasNext"]`,
           output: "[null, 3, 7, true, 9, true, 15, true, 20, false]",
           explanation: "",
-          diagrams: [[7, 3, 15, null, null, 9, 20]],
+          trees: [[7, 3, 15, null, null, 9, 20]],
         },
       ],
       code: `class BSTIterator {
@@ -461,13 +461,13 @@ public:
           input: "root = [5,3,6,2,4,null,7], k = 9",
           output: "true",
           explanation: "",
-          diagrams: [[5, 3, 6, 2, 4, null, 7]],
+          trees: [[5, 3, 6, 2, 4, null, 7]],
         },
         {
           input: "root = [5,3,6,2,4,null,7], k = 28",
           output: "false",
           explanation: "",
-          diagrams: [[5, 3, 6, 2, 4, null, 7]],
+          trees: [[5, 3, 6, 2, 4, null, 7]],
         },
       ],
       code: `class Solution {
@@ -509,13 +509,13 @@ public:
           input: "root = [1,3,null,null,2]",
           output: "[3,1,null,null,2]",
           explanation: "",
-          diagrams: [[1, 3, null, null, 2]],
+          trees: [[1, 3, null, null, 2]],
         },
         {
           input: "root = [3,1,4,null,null,2]",
           output: "[2,1,4,null,null,3]",
           explanation: "",
-          diagrams: [[3, 1, 4, null, null, 2]],
+          trees: [[3, 1, 4, null, null, 2]],
         },
       ],
       code: `class Solution {

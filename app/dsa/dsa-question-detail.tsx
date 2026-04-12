@@ -5,6 +5,8 @@ import {
 } from "@/components/ui/sheet"
 import { DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 import { BinaryTreeDiagram } from "@/components/dsa/binary-tree-diagram"
+import { GraphDiagram } from "@/components/dsa/graph-diagram"
+import { MatrixDiagram } from "@/components/dsa/matrix-diagram"
 import { DsaCodeBlock } from "@/components/dsa/dsa-code-block"
 import { ArrowSquareOutIcon } from "@phosphor-icons/react"
 import type { DsaQuestion } from "@/lib/dsa-data"
@@ -112,7 +114,9 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
             </h3>
             <div className="flex flex-col gap-2">
               {selected.testCases.map((tc, i) => {
-                const diagrams = tc.diagrams
+                const trees = tc.trees
+                const matrices = tc.matrices
+                const graphs = tc.graphs
                 return (
                   <div
                     key={i}
@@ -126,11 +130,40 @@ export function DsaQuestionDetail({ selected, variant }: QuestionDetailProps) {
                       <span className="text-muted-foreground">Output: </span>
                       <code>{tc.output}</code>
                     </div>
-                    {diagrams !== undefined && diagrams.length > 0 && (
+                    {trees !== undefined && trees.length > 0 && (
                       <div className="mt-3 flex flex-col gap-4 rounded-md border border-border/60 bg-background/50 px-2 py-3">
-                        {diagrams.map((levelOrder, di) => (
+                        {trees.map((levelOrder, di) => (
                           <BinaryTreeDiagram key={di} levelOrder={levelOrder} />
                         ))}
+                      </div>
+                    )}
+                    {matrices !== undefined && matrices.length > 0 && (
+                      <div className="mt-3 flex flex-col gap-4 px-0 py-1">
+                        {matrices.map((m, di) => (
+                          <MatrixDiagram key={di} matrix={m} />
+                        ))}
+                      </div>
+                    )}
+                    {graphs !== undefined && graphs.length > 0 && (
+                      <div className="mt-3 flex flex-col gap-4 rounded-md border border-border/60 bg-background/50 px-2 py-3">
+                        {graphs.map((adj, di) => {
+                          const gd = tc.graphsDirected
+                          const directed = Array.isArray(gd)
+                            ? gd[di] === true
+                            : gd === true
+                          const gel = tc.graphsAsEdgeList
+                          const edgeList = Array.isArray(gel)
+                            ? gel[di] === true
+                            : gel === true
+                          return (
+                            <GraphDiagram
+                              key={di}
+                              adjacency={adj}
+                              directed={directed}
+                              edgeList={edgeList}
+                            />
+                          )
+                        })}
                       </div>
                     )}
                     {tc.explanation && (
