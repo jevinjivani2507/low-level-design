@@ -188,11 +188,17 @@ class MyPromise {
 
 ---
 
-## 5. Flatten Array
+## 5. Flatten (three different interview questions)
 
-**What:** Convert a deeply nested array into a flat array (to any specified depth).
+“Flatten” means different things in interviews — **nested arrays**, **nested objects with dot paths**, or **objects mixed with arrays** (`[0]` in the key). Treat them as separate problems.
 
-### Recursive
+---
+
+### 5.1 Flatten nested array
+
+**What:** `[1, [2, [3]]]` → `[1, 2, 3]`. Only arrays, no object key paths.
+
+**Recursive**
 
 ```js
 function flatten(arr, depth = Infinity) {
@@ -206,11 +212,11 @@ function flatten(arr, depth = Infinity) {
   }, []);
 }
 
-flatten([1, [2, [3, [4]]]], 1);       // [1, 2, [3, [4]]]
-flatten([1, [2, [3, [4]]]]);          // [1, 2, 3, 4]
+flatten([1, [2, [3, [4]]]], 1); // [1, 2, [3, [4]]]
+flatten([1, [2, [3, [4]]]]);     // [1, 2, 3, 4]
 ```
 
-### Iterative (stack-based — avoids call-stack overflow for huge inputs)
+**Iterative (stack — avoids deep recursion overflow)**
 
 ```js
 function flattenIterative(arr) {
@@ -219,19 +225,95 @@ function flattenIterative(arr) {
   while (stack.length) {
     const item = stack.pop();
     if (Array.isArray(item)) {
-      stack.push(...item); // spread back onto stack
+      stack.push(...item);
     } else {
-      result.unshift(item); // maintain order
+      result.unshift(item);
     }
   }
   return result;
 }
 ```
 
-**Gotchas:**
-- `Array.prototype.flat(Infinity)` exists natively — know it, but be ready to implement it.
-- Iterative version is safer for deeply nested arrays (avoids stack overflow).
-- `unshift` in the iterative version is `O(n)` — for large arrays, reverse at the end instead.
+**Gotchas:** `arr.flat(Infinity)` is the built-in. Iterative `unshift` is `O(n)` per step — for huge inputs, push and `reverse()` at the end instead.
+
+---
+
+### 5.2 Flatten object — dot paths only (`a.b.c`)
+
+**What:** Nested **plain objects only** (values are not arrays). Output keys use dots: `a.b.c` → one string key.
+
+```js
+function flattenObjectDot(obj, prefix = "") {
+  const out = {};
+  for (const k of Object.keys(obj)) {
+    const path = prefix ? `${prefix}.${k}` : k;
+    const v = obj[k];
+    if (v !== null && typeof v === "object" && !Array.isArray(v)) {
+      Object.assign(out, flattenObjectDot(v, path));
+    } else {
+      out[path] = v;
+    }
+  }
+  return out;
+}
+
+flattenObjectDot({ a: { b: { c: 1 } }, q: 10 });
+// { "a.b.c": 1, q: 10 }
+```
+
+**Gotchas:** If a value is an **array**, this keeps it under `"a.b"` as a single array (does not expand `[0]`). Use **5.3** when arrays must become part of the path.
+
+---
+
+### 5.3 Flatten object — paths with array segments (`a[0].c.f`)
+
+**What:** Same as 5.2, but nested **arrays** become **`[index]`** segments in the key string (e.g. `w[0].e.r`), not dots for indices.
+
+```js
+function flattenObject(obj, prefix = "") {
+  const out = {};
+
+  if (obj === null || typeof obj !== "object") {
+    if (prefix !== "") out[prefix] = obj;
+    return out;
+  }
+
+  if (Array.isArray(obj)) {
+    if (obj.length === 0) {
+      if (prefix !== "") out[prefix] = [];
+      return out;
+    }
+    obj.forEach((item, i) => {
+      const path = prefix ? `${prefix}[${i}]` : `[${i}]`;
+      Object.assign(out, flattenObject(item, path));
+    });
+    return out;
+  }
+
+  for (const k of Object.keys(obj)) {
+    const path = prefix ? `${prefix}.${k}` : k;
+    const v = obj[k];
+    if (v !== null && typeof v === "object") {
+      Object.assign(out, flattenObject(v, path));
+    } else {
+      out[path] = v;
+    }
+  }
+  return out;
+}
+```
+
+**Examples**
+
+```js
+flattenObject({ a: { b: 1 }, q: 10, w: { e: { r: 8 } } });
+// { "a.b": 1, q: 10, "w.e.r": 8 }
+
+flattenObject({ w: [{ e: { r: 8 } }], x: { y: 2 } });
+// { "w[0].e.r": 8, "x.y": 2 }
+```
+
+**Gotchas:** Mix of **dots** (object keys) and **brackets** (array indices) in one string — three separate questions: **5.1** array flattening, **5.2** object-only dot paths, **5.3** object + array path keys.
 
 ---
 
@@ -393,51 +475,63 @@ function throttle(fn, wait, options = {}) {
 
 ## 10. Deep clone
 
-**What:** Copy nested objects/arrays so no shared references with the original.
+**What:** Copy nested objects/arrays so nested values are new references.
 
-> **Key insight:** Recurse on arrays and plain objects; primitives and `null` return as-is. For **circular references**, use a `WeakMap` to track visited objects.
+> **Key insight:** If value is not an object (or is `null`), return it. Otherwise build a new array or plain object and recurse.
 
 ```js
-function deepClone(value, seen = new WeakMap()) {
-  if (value === null || typeof value !== "object") return value;
-  if (value instanceof Date) return new Date(value.getTime());
-  if (value instanceof RegExp) return new RegExp(value.source, value.flags);
-  if (seen.has(value)) return seen.get(value);
+function deepClone(obj) {
+  if (obj === null || typeof obj !== "object") return obj;
 
-  if (Array.isArray(value)) {
-    const copy = [];
-    seen.set(value, copy);
-    value.forEach((item, i) => {
-      copy[i] = deepClone(item, seen);
-    });
-    return copy;
+  const copy = Array.isArray(obj) ? [] : {};
+
+  for (let key in obj) {
+    copy[key] = deepClone(obj[key]);
   }
 
-  const copy = Object.create(Object.getPrototypeOf(value));
-  seen.set(value, copy);
-  for (const key of Reflect.ownKeys(value)) {
-    const desc = Object.getOwnPropertyDescriptor(value, key);
-    if (desc.get || desc.set) {
-      Object.defineProperty(copy, key, desc);
-    } else {
-      copy[key] = deepClone(desc.value, seen);
-    }
-  }
   return copy;
 }
 ```
 
-**Built-in (when acceptable):** In modern runtimes, `structuredClone(value)` clones most structured-cloneable types (including `Map`, `Set`, `ArrayBuffer`) and throws on functions and symbols. It is the right answer when the environment supports it and the payload is cloneable.
-
-**Quick hack (JSON-only data):** `JSON.parse(JSON.stringify(obj))` — loses `Date`, `undefined`, functions, `Map`/`Set`, and breaks on cycles.
-
-**Gotchas:**
-- Interviewers often ask how you handle **cycles** — `WeakMap` (or `Map` with object keys) is the standard answer.
-- **Functions** are usually copied by reference or omitted — cloning behaviour is ambiguous.
+**Gotchas:** Does not handle **circular refs** (infinite loop). For production or follow-up, use `structuredClone(obj)` (built-in) or a `WeakMap` to detect cycles. `Date` / `Map` / `Set` need special cases if you go beyond plain objects.
 
 ---
 
-## 11. Promise.all (polyfill)
+## 11. Retry promise
+
+**What:** Run an async function (or promise factory); on failure, retry up to `n` times with optional delay between attempts.
+
+```js
+async function retryPromise(fn, { retries = 3, delayMs = 0 } = {}) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (attempt === retries) throw err;
+      if (delayMs > 0) {
+        await new Promise((r) => setTimeout(r, delayMs));
+      }
+    }
+  }
+  throw lastError;
+}
+
+// Usage: fn returns a Promise
+await retryPromise(() => fetch("/api").then((r) => r.json()), {
+  retries: 2,
+  delayMs: 200,
+});
+```
+
+**Exponential backoff (common follow-up):** multiply delay by `2 ** attempt` inside the loop before each `await new Promise(...)`.
+
+**Note:** The loop runs `retries + 1` total attempts (initial try plus `retries` retries). Rename the option if you want “max attempts” instead.
+
+---
+
+## 12. Promise.all (polyfill)
 
 **What:** Resolve when every input settles successfully; reject with the first rejection (**fail-fast**). Output order matches input order.
 
@@ -476,7 +570,7 @@ Promise.myAll = function (iterable) {
 
 ---
 
-## 12. LRU cache
+## 13. LRU cache
 
 **What:** Fixed-capacity key-value store; evict the **least recently used** entry when full.
 
@@ -515,7 +609,7 @@ class LRUCache {
 
 ---
 
-## 13. Parallel limit (async pool)
+## 14. Parallel limit (async pool)
 
 **What:** Run many async tasks but only **N** at a time — e.g. crawl URLs without opening 100 connections.
 
@@ -564,13 +658,15 @@ await parallelLimit(
 | `pipe` | `reduce` left-to-right over function array |
 | `compose` | `reduceRight` over function array |
 | `Promise` | State machine (`pending/fulfilled/rejected`) + callback queues |
-| `flatten` (recursive) | `reduce` + recurse with `depth - 1` |
-| `flatten` (iterative) | Stack + `while` loop |
+| Flatten **array** (§5.1) | `reduce` or stack; optional `depth` |
+| Flatten object **dot** (§5.2) | `a.b.c` — only plain objects, `!Array.isArray` |
+| Flatten object **+ arrays** (§5.3) | `a[0].c.f` — bracket segments for array indices |
 | `bind` | Closure + `apply(ctx, [...presetArgs, ...callArgs])` |
 | `call` | Attach fn to ctx as `Symbol` property, call, delete |
 | `debounce` | `setTimeout` + `clearTimeout`; optional leading/trailing |
 | `throttle` | Time window + optional trailing `setTimeout` |
-| `deepClone` | Recursion + `WeakMap` for cycles; or `structuredClone` |
+| `deepClone` | `for..in` recurse; plain objects/arrays only |
+| `retryPromise` | Loop + `try/catch` + optional `setTimeout` delay |
 | `Promise.all` polyfill | `Promise.resolve` each item; index into `results[]` |
 | `LRUCache` | `Map` — delete+set on get; evict oldest key when full |
 | `parallelLimit` | N async workers + shared index |

@@ -20,19 +20,21 @@ tags: ["JavaScript", "Closures", "Promises", "Async JS", "Event Loop"]
 
 ## Ep 3: Hoisting
 
-> **MDN:** JavaScript Hoisting refers to the process whereby the interpreter appears to move the declaration of functions, variables, classes, or imports to the top of their scope, prior to execution of the code.
+> Hoisting is a concept which enables us to extract values of variables and functions even before initialising/assigning value without getting error and this is happening due to the 1st phase (memory creation phase) of the Execution Context.
 
 - `var` declarations are hoisted and initialised to `undefined`.
 - Function declarations are hoisted with their **entire body** — callable before the line they appear.
 - `let`/`const` are hoisted but stay in the **Temporal Dead Zone** — accessing them before initialisation throws `ReferenceError`.
 
 ```js
-getName();        // "Namaste JS"  ← works, function hoisted fully
-console.log(x);   // undefined     ← var hoisted as undefined
-var x = 7;
-function getName() { console.log("Namaste JS"); }
+getName() // "Namaste JS"  ← works, function hoisted fully
+console.log(x) // undefined     ← var hoisted as undefined
+var x = 7
+function getName() {
+  console.log("Namaste JS")
+}
 
-var fn = function() {}; // fn is hoisted as undefined, calling fn() before this line → TypeError
+var fn = function () {} // fn is hoisted as undefined, calling fn() before this line → TypeError
 ```
 
 ---
@@ -74,8 +76,6 @@ var fn = function() {}; // fn is hoisted as undefined, calling fn() before this 
 
 ## Ep 8: let, const & Temporal Dead Zone
 
-> **MDN:** The Temporal Dead Zone (TDZ) is the period from the start of a block until the variable binding is initialized. Variables declared with `let` or `const` exist in the TDZ from the start of their enclosing block until the line where they are initialized. Accessing them in this zone throws a `ReferenceError`.
-
 - `let` and `const` are **block-scoped** and stored in a separate memory space (not on `window`).
 - **TDZ** = the time between hoisting and the line where the variable is initialised. Accessing in TDZ → `ReferenceError`.
 - `let` can be declared and assigned separately; `const` must be initialised at declaration.
@@ -104,15 +104,15 @@ var fn = function() {}; // fn is hoisted as undefined, calling fn() before this 
 
 ```js
 function counter() {
-  var count = 0;
+  var count = 0
   return function increment() {
-    count++;
-    console.log(count);
-  };
+    count++
+    console.log(count)
+  }
 }
-const c1 = counter(); // independent closure
-c1(); // 1
-c1(); // 2
+const c1 = counter() // independent closure
+c1() // 1
+c1() // 2
 ```
 
 **Classic interview Q — `var` in loop:**
@@ -120,19 +120,25 @@ c1(); // 2
 ```js
 // Prints 6,6,6,6,6 — all closures share the same `i` reference
 for (var i = 1; i <= 5; i++) {
-  setTimeout(function () { console.log(i); }, i * 1000);
+  setTimeout(function () {
+    console.log(i)
+  }, i * 1000)
 }
 
 // Fix 1: use let (block-scoped, new binding each iteration)
 for (let i = 1; i <= 5; i++) {
-  setTimeout(function () { console.log(i); }, i * 1000);
+  setTimeout(function () {
+    console.log(i)
+  }, i * 1000)
 }
 
 // Fix 2: wrap with a function to capture a new copy
 for (var i = 1; i <= 5; i++) {
-  (function (i) {
-    setTimeout(function () { console.log(i); }, i * 1000);
-  })(i);
+  ;(function (i) {
+    setTimeout(function () {
+      console.log(i)
+    }, i * 1000)
+  })(i)
 }
 ```
 
@@ -142,13 +148,13 @@ for (var i = 1; i <= 5; i++) {
 
 > **MDN:** A programming language is said to have first-class functions when functions in that language are treated like any other variable. A function can be passed as an argument to other functions, returned as the value from another function, and assigned to a variable.
 
-| Term | Definition |
-|---|---|
-| Function Statement | `function a() {}` — hoisted fully |
-| Function Expression | `var b = function() {}` — hoisted as `undefined` |
-| Named Function Expression | `var b = function xyz() {}` — `xyz` not in global scope |
-| Anonymous Function | No name; used as a value; standalone throws `SyntaxError` |
-| First Class Functions | Functions can be passed as arguments and returned from other functions |
+| Term                      | Definition                                                             |
+| ------------------------- | ---------------------------------------------------------------------- |
+| Function Statement        | `function a() {}` — hoisted fully                                      |
+| Function Expression       | `var b = function() {}` — hoisted as `undefined`                       |
+| Named Function Expression | `var b = function xyz() {}` — `xyz` not in global scope                |
+| Anonymous Function        | No name; used as a value; standalone throws `SyntaxError`              |
+| First Class Functions     | Functions can be passed as arguments and returned from other functions |
 
 - **Difference hoisting**: calling a function statement before declaration works; calling a function expression before declaration → `TypeError`.
 
@@ -170,6 +176,7 @@ for (var i = 1; i <= 5; i++) {
 - **Web APIs** (setTimeout, DOM, fetch, localStorage, console) live in the browser — not in the JS engine itself. Accessed via the global `window` object.
 - Flow: callback registered in Web API env → on completion, pushed to **Callback Queue** → **Event Loop** moves it to Call Stack when stack is empty.
 - **Microtask Queue** (Promise callbacks, MutationObserver) has **higher priority** than the Callback Queue — microtasks run first.
+- All the callback functions that come through promises go in microtask Queue.
 - **Starvation**: if microtasks keep spawning new microtasks, the Callback Queue never gets a turn.
 
 ```
@@ -206,10 +213,10 @@ Call Stack ← Event Loop ← Microtask Queue (higher priority)
 - `reduce` — accumulates all elements into a single output value.
 
 ```js
-const nums = [1, 2, 3, 4];
-nums.map(x => x * 2);             // [2, 4, 6, 8]
-nums.filter(x => x % 2 === 0);    // [2, 4]
-nums.reduce((acc, x) => acc + x, 0); // 10
+const nums = [1, 2, 3, 4]
+nums.map((x) => x * 2) // [2, 4, 6, 8]
+nums.filter((x) => x % 2 === 0) // [2, 4]
+nums.reduce((acc, x) => acc + x, 0) // 10
 ```
 
 - `reduce` can replicate `map` and `filter` — useful to know for interviews.
@@ -226,10 +233,10 @@ nums.reduce((acc, x) => acc + x, 0); // 10
 api.createOrder(cart, function () {
   api.proceedToPayment(function () {
     api.showOrderSummary(function () {
-      api.updateWallet();
-    });
-  });
-});
+      api.updateWallet()
+    })
+  })
+})
 ```
 
 ---
@@ -246,9 +253,9 @@ api.createOrder(cart, function () {
 
 ```js
 createOrder(cart)
-  .then(orderId => proceedToPayment(orderId))
-  .then(info => showOrderSummary(info))
-  .catch(err => console.error(err));
+  .then((orderId) => proceedToPayment(orderId))
+  .then((info) => showOrderSummary(info))
+  .catch((err) => console.error(err))
 ```
 
 ---
@@ -266,11 +273,11 @@ createOrder(cart)
 ```js
 async function fetchUser() {
   try {
-    const res = await fetch("https://api.github.com/users/alok722");
-    const data = await res.json();
-    console.log(data);
+    const res = await fetch("https://api.github.com/users/alok722")
+    const data = await res.json()
+    console.log(data)
   } catch (err) {
-    console.error(err);
+    console.error(err)
   }
 }
 ```
@@ -279,12 +286,12 @@ async function fetchUser() {
 
 ## Ep 24: Promise APIs
 
-| API | Behaviour | Use when |
-|---|---|---|
-| `Promise.all([p1,p2,p3])` | Waits for **all** to fulfill; rejects immediately on first rejection (**fail-fast**) | Need all results; any failure is fatal |
+| API                              | Behaviour                                                                                         | Use when                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `Promise.all([p1,p2,p3])`        | Waits for **all** to fulfill; rejects immediately on first rejection (**fail-fast**)              | Need all results; any failure is fatal  |
 | `Promise.allSettled([p1,p2,p3])` | Waits for **all** to settle (fulfill or reject); always returns array of `{status, value/reason}` | Want every result regardless of failure |
-| `Promise.race([p1,p2,p3])` | Settles with the **first** settled promise (fulfill or reject) | Timeout patterns |
-| `Promise.any([p1,p2,p3])` | Fulfills with the **first success**; rejects only if **all** reject (`AggregateError`) | Need at least one success |
+| `Promise.race([p1,p2,p3])`       | Settles with the **first** settled promise (fulfill or reject)                                    | Timeout patterns                        |
+| `Promise.any([p1,p2,p3])`        | Fulfills with the **first success**; rejects only if **all** reject (`AggregateError`)            | Need at least one success               |
 
 ---
 
@@ -292,14 +299,14 @@ async function fetchUser() {
 
 > **MDN:** The `this` value depends on in which context it appears: function, class, or global. In a function, the value of `this` depends on how the function is called. In an object method, `this` refers to the object. In strict mode, if the function was called without being called as a method, `this` is `undefined`.
 
-| Context | Value of `this` |
-|---|---|
-| Global scope | `window` (browser) |
-| Regular function — non-strict | `window` (this substitution) |
-| Regular function — strict | `undefined` |
-| Object method | The object the method is called on |
-| Arrow function | Inherited from **enclosing lexical scope** (no own `this`) |
-| DOM event handler | The HTML element that fired the event |
+| Context                       | Value of `this`                                            |
+| ----------------------------- | ---------------------------------------------------------- |
+| Global scope                  | `window` (browser)                                         |
+| Regular function — non-strict | `window` (this substitution)                               |
+| Regular function — strict     | `undefined`                                                |
+| Object method                 | The object the method is called on                         |
+| Arrow function                | Inherited from **enclosing lexical scope** (no own `this`) |
+| DOM event handler             | The HTML element that fired the event                      |
 
 - `call(ctx, ...args)`, `apply(ctx, [args])`, `bind(ctx)` — all explicitly set the value of `this`.
 - Arrow functions **cannot** have their `this` overridden with `call`/`apply`/`bind`.
