@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "skills": {
+    "memory-notes": {
+      "source": "basicmachines-co/basic-memory-skills",
+      "sourceType": "github",
+      "computedHash": "c6ac355ae99e11a963f05a1d2452598403078d33eb9f7e096b1e43aa60caec15"
+    },
+    "paper-notes": {
+      "source": "willoscar/research-units-pipeline-skills",
+      "sourceType": "github",
+      "computedHash": "5ad9f5f06ddc1f05bd02b2faad7468a027ee338464b34fa536d8113da1779e9e"
+    }
+  }
+}
