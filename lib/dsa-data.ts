@@ -3,6 +3,7 @@ import { binarySearch } from "./dsa/binary-search"
 import { binaryTree } from "./dsa/binary-tree"
 import { binarySearchTree } from "./dsa/binary-search-tree"
 import { graph } from "./dsa/graph"
+import { array } from "./dsa/array"
 export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
@@ -57,6 +58,7 @@ export interface DsaTopic {
 }
 
 export const dsaTopics: DsaTopic[] = [
+  array,
   slidingWindow,
   binarySearch,
   binaryTree,
