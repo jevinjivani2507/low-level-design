@@ -1082,5 +1082,79 @@ public:
       spaceComplexity: "",
       notes: "",
     },
+    {
+      id: "binary-search",
+      title: "Binary Search",
+      difficulty: "Easy",
+      leetcodeUrl: "https://leetcode.com/problems/binary-search/",
+      tags: ["neetcode-150"],
+      question:
+        "Given a sorted array of distinct integers nums and a target, return its index or -1 if absent. Must run in O(log n).",
+      testCases: [
+        { input: "nums = [-1,0,3,5,9,12], target = 9", output: "4" },
+        { input: "nums = [-1,0,3,5,9,12], target = 2", output: "-1" },
+      ],
+      code: `class Solution {
+public:
+    int search(vector<int>& nums, int target) {
+        int lo = 0, hi = nums.size() - 1;
+
+        while (lo <= hi) { // O(log N)
+            int mid = lo + (hi - lo) / 2; // avoid overflow
+            if (nums[mid] == target) return mid;
+            if (nums[mid] < target) lo = mid + 1;
+            else hi = mid - 1;
+        }
+
+        return -1;
+    }
+};`,
+      timeComplexity: "O(log N)",
+      spaceComplexity: "O(1)",
+      notes: `- Halve the search range each step using the sorted order.
+- Use \`lo + (hi - lo) / 2\` to avoid integer overflow.
+- Loop while lo ≤ hi; return -1 when the range is empty.`,
+    },
+    {
+      id: "time-based-key-value-store",
+      title: "Time Based Key-Value Store",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/time-based-key-value-store/",
+      tags: ["neetcode-150"],
+      question:
+        'Design a store with set(key, value, timestamp) and get(key, timestamp) returning the value with the largest timestamp ≤ the query (or "" if none). Timestamps for a key are strictly increasing.',
+      testCases: [
+        {
+          input:
+            'set("foo","bar",1), get("foo",1), get("foo",3), set("foo","bar2",4), get("foo",4), get("foo",5)',
+          output: '"bar", "bar", "bar2", "bar2"',
+        },
+      ],
+      code: `class TimeMap {
+    unordered_map<string, vector<pair<int, string>>> store; // key -> [(ts, value)]
+
+public:
+    void set(string key, string value, int timestamp) { // O(1) amortized
+        store[key].push_back({timestamp, value});
+    }
+
+    string get(string key, int timestamp) {
+        auto& vec = store[key];
+        int lo = 0, hi = vec.size() - 1;
+        string res = "";
+        while (lo <= hi) { // O(log N) — binary search on sorted timestamps
+            int mid = lo + (hi - lo) / 2;
+            if (vec[mid].first <= timestamp) { res = vec[mid].second; lo = mid + 1; }
+            else hi = mid - 1;
+        }
+        return res;
+    }
+};`,
+      timeComplexity: "O(log N) get",
+      spaceComplexity: "O(N)",
+      notes: `- Append (timestamp, value) per key; timestamps arrive sorted so no sort needed.
+- Binary search for the rightmost timestamp ≤ query.
+- Keep the last valid value while narrowing right for the best match.`,
+    },
   ],
 }
