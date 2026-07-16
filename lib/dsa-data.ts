@@ -13,6 +13,7 @@ import { heap } from "./dsa/heap"
 import { stack } from "./dsa/stack"
 import { string } from "./dsa/string"
 import { trie } from "./dsa/trie"
+import { backtracking } from "./dsa/backtracking"
 export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
@@ -82,4 +83,5 @@ export const dsaTopics: DsaTopic[] = [
   stack,
   string,
   trie,
+  backtracking,
 ]
