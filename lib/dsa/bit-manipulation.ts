@@ -173,5 +173,69 @@ public:
 - Effectively pours bits from n into res in reverse order.
 - Fixed 32-iteration loop → constant time and space.`,
     },
+    {
+      id: "single-number",
+      title: "Single Number",
+      difficulty: "Easy",
+      leetcodeUrl: "https://leetcode.com/problems/single-number/",
+      tags: ["neetcode-150"],
+      question:
+        "Given a non-empty array where every element appears twice except one, find the single element. Solve in O(N) time and O(1) space.",
+      testCases: [
+        { input: "nums = [2,2,1]", output: "1" },
+        { input: "nums = [4,1,2,1,2]", output: "4" },
+      ],
+      code: `class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res = 0;
+        for (int x : nums) res ^= x; // O(N) — pairs cancel
+        return res;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      notes: `- XOR is associative and self-inverse: a ^ a = 0, a ^ 0 = a.
+- XOR-ing everything cancels the pairs, leaving the unique value.
+- No extra memory needed vs a hash-set count.`,
+    },
+    {
+      id: "reverse-integer",
+      title: "Reverse Integer",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/reverse-integer/",
+      tags: ["neetcode-150"],
+      question:
+        "Given a signed 32-bit integer x, return x with its digits reversed. Return 0 if reversing overflows the 32-bit signed range.",
+      testCases: [
+        { input: "x = 123", output: "321" },
+        { input: "x = -123", output: "-321" },
+        {
+          input: "x = 1534236469",
+          output: "0",
+          explanation: "Reversed value overflows.",
+        },
+      ],
+      code: `class Solution {
+public:
+    int reverse(int x) {
+        int res = 0;
+        while (x != 0) { // O(log x)
+            int digit = x % 10; // keeps sign in C++
+            x /= 10;
+            // check overflow before multiplying
+            if (res > INT_MAX / 10 || (res == INT_MAX / 10 && digit > 7)) return 0;
+            if (res < INT_MIN / 10 || (res == INT_MIN / 10 && digit < -8)) return 0;
+            res = res * 10 + digit;
+        }
+        return res;
+    }
+};`,
+      timeComplexity: "O(log x)",
+      spaceComplexity: "O(1)",
+      notes: `- Peel digits with %10 and build the result with ×10; C++ % keeps the sign.
+- Check against INT_MAX/INT_MIN bounds before each multiply to catch overflow.
+- 7 and 8 are the last digits of INT_MAX (…647) and INT_MIN (…648).`,
+    },
   ],
 }
