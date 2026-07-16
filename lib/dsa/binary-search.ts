@@ -191,7 +191,7 @@ public:
       id: "search-in-rotated-sorted-array",
       title: "Search in Rotated Sorted Array",
       difficulty: "Medium",
-      tags: ["striver-a2z", "neetcode-150"],
+      tags: ["striver-a2z", "neetcode-150", "blind-75"],
       leetcodeUrl:
         "https://leetcode.com/problems/search-in-rotated-sorted-array/",
       question:
@@ -312,7 +312,7 @@ public:
       id: "find-minimum-in-rotated-sorted-array",
       title: "Find Minimum in Rotated Sorted Array",
       difficulty: "Medium",
-      tags: ["striver-a2z", "neetcode-150"],
+      tags: ["striver-a2z", "neetcode-150", "blind-75"],
       leetcodeUrl:
         "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
       question:

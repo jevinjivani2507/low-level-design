@@ -239,7 +239,7 @@ public:
       notes: `- BFS with a queue; snapshot \`q.size()\` at the start of each iteration to process one level at a time.
 - Each node is enqueued and dequeued exactly once → O(N) total.
 - Foundation for many BFS variants: zigzag, right-side-view, level averages, etc.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "maximum-depth-of-binary-tree",
@@ -279,7 +279,7 @@ public:
       notes: `- Recursive post-order: depth of a node = 1 + max(left depth, right depth).
 - Base case: NULL node has depth 0.
 - Classic divide-and-conquer — the pattern is reused in \`Balanced Binary Tree\` and \`Diameter of Binary Tree\`.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "balanced-binary-tree",
@@ -433,7 +433,7 @@ public:
 - At each node, the "through-root" path = left + root->val + right; update global ans.
 - Return only the best single-branch path (root + max(left, right)) for the parent to use.
 - Initialize ans to INT_MIN to handle all-negative trees.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "same-tree",
@@ -479,7 +479,7 @@ public:
       notes: `- Simultaneously recurse both trees; if both NULL they match, if only one is NULL they don't.
 - Short-circuit evaluation means we stop as soon as a mismatch is found.
 - Identical structure to \`Symmetric Tree\` — just change how left/right subtrees are paired.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "binary-tree-zigzag-level-order-traversal",
@@ -1096,7 +1096,7 @@ public:
       notes: `- Preorder[0] is always the root; find it in inorder to split into left/right subtrees.
 - Use an \`unordered_map\` for O(1) inorder index lookup — reduces overall time from O(N²) to O(N).
 - Recurse with shrinking [start, end] bounds in inorder; advance \`idx\` in preorder each call.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "construct-binary-tree-from-inorder-and-postorder-traversal",
@@ -1242,7 +1242,7 @@ public:
 - Deserialize by reading tokens in the same BFS order and assigning left/right children from the queue.
 - Null nodes are encoded but not enqueued, so the queue only holds actual nodes.
 - Level-order format matches LeetCode's own tree serialization.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "flatten-binary-tree-to-linked-list",
