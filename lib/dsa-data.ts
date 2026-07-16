@@ -4,6 +4,7 @@ import { binaryTree } from "./dsa/binary-tree"
 import { binarySearchTree } from "./dsa/binary-search-tree"
 import { graph } from "./dsa/graph"
 import { array } from "./dsa/array"
+import { bitManipulation } from "./dsa/bit-manipulation"
 export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
@@ -64,4 +65,5 @@ export const dsaTopics: DsaTopic[] = [
   binaryTree,
   binarySearchTree,
   graph,
+  bitManipulation,
 ]
