@@ -123,8 +123,10 @@ const DsaPage = () => {
         go(1)
       }
     }
-    window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    // Capture phase: the Sheet/Drawer trap focus and stop keydown from
+    // bubbling to window, so listen on the way down instead.
+    window.addEventListener("keydown", onKey, true)
+    return () => window.removeEventListener("keydown", onKey, true)
   }, [selected, go])
 
   const toggleTag = (tag: string) => {
