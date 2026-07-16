@@ -8,7 +8,7 @@ export const stack: DsaTopic = {
       title: "Valid Parentheses",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/valid-parentheses/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a string s containing only the characters ()[]{}, determine if it is valid: brackets must close in the correct order and every opener has a matching closer.",
       testCases: [

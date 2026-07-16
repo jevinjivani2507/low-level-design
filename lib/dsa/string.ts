@@ -8,7 +8,7 @@ export const string: DsaTopic = {
       title: "Valid Anagram",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/valid-anagram/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given two strings s and t, return true if t is an anagram of s (same characters with the same counts), otherwise false.",
       testCases: [
@@ -40,7 +40,7 @@ public:
       title: "Group Anagrams",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/group-anagrams/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of strings, group the anagrams together. Return the groups in any order.",
       testCases: [
@@ -80,7 +80,7 @@ public:
       title: "Valid Palindrome",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/valid-palindrome/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a string s, return true if it is a palindrome considering only alphanumeric characters and ignoring case.",
       testCases: [
@@ -118,7 +118,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-palindromic-substring/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a string s, return the longest substring of s that is a palindrome.",
       testCases: [
@@ -159,7 +159,7 @@ public:
       title: "Palindromic Substrings",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/palindromic-substrings/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a string s, return the number of palindromic substrings in it. Substrings at different positions count separately.",
       testCases: [
@@ -204,7 +204,7 @@ public:
       title: "Encode and Decode Strings",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/encode-and-decode-strings/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Design an algorithm to encode a list of strings into a single string, sent over the network and decoded back to the original list. LeetCode Premium.",
       testCases: [

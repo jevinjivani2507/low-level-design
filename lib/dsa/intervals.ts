@@ -8,7 +8,7 @@ export const intervals: DsaTopic = {
       title: "Insert Interval",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/insert-interval/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a list of non-overlapping intervals sorted by start and a new interval, insert it and merge any overlaps. Return the resulting list of non-overlapping intervals.",
       testCases: [
@@ -59,7 +59,7 @@ public:
       title: "Merge Intervals",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/merge-intervals/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of intervals, merge all overlapping intervals and return the non-overlapping intervals that cover all the input ranges.",
       testCases: [
@@ -101,7 +101,7 @@ public:
       title: "Non-overlapping Intervals",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/non-overlapping-intervals/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of intervals, return the minimum number of intervals you must remove so that the rest are non-overlapping.",
       testCases: [
@@ -141,7 +141,7 @@ public:
       title: "Meeting Rooms",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/meeting-rooms/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of meeting time intervals, determine if a person could attend all meetings (no two meetings overlap). LeetCode Premium.",
       testCases: [
@@ -178,7 +178,7 @@ public:
       title: "Meeting Rooms II",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/meeting-rooms-ii/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of meeting time intervals, return the minimum number of conference rooms required. LeetCode Premium.",
       testCases: [

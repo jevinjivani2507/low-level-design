@@ -8,7 +8,7 @@ export const trie: DsaTopic = {
       title: "Implement Trie (Prefix Tree)",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/implement-trie-prefix-tree/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Implement a Trie with insert(word), search(word) (exact match), and startsWith(prefix) (any word with that prefix).",
       testCases: [
@@ -69,7 +69,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Design a data structure with addWord(word) and search(word), where search may contain '.' as a wildcard that matches any single letter.",
       testCases: [
@@ -125,7 +125,7 @@ public:
       title: "Word Search II",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/word-search-ii/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n board of characters and a list of words, return all words that can be formed from sequentially adjacent cells (each cell used once per word).",
       testCases: [

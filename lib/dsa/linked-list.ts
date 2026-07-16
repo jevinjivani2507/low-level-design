@@ -8,7 +8,7 @@ export const linkedList: DsaTopic = {
       title: "Reverse Linked List",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/reverse-linked-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a singly linked list, reverse the list and return the new head.",
       testCases: [
@@ -47,7 +47,7 @@ public:
       title: "Linked List Cycle",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/linked-list-cycle/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a linked list, return true if the list contains a cycle (a node reachable again by following next pointers), otherwise false.",
       testCases: [
@@ -87,7 +87,7 @@ public:
       title: "Merge Two Sorted Lists",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/merge-two-sorted-lists/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Merge two sorted linked lists into one sorted list by splicing their nodes together, and return the head of the merged list.",
       testCases: [
@@ -127,7 +127,7 @@ public:
       title: "Merge k Sorted Lists",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/merge-k-sorted-lists/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of k sorted linked lists, merge them into one sorted linked list and return its head.",
       testCases: [
@@ -172,7 +172,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a linked list, remove the nth node from the end and return the head. Do it in one pass.",
       testCases: [
@@ -215,7 +215,7 @@ public:
       title: "Reorder List",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/reorder-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a list L0 → L1 → … → Ln-1 → Ln, reorder it to L0 → Ln → L1 → Ln-1 → … in place, changing only node links.",
       testCases: [

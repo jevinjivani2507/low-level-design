@@ -8,7 +8,7 @@ export const dynamicProgramming: DsaTopic = {
       title: "Climbing Stairs",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/climbing-stairs/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "You are climbing a staircase with n steps. Each time you can climb 1 or 2 steps. In how many distinct ways can you reach the top?",
       testCases: [
@@ -48,7 +48,7 @@ public:
       title: "Coin Change",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/coin-change/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given coin denominations coins and a total amount, return the fewest coins needed to make up that amount, or -1 if it cannot be made. You have infinite coins of each type.",
       testCases: [
@@ -89,7 +89,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-increasing-subsequence/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, return the length of the longest strictly increasing subsequence.",
       testCases: [
@@ -128,7 +128,7 @@ public:
       title: "Longest Common Subsequence",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/longest-common-subsequence/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given two strings text1 and text2, return the length of their longest common subsequence (characters in order, not necessarily contiguous), or 0 if none exists.",
       testCases: [
@@ -169,7 +169,7 @@ public:
       title: "Word Break",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/word-break/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a string s and a dictionary wordDict, return true if s can be segmented into a space-separated sequence of one or more dictionary words. Words may be reused.",
       testCases: [
@@ -215,7 +215,7 @@ public:
       title: "Combination Sum",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/combination-sum/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of distinct integers candidates and a target, return all unique combinations that sum to target. Each candidate may be used unlimited times.",
       testCases: [
@@ -260,7 +260,7 @@ public:
       title: "House Robber",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/house-robber/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array nums of house values along a street, return the maximum amount you can rob without robbing two adjacent houses.",
       testCases: [
@@ -301,7 +301,7 @@ public:
       title: "House Robber II",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/house-robber-ii/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Houses are arranged in a circle, so the first and last are adjacent. Return the maximum you can rob without robbing two adjacent houses.",
       testCases: [
@@ -345,7 +345,7 @@ public:
       title: "Decode Ways",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/decode-ways/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "A message of digits is encoded with A→1 … Z→26. Given a digit string s, return the number of ways to decode it. Leading zeros make a mapping invalid.",
       testCases: [
@@ -391,7 +391,7 @@ public:
       title: "Unique Paths",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/unique-paths/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "A robot starts at the top-left of an m × n grid and can only move right or down. Return the number of unique paths to the bottom-right corner.",
       testCases: [
@@ -429,7 +429,7 @@ public:
       title: "Jump Game",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/jump-game/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array nums where nums[i] is the max jump length from index i, return true if you can reach the last index starting from index 0.",
       testCases: [

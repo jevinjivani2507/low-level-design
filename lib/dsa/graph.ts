@@ -89,7 +89,7 @@ public:
       title: "Rotting Oranges",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/rotting-oranges/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given an m x n grid where each cell can have one of three values: 0 representing an empty cell, 1 representing a fresh orange, or 2 representing a rotten orange. Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.",
       testCases: [
@@ -331,7 +331,7 @@ public:
       title: "Surrounded Regions",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/surrounded-regions/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded: Connect: A cell is connected to adjacent cells horizontally or vertically. Region: To form a region connect every 'O' cell. Surround: A region is surrounded if none of the 'O' cells in that region are on the edge of the board. Such regions are completely enclosed by 'X' cells. To capture a surrounded region, replace all 'O's with 'X's in-place within the original board. You do not need to return anything.",
       testCases: [
@@ -525,7 +525,7 @@ public:
       title: "Word Ladder",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/word-ladder/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that: Every adjacent pair of words differs by a single letter. Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList. sk == endWord Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.",
       testCases: [
@@ -624,7 +624,7 @@ public:
       title: "Number of Islands",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/number-of-islands/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question:
         "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
       testCases: [
@@ -793,7 +793,7 @@ public:
       title: "Course Schedule",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/course-schedule/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question:
         "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1. Return true if you can finish all courses. Otherwise, return false.",
       testCases: [
@@ -859,7 +859,7 @@ public:
       title: "Course Schedule II",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/course-schedule-ii/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1. Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.",
       testCases: [
@@ -996,7 +996,7 @@ public:
       title: "Alien Dictionary",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/alien-dictionary/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question: "",
       testCases: [],
       code: "",
@@ -1217,7 +1217,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei. You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.",
       testCases: [
@@ -1319,7 +1319,7 @@ public:
       title: "Network Delay Time",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/network-delay-time/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target. We will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.",
       testCases: [
@@ -1518,7 +1518,7 @@ public:
       title: "Clone Graph",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/clone-graph/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a reference to a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node holds a value and a list of neighbors.",
       testCases: [
@@ -1565,7 +1565,7 @@ public:
       title: "Pacific Atlantic Water Flow",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/pacific-atlantic-water-flow/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n grid of heights, water flows to neighbors of equal or lower height. The Pacific touches the top and left edges, the Atlantic the bottom and right. Return all cells from which water can reach both oceans.",
       testCases: [
@@ -1626,7 +1626,7 @@ public:
       title: "Graph Valid Tree",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/graph-valid-tree/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given n nodes labeled 0..n-1 and a list of undirected edges, determine whether they form a valid tree (connected and acyclic). LeetCode Premium.",
       testCases: [
@@ -1671,7 +1671,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given n nodes labeled 0..n-1 and a list of undirected edges, return the number of connected components in the graph. LeetCode Premium.",
       testCases: [

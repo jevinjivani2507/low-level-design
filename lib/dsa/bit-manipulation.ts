@@ -8,7 +8,7 @@ export const bitManipulation: DsaTopic = {
       title: "Sum of Two Integers",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/sum-of-two-integers/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given two integers a and b, return their sum without using the + or - operators.",
       testCases: [
@@ -37,7 +37,7 @@ public:
       title: "Number of 1 Bits",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/number-of-1-bits/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Write a function that takes an unsigned integer and returns the number of set bits (its Hamming weight).",
       testCases: [
@@ -66,7 +66,7 @@ public:
       title: "Counting Bits",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/counting-bits/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer n, return an array ans of length n + 1 where ans[i] is the number of set bits in i.",
       testCases: [
@@ -103,7 +103,7 @@ public:
       title: "Missing Number",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/missing-number/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array nums containing n distinct numbers taken from the range [0, n], return the one number that is missing from the range.",
       testCases: [
@@ -141,7 +141,7 @@ public:
       title: "Reverse Bits",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/reverse-bits/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Reverse the bits of a given 32-bit unsigned integer and return the result.",
       testCases: [

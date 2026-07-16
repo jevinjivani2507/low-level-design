@@ -8,7 +8,7 @@ export const heap: DsaTopic = {
       title: "Top K Frequent Elements",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/top-k-frequent-elements/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums and an integer k, return the k most frequent elements in any order.",
       testCases: [
@@ -54,7 +54,7 @@ public:
       difficulty: "Hard",
       leetcodeUrl:
         "https://leetcode.com/problems/find-median-from-data-stream/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Design a data structure that supports addNum(num) to add a number from a stream and findMedian() to return the median of all elements so far.",
       testCases: [

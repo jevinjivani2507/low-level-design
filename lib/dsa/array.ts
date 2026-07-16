@@ -8,7 +8,7 @@ export const array: DsaTopic = {
       title: "Two Sum",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/two-sum/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target. Exactly one solution exists and you may not use the same element twice.",
       testCases: [
@@ -50,7 +50,7 @@ public:
       difficulty: "Easy",
       leetcodeUrl:
         "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "You are given an array prices where prices[i] is the price of a stock on day i. Maximize profit by buying on one day and selling on a later day. Return the max profit, or 0 if none is possible.",
       testCases: [
@@ -90,7 +90,7 @@ public:
       title: "Contains Duplicate",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/contains-duplicate/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, return true if any value appears at least twice, and false if every element is distinct.",
       testCases: [
@@ -128,7 +128,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/product-of-array-except-self/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, return an array answer where answer[i] is the product of all elements except nums[i]. Solve in O(N) without division.",
       testCases: [
@@ -173,7 +173,7 @@ public:
       title: "Maximum Subarray",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/maximum-subarray/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, find the contiguous subarray with the largest sum and return that sum.",
       testCases: [
@@ -212,7 +212,7 @@ public:
       title: "Maximum Product Subarray",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/maximum-product-subarray/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, find the contiguous subarray with the largest product and return that product.",
       testCases: [
@@ -257,7 +257,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-consecutive-sequence/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an unsorted array of integers nums, return the length of the longest run of consecutive integers. Solve in O(N).",
       testCases: [
