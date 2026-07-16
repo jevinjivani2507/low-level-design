@@ -7,6 +7,7 @@ import { array } from "./dsa/array"
 import { bitManipulation } from "./dsa/bit-manipulation"
 import { dynamicProgramming } from "./dsa/dynamic-programming"
 import { intervals } from "./dsa/intervals"
+import { linkedList } from "./dsa/linked-list"
 export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
@@ -70,4 +71,5 @@ export const dsaTopics: DsaTopic[] = [
   bitManipulation,
   dynamicProgramming,
   intervals,
+  linkedList,
 ]
