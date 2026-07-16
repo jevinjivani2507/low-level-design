@@ -298,5 +298,50 @@ public:
 - Only start counting from a sequence start (no \`x - 1\` present) so each run is walked once.
 - The inner while runs O(N) total across the whole loop, keeping it linear overall.`,
     },
+    {
+      id: "valid-sudoku",
+      title: "Valid Sudoku",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/valid-sudoku/",
+      tags: ["neetcode-150"],
+      question:
+        "Determine if a 9 × 9 Sudoku board is valid: each row, each column, and each 3 × 3 sub-box must contain the digits 1-9 without repetition. Only filled cells are checked.",
+      testCases: [
+        {
+          input:
+            'board = [["5","3",".",".","7",...],...] (valid partially filled board)',
+          output: "true",
+        },
+        {
+          input: "board with two 8s in the top-left box",
+          output: "false",
+          explanation: "A repeated digit in a row, column, or box is invalid.",
+        },
+      ],
+      code: `class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        vector<set<char>> rows(9), cols(9), boxes(9);
+
+        for (int i = 0; i < 9; i++) { // O(1) — fixed 9x9
+            for (int j = 0; j < 9; j++) {
+                char c = board[i][j];
+                if (c == '.') continue;
+                int b = (i / 3) * 3 + j / 3; // box index 0..8
+                if (rows[i].count(c) || cols[j].count(c) || boxes[b].count(c))
+                    return false;
+                rows[i].insert(c); cols[j].insert(c); boxes[b].insert(c);
+            }
+        }
+
+        return true;
+    }
+};`,
+      timeComplexity: "O(1)",
+      spaceComplexity: "O(1)",
+      notes: `- Track seen digits per row, per column, and per 3×3 box.
+- Box index is \`(i/3)*3 + j/3\`; a repeat in any set means invalid.
+- Fixed 9×9 board → constant time and space.`,
+    },
   ],
 }
