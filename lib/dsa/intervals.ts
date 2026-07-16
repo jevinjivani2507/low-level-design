@@ -220,5 +220,59 @@ public:
 - A start before the earliest unfreed end needs a new room; otherwise reuse one.
 - The running max of concurrent meetings is the number of rooms needed.`,
     },
+    {
+      id: "minimum-interval-to-include-each-query",
+      title: "Minimum Interval to Include Each Query",
+      difficulty: "Hard",
+      leetcodeUrl:
+        "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
+      tags: ["neetcode-150"],
+      question:
+        "Given intervals and queries, for each query return the size of the smallest interval that contains it (left ≤ query ≤ right), or -1 if none does.",
+      testCases: [
+        {
+          input: "intervals = [[1,4],[2,4],[3,6],[4,4]], queries = [2,3,4,5]",
+          output: "[3,3,1,4]",
+        },
+        {
+          input:
+            "intervals = [[2,3],[2,5],[1,8],[20,25]], queries = [2,19,5,22]",
+          output: "[2,-1,4,6]",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> minInterval(vector<vector<int>>& intervals,
+                            vector<int>& queries) {
+        sort(intervals.begin(), intervals.end()); // O(N log N) by start
+
+        vector<pair<int, int>> q; // {query value, original index}
+        for (int i = 0; i < (int)queries.size(); i++) q.push_back({queries[i], i});
+        sort(q.begin(), q.end()); // O(Q log Q)
+
+        vector<int> res(queries.size(), -1);
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {size, end}
+        int i = 0, n = intervals.size();
+
+        for (auto& [query, idx] : q) { // O((N+Q) log N)
+            while (i < n && intervals[i][0] <= query) { // add all started intervals
+                int size = intervals[i][1] - intervals[i][0] + 1;
+                pq.push({size, intervals[i][1]});
+                i++;
+            }
+            while (!pq.empty() && pq.top().second < query) pq.pop(); // expired
+            res[idx] = pq.empty() ? -1 : pq.top().first;
+        }
+
+        return res;
+    }
+};`,
+      timeComplexity: "O((N + Q) log N)",
+      spaceComplexity: "O(N + Q)",
+      notes: `- Sort queries ascending and sweep; push every interval that has started into a min-heap by size.
+- Pop intervals whose end < query (they can't contain it) before answering.
+- Smallest valid interval is the heap top; restore answers by the query's original index.`,
+    },
   ],
 }
