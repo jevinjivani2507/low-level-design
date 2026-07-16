@@ -188,7 +188,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question:
         "Given the root of a binary search tree, and an integer k, return the kth smallest value (1-indexed) of all the values of the nodes in the tree.",
       testCases: [
@@ -239,7 +239,7 @@ public:
       title: "Validate Binary Search Tree",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/validate-binary-search-tree/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question:
         "Given the root of a binary tree, determine if it is a valid binary search tree (BST). A valid BST is defined as follows: The left subtree of a node contains only nodes with keys strictly less than the node's key. The right subtree of a node contains only nodes with keys strictly greater than the node's key. Both the left and right subtrees must also be binary search trees.",
       testCases: [
@@ -291,7 +291,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question:
         "Given a binary search tree (BST), find the lowest common ancestor (LCA) node of two given nodes in the BST. According to the definition of LCA on Wikipedia: “The lowest common ancestor is defined between two nodes p and q as the lowest node in T that has both p and q as descendants (where we allow a node to be a descendant of itself).”",
       testCases: [

@@ -239,7 +239,7 @@ public:
       notes: `- BFS with a queue; snapshot \`q.size()\` at the start of each iteration to process one level at a time.
 - Each node is enqueued and dequeued exactly once → O(N) total.
 - Foundation for many BFS variants: zigzag, right-side-view, level averages, etc.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "maximum-depth-of-binary-tree",
@@ -279,7 +279,7 @@ public:
       notes: `- Recursive post-order: depth of a node = 1 + max(left depth, right depth).
 - Base case: NULL node has depth 0.
 - Classic divide-and-conquer — the pattern is reused in \`Balanced Binary Tree\` and \`Diameter of Binary Tree\`.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "balanced-binary-tree",
@@ -433,7 +433,7 @@ public:
 - At each node, the "through-root" path = left + root->val + right; update global ans.
 - Return only the best single-branch path (root + max(left, right)) for the parent to use.
 - Initialize ans to INT_MIN to handle all-negative trees.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "same-tree",
@@ -479,7 +479,7 @@ public:
       notes: `- Simultaneously recurse both trees; if both NULL they match, if only one is NULL they don't.
 - Short-circuit evaluation means we stop as soon as a mismatch is found.
 - Identical structure to \`Symmetric Tree\` — just change how left/right subtrees are paired.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "binary-tree-zigzag-level-order-traversal",
@@ -1096,7 +1096,7 @@ public:
       notes: `- Preorder[0] is always the root; find it in inorder to split into left/right subtrees.
 - Use an \`unordered_map\` for O(1) inorder index lookup — reduces overall time from O(N²) to O(N).
 - Recurse with shrinking [start, end] bounds in inorder; advance \`idx\` in preorder each call.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "construct-binary-tree-from-inorder-and-postorder-traversal",
@@ -1242,7 +1242,7 @@ public:
 - Deserialize by reading tokens in the same BFS order and assigning left/right children from the queue.
 - Null nodes are encoded but not enqueued, so the queue only holds actual nodes.
 - Level-order format matches LeetCode's own tree serialization.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
     },
     {
       id: "flatten-binary-tree-to-linked-list",
@@ -1297,6 +1297,98 @@ public:
 - This is the O(H) space recursive approach; an O(1) space iterative approach uses the "Morris" technique.
 - The resulting order is preorder (root, left, right) because we process in the reverse of that.`,
       tags: ["striver-a2z"],
+    },
+    {
+      id: "invert-binary-tree",
+      title: "Invert Binary Tree",
+      difficulty: "Easy",
+      leetcodeUrl: "https://leetcode.com/problems/invert-binary-tree/",
+      question:
+        "Given the root of a binary tree, invert it (swap every node's left and right children) and return its root.",
+      testCases: [
+        {
+          input: "root = [4,2,7,1,3,6,9]",
+          output: "[4,7,2,9,6,3,1]",
+          explanation: "",
+          trees: [[4, 2, 7, 1, 3, 6, 9]],
+        },
+        {
+          input: "root = [2,1,3]",
+          output: "[2,3,1]",
+          explanation: "",
+          trees: [[2, 1, 3]],
+        },
+      ],
+      type: "TREE",
+      code: `class Solution {
+public:
+    TreeNode* invertTree(TreeNode* root) {
+        if (!root) return nullptr;
+
+        TreeNode* left = invertTree(root->left);   // O(N) total
+        TreeNode* right = invertTree(root->right);
+
+        root->left = right; // swap the two subtrees
+        root->right = left;
+        return root;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Recursively invert both subtrees, then swap them at the current node.
+- Works bottom-up; visiting each node once gives O(N).
+- Recursion depth is the tree height H — O(H) stack space.`,
+      tags: ["blind-75"],
+    },
+    {
+      id: "subtree-of-another-tree",
+      title: "Subtree of Another Tree",
+      difficulty: "Easy",
+      leetcodeUrl: "https://leetcode.com/problems/subtree-of-another-tree/",
+      question:
+        "Given the roots of two binary trees root and subRoot, return true if there is a subtree of root with the same structure and node values as subRoot.",
+      testCases: [
+        {
+          input: "root = [3,4,5,1,2], subRoot = [4,1,2]",
+          output: "true",
+          explanation: "",
+          trees: [
+            [3, 4, 5, 1, 2],
+            [4, 1, 2],
+          ],
+        },
+        {
+          input: "root = [3,4,5,1,2,null,null,null,null,0], subRoot = [4,1,2]",
+          output: "false",
+          explanation: "",
+          trees: [
+            [3, 4, 5, 1, 2, null, null, null, null, 0],
+            [4, 1, 2],
+          ],
+        },
+      ],
+      type: "TREE",
+      code: `class Solution {
+public:
+    bool sameTree(TreeNode* a, TreeNode* b) {
+        if (!a && !b) return true;
+        if (!a || !b || a->val != b->val) return false;
+        return sameTree(a->left, b->left) && sameTree(a->right, b->right);
+    }
+
+    bool isSubtree(TreeNode* root, TreeNode* subRoot) {
+        if (!root) return false;
+        if (sameTree(root, subRoot)) return true; // match rooted here?
+        return isSubtree(root->left, subRoot)
+            || isSubtree(root->right, subRoot);   // else recurse into children
+    }
+};`,
+      timeComplexity: "O(N × M)",
+      spaceComplexity: "O(H)",
+      notes: `- At every node of root, test whether the subtree there equals subRoot via \`sameTree\`.
+- \`sameTree\` compares structure and values in lockstep, failing on any mismatch.
+- N nodes × O(M) comparison → O(N × M); string-serialization + KMP gives O(N + M).`,
+      tags: ["blind-75"],
     },
   ],
 }

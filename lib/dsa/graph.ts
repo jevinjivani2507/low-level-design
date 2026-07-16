@@ -624,7 +624,7 @@ public:
       title: "Number of Islands",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/number-of-islands/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question:
         "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
       testCases: [
@@ -793,7 +793,7 @@ public:
       title: "Course Schedule",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/course-schedule/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question:
         "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1. Return true if you can finish all courses. Otherwise, return false.",
       testCases: [
@@ -996,7 +996,7 @@ public:
       title: "Alien Dictionary",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/alien-dictionary/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "blind-75"],
       question: "",
       testCases: [],
       code: "",
@@ -1512,6 +1512,201 @@ public:
       timeComplexity: "",
       spaceComplexity: "",
       notes: "",
+    },
+    {
+      id: "clone-graph",
+      title: "Clone Graph",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/clone-graph/",
+      tags: ["blind-75"],
+      question:
+        "Given a reference to a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node holds a value and a list of neighbors.",
+      testCases: [
+        {
+          input: "adjList = [[2,4],[1,3],[2,4],[1,3]]",
+          output: "[[2,4],[1,3],[2,4],[1,3]]",
+          explanation:
+            "4 nodes in a cycle 1-2-3-4-1; the clone has the same structure.",
+        },
+        {
+          input: "adjList = [[]]",
+          output: "[[]]",
+          explanation: "A single node with no neighbors.",
+        },
+      ],
+      code: `class Solution {
+public:
+    Node* clone(Node* node, unordered_map<Node*, Node*>& seen) {
+        if (!node) return nullptr;
+        if (seen.count(node)) return seen[node]; // O(1) avg — already cloned
+
+        Node* copy = new Node(node->val);
+        seen[node] = copy; // record before recursing to break cycles
+
+        for (Node* nei : node->neighbors) {
+            copy->neighbors.push_back(clone(nei, seen));
+        }
+        return copy;
+    }
+
+    Node* cloneGraph(Node* node) {
+        unordered_map<Node*, Node*> seen;
+        return clone(node, seen);
+    }
+};`,
+      timeComplexity: "O(V + E)",
+      spaceComplexity: "O(V)",
+      notes: `- DFS the graph, mapping each original node to its clone in a hash map.
+- Record the clone before recursing into neighbors so cycles don't infinite-loop.
+- Visiting each node and edge once gives O(V + E).`,
+    },
+    {
+      id: "pacific-atlantic-water-flow",
+      title: "Pacific Atlantic Water Flow",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+      tags: ["blind-75"],
+      question:
+        "Given an m × n grid of heights, water flows to neighbors of equal or lower height. The Pacific touches the top and left edges, the Atlantic the bottom and right. Return all cells from which water can reach both oceans.",
+      testCases: [
+        {
+          input:
+            "heights = [[1,2,2,3,5],[3,2,3,4,4],[2,4,5,3,1],[6,7,1,4,5],[5,1,1,2,4]]",
+          output: "[[0,4],[1,3],[1,4],[2,2],[3,0],[3,1],[4,0]]",
+        },
+        {
+          input: "heights = [[1]]",
+          output: "[[0,0]]",
+        },
+      ],
+      code: `class Solution {
+public:
+    void dfs(vector<vector<int>>& h, int i, int j,
+             vector<vector<bool>>& vis, int prev) {
+        int m = h.size(), n = h[0].size();
+        if (i < 0 || j < 0 || i >= m || j >= n) return;
+        if (vis[i][j] || h[i][j] < prev) return; // can't flow uphill
+
+        vis[i][j] = true;
+        dfs(h, i + 1, j, vis, h[i][j]);
+        dfs(h, i - 1, j, vis, h[i][j]);
+        dfs(h, i, j + 1, vis, h[i][j]);
+        dfs(h, i, j - 1, vis, h[i][j]);
+    }
+
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        int m = heights.size(), n = heights[0].size();
+        vector<vector<bool>> pac(m, vector<bool>(n, false));
+        vector<vector<bool>> atl(m, vector<bool>(n, false));
+
+        for (int i = 0; i < m; i++) { // left & right edges
+            dfs(heights, i, 0, pac, INT_MIN);
+            dfs(heights, i, n - 1, atl, INT_MIN);
+        }
+        for (int j = 0; j < n; j++) { // top & bottom edges
+            dfs(heights, 0, j, pac, INT_MIN);
+            dfs(heights, m - 1, j, atl, INT_MIN);
+        }
+
+        vector<vector<int>> res;
+        for (int i = 0; i < m; i++)
+            for (int j = 0; j < n; j++)
+                if (pac[i][j] && atl[i][j]) res.push_back({i, j});
+        return res;
+    }
+};`,
+      timeComplexity: "O(M × N)",
+      spaceComplexity: "O(M × N)",
+      notes: `- Reverse the flow: DFS inward from each ocean's border cells, going uphill.
+- Two visited grids mark reachability from Pacific and Atlantic separately.
+- Cells reachable in both grids are the answer — avoids simulating every source.`,
+    },
+    {
+      id: "graph-valid-tree",
+      title: "Graph Valid Tree",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/graph-valid-tree/",
+      tags: ["blind-75"],
+      question:
+        "Given n nodes labeled 0..n-1 and a list of undirected edges, determine whether they form a valid tree (connected and acyclic). LeetCode Premium.",
+      testCases: [
+        {
+          input: "n = 5, edges = [[0,1],[0,2],[0,3],[1,4]]",
+          output: "true",
+        },
+        {
+          input: "n = 5, edges = [[0,1],[1,2],[2,3],[1,3],[1,4]]",
+          output: "false",
+          explanation: "Edges [1,2],[2,3],[1,3] form a cycle.",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> parent;
+    int find(int x) { return parent[x] == x ? x : parent[x] = find(parent[x]); }
+
+    bool validTree(int n, vector<vector<int>>& edges) {
+        if ((int)edges.size() != n - 1) return false; // a tree has exactly n-1 edges
+
+        parent.resize(n);
+        for (int i = 0; i < n; i++) parent[i] = i;
+
+        for (auto& e : edges) { // O(E α(N))
+            int a = find(e[0]), b = find(e[1]);
+            if (a == b) return false; // both ends already connected → cycle
+            parent[a] = b;
+        }
+        return true;
+    }
+};`,
+      timeComplexity: "O(E α(N))",
+      spaceComplexity: "O(N)",
+      notes: `- A valid tree on n nodes has exactly n-1 edges and no cycle — check the count first.
+- Union-Find: uniting two already-connected nodes reveals a cycle.
+- With n-1 edges and no cycle, the graph is automatically connected.`,
+    },
+    {
+      id: "number-of-connected-components-in-an-undirected-graph",
+      title: "Number of Connected Components in an Undirected Graph",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
+      tags: ["blind-75"],
+      question:
+        "Given n nodes labeled 0..n-1 and a list of undirected edges, return the number of connected components in the graph. LeetCode Premium.",
+      testCases: [
+        {
+          input: "n = 5, edges = [[0,1],[1,2],[3,4]]",
+          output: "2",
+          explanation: "Components {0,1,2} and {3,4}.",
+        },
+        {
+          input: "n = 5, edges = [[0,1],[1,2],[2,3],[3,4]]",
+          output: "1",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> parent;
+    int find(int x) { return parent[x] == x ? x : parent[x] = find(parent[x]); }
+
+    int countComponents(int n, vector<vector<int>>& edges) {
+        parent.resize(n);
+        for (int i = 0; i < n; i++) parent[i] = i;
+
+        int count = n; // start with n singletons
+        for (auto& e : edges) { // O(E α(N))
+            int a = find(e[0]), b = find(e[1]);
+            if (a != b) { parent[a] = b; count--; } // merge → one fewer component
+        }
+        return count;
+    }
+};`,
+      timeComplexity: "O(E α(N))",
+      spaceComplexity: "O(N)",
+      notes: `- Union-Find: start with n components, decrement on each successful union.
+- Edges within the same component don't change the count.
+- Near-constant α(N) per op with path compression; DFS/BFS also works in O(V + E).`,
     },
   ],
 }

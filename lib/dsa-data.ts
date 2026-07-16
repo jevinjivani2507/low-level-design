@@ -3,7 +3,17 @@ import { binarySearch } from "./dsa/binary-search"
 import { binaryTree } from "./dsa/binary-tree"
 import { binarySearchTree } from "./dsa/binary-search-tree"
 import { graph } from "./dsa/graph"
-export const tags: string[] = ["striver-a2z", "neetcode-150"]
+import { array } from "./dsa/array"
+import { bitManipulation } from "./dsa/bit-manipulation"
+import { dynamicProgramming } from "./dsa/dynamic-programming"
+import { intervals } from "./dsa/intervals"
+import { linkedList } from "./dsa/linked-list"
+import { matrix } from "./dsa/matrix"
+import { heap } from "./dsa/heap"
+import { stack } from "./dsa/stack"
+import { string } from "./dsa/string"
+import { trie } from "./dsa/trie"
+export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
 export type DsaQuestionDisplayType = "TREE"
@@ -57,9 +67,19 @@ export interface DsaTopic {
 }
 
 export const dsaTopics: DsaTopic[] = [
+  array,
   slidingWindow,
   binarySearch,
   binaryTree,
   binarySearchTree,
   graph,
+  bitManipulation,
+  dynamicProgramming,
+  intervals,
+  linkedList,
+  matrix,
+  heap,
+  stack,
+  string,
+  trie,
 ]

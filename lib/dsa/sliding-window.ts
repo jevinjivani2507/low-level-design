@@ -63,7 +63,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
-      tags: ["striver-a2z", "neetcode-150"],
+      tags: ["striver-a2z", "neetcode-150", "blind-75"],
       question:
         "Given a string s, find the length of the longest substring without duplicate characters.",
       testCases: [
@@ -262,7 +262,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-repeating-character-replacement/",
-      tags: ["striver-a2z", "neetcode-150"],
+      tags: ["striver-a2z", "neetcode-150", "blind-75"],
       question:
         "You are given a string s and an integer k. You can choose any character of the string and change it to any other uppercase English character. You can perform this operation at most k times. Return the length of the longest substring containing the same letter you can get after performing the above operations.",
       testCases: [
@@ -720,7 +720,7 @@ public:
       title: "Minimum Window Substring",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/minimum-window-substring/",
-      tags: ["striver-a2z", "neetcode-150"],
+      tags: ["striver-a2z", "neetcode-150", "blind-75"],
       question:
         'Given two strings s and t of lengths m and n respectively, return the minimum window substring of s such that every character in t (including duplicates) is included in the window. If there is no such substring, return the empty string "". The testcases will be generated such that the answer is unique.',
       testCases: [
@@ -982,7 +982,7 @@ public:
       title: "3Sum",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/3sum/",
-      tags: ["neetcode-150"],
+      tags: ["neetcode-150", "blind-75"],
       question:
         "Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0. Notice that the solution set must not contain duplicate triplets.",
       testCases: [
@@ -1052,7 +1052,7 @@ public:
       title: "Container With Most Water",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/container-with-most-water/",
-      tags: ["neetcode-150"],
+      tags: ["neetcode-150", "blind-75"],
       question:
         "You are given an integer array height of length n. There are n vertical lines drawn such that the two endpoints of the ith line are (i, 0) and (i, height[i]). Find two lines that together with the x-axis form a container, such that the container contains the most water. Return the maximum amount of water a container can store. Notice that you may not slant the container.",
       testCases: [
