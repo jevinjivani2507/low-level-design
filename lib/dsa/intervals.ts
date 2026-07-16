@@ -8,7 +8,7 @@ export const intervals: DsaTopic = {
       title: "Insert Interval",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/insert-interval/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a list of non-overlapping intervals sorted by start and a new interval, insert it and merge any overlaps. Return the resulting list of non-overlapping intervals.",
       testCases: [
@@ -59,7 +59,7 @@ public:
       title: "Merge Intervals",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/merge-intervals/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of intervals, merge all overlapping intervals and return the non-overlapping intervals that cover all the input ranges.",
       testCases: [
@@ -101,7 +101,7 @@ public:
       title: "Non-overlapping Intervals",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/non-overlapping-intervals/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of intervals, return the minimum number of intervals you must remove so that the rest are non-overlapping.",
       testCases: [
@@ -141,7 +141,7 @@ public:
       title: "Meeting Rooms",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/meeting-rooms/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of meeting time intervals, determine if a person could attend all meetings (no two meetings overlap). LeetCode Premium.",
       testCases: [
@@ -178,7 +178,7 @@ public:
       title: "Meeting Rooms II",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/meeting-rooms-ii/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of meeting time intervals, return the minimum number of conference rooms required. LeetCode Premium.",
       testCases: [
@@ -219,6 +219,60 @@ public:
       notes: `- Separate and sort start and end times; sweep both with two pointers.
 - A start before the earliest unfreed end needs a new room; otherwise reuse one.
 - The running max of concurrent meetings is the number of rooms needed.`,
+    },
+    {
+      id: "minimum-interval-to-include-each-query",
+      title: "Minimum Interval to Include Each Query",
+      difficulty: "Hard",
+      leetcodeUrl:
+        "https://leetcode.com/problems/minimum-interval-to-include-each-query/",
+      tags: ["neetcode-150"],
+      question:
+        "Given intervals and queries, for each query return the size of the smallest interval that contains it (left ≤ query ≤ right), or -1 if none does.",
+      testCases: [
+        {
+          input: "intervals = [[1,4],[2,4],[3,6],[4,4]], queries = [2,3,4,5]",
+          output: "[3,3,1,4]",
+        },
+        {
+          input:
+            "intervals = [[2,3],[2,5],[1,8],[20,25]], queries = [2,19,5,22]",
+          output: "[2,-1,4,6]",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> minInterval(vector<vector<int>>& intervals,
+                            vector<int>& queries) {
+        sort(intervals.begin(), intervals.end()); // O(N log N) by start
+
+        vector<pair<int, int>> q; // {query value, original index}
+        for (int i = 0; i < (int)queries.size(); i++) q.push_back({queries[i], i});
+        sort(q.begin(), q.end()); // O(Q log Q)
+
+        vector<int> res(queries.size(), -1);
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {size, end}
+        int i = 0, n = intervals.size();
+
+        for (auto& [query, idx] : q) { // O((N+Q) log N)
+            while (i < n && intervals[i][0] <= query) { // add all started intervals
+                int size = intervals[i][1] - intervals[i][0] + 1;
+                pq.push({size, intervals[i][1]});
+                i++;
+            }
+            while (!pq.empty() && pq.top().second < query) pq.pop(); // expired
+            res[idx] = pq.empty() ? -1 : pq.top().first;
+        }
+
+        return res;
+    }
+};`,
+      timeComplexity: "O((N + Q) log N)",
+      spaceComplexity: "O(N + Q)",
+      notes: `- Sort queries ascending and sweep; push every interval that has started into a min-heap by size.
+- Pop intervals whose end < query (they can't contain it) before answering.
+- Smallest valid interval is the heap top; restore answers by the query's original index.`,
     },
   ],
 }

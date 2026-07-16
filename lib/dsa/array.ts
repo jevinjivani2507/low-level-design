@@ -8,7 +8,7 @@ export const array: DsaTopic = {
       title: "Two Sum",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/two-sum/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to target. Exactly one solution exists and you may not use the same element twice.",
       testCases: [
@@ -50,7 +50,7 @@ public:
       difficulty: "Easy",
       leetcodeUrl:
         "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "You are given an array prices where prices[i] is the price of a stock on day i. Maximize profit by buying on one day and selling on a later day. Return the max profit, or 0 if none is possible.",
       testCases: [
@@ -90,7 +90,7 @@ public:
       title: "Contains Duplicate",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/contains-duplicate/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, return true if any value appears at least twice, and false if every element is distinct.",
       testCases: [
@@ -128,7 +128,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/product-of-array-except-self/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, return an array answer where answer[i] is the product of all elements except nums[i]. Solve in O(N) without division.",
       testCases: [
@@ -173,7 +173,7 @@ public:
       title: "Maximum Subarray",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/maximum-subarray/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, find the contiguous subarray with the largest sum and return that sum.",
       testCases: [
@@ -212,7 +212,7 @@ public:
       title: "Maximum Product Subarray",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/maximum-product-subarray/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an integer array nums, find the contiguous subarray with the largest product and return that product.",
       testCases: [
@@ -257,7 +257,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/longest-consecutive-sequence/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an unsorted array of integers nums, return the length of the longest run of consecutive integers. Solve in O(N).",
       testCases: [
@@ -297,6 +297,51 @@ public:
       notes: `- Put all values in a hash set for O(1) membership tests.
 - Only start counting from a sequence start (no \`x - 1\` present) so each run is walked once.
 - The inner while runs O(N) total across the whole loop, keeping it linear overall.`,
+    },
+    {
+      id: "valid-sudoku",
+      title: "Valid Sudoku",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/valid-sudoku/",
+      tags: ["neetcode-150"],
+      question:
+        "Determine if a 9 × 9 Sudoku board is valid: each row, each column, and each 3 × 3 sub-box must contain the digits 1-9 without repetition. Only filled cells are checked.",
+      testCases: [
+        {
+          input:
+            'board = [["5","3",".",".","7",...],...] (valid partially filled board)',
+          output: "true",
+        },
+        {
+          input: "board with two 8s in the top-left box",
+          output: "false",
+          explanation: "A repeated digit in a row, column, or box is invalid.",
+        },
+      ],
+      code: `class Solution {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        vector<set<char>> rows(9), cols(9), boxes(9);
+
+        for (int i = 0; i < 9; i++) { // O(1) — fixed 9x9
+            for (int j = 0; j < 9; j++) {
+                char c = board[i][j];
+                if (c == '.') continue;
+                int b = (i / 3) * 3 + j / 3; // box index 0..8
+                if (rows[i].count(c) || cols[j].count(c) || boxes[b].count(c))
+                    return false;
+                rows[i].insert(c); cols[j].insert(c); boxes[b].insert(c);
+            }
+        }
+
+        return true;
+    }
+};`,
+      timeComplexity: "O(1)",
+      spaceComplexity: "O(1)",
+      notes: `- Track seen digits per row, per column, and per 3×3 box.
+- Box index is \`(i/3)*3 + j/3\`; a repeat in any set means invalid.
+- Fixed 9×9 board → constant time and space.`,
     },
   ],
 }

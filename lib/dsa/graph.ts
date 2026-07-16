@@ -89,7 +89,7 @@ public:
       title: "Rotting Oranges",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/rotting-oranges/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given an m x n grid where each cell can have one of three values: 0 representing an empty cell, 1 representing a fresh orange, or 2 representing a rotten orange. Every minute, any fresh orange that is 4-directionally adjacent to a rotten orange becomes rotten. Return the minimum number of minutes that must elapse until no cell has a fresh orange. If this is impossible, return -1.",
       testCases: [
@@ -331,7 +331,7 @@ public:
       title: "Surrounded Regions",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/surrounded-regions/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given an m x n matrix board containing letters 'X' and 'O', capture regions that are surrounded: Connect: A cell is connected to adjacent cells horizontally or vertically. Region: To form a region connect every 'O' cell. Surround: A region is surrounded if none of the 'O' cells in that region are on the edge of the board. Such regions are completely enclosed by 'X' cells. To capture a surrounded region, replace all 'O's with 'X's in-place within the original board. You do not need to return anything.",
       testCases: [
@@ -525,7 +525,7 @@ public:
       title: "Word Ladder",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/word-ladder/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "A transformation sequence from word beginWord to word endWord using a dictionary wordList is a sequence of words beginWord -> s1 -> s2 -> ... -> sk such that: Every adjacent pair of words differs by a single letter. Every si for 1 <= i <= k is in wordList. Note that beginWord does not need to be in wordList. sk == endWord Given two words, beginWord and endWord, and a dictionary wordList, return the number of words in the shortest transformation sequence from beginWord to endWord, or 0 if no such sequence exists.",
       testCases: [
@@ -624,7 +624,7 @@ public:
       title: "Number of Islands",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/number-of-islands/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question:
         "Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), return the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.",
       testCases: [
@@ -793,7 +793,7 @@ public:
       title: "Course Schedule",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/course-schedule/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question:
         "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1. Return true if you can finish all courses. Otherwise, return false.",
       testCases: [
@@ -859,7 +859,7 @@ public:
       title: "Course Schedule II",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/course-schedule-ii/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "There are a total of numCourses courses you have to take, labeled from 0 to numCourses - 1. You are given an array prerequisites where prerequisites[i] = [ai, bi] indicates that you must take course bi first if you want to take course ai. For example, the pair [0, 1], indicates that to take course 0 you have to first take course 1. Return the ordering of courses you should take to finish all courses. If there are many valid answers, return any of them. If it is impossible to finish all courses, return an empty array.",
       testCases: [
@@ -996,7 +996,7 @@ public:
       title: "Alien Dictionary",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/alien-dictionary/",
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
       question: "",
       testCases: [],
       code: "",
@@ -1217,7 +1217,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "There are n cities connected by some number of flights. You are given an array flights where flights[i] = [fromi, toi, pricei] indicates that there is a flight from city fromi to city toi with cost pricei. You are also given three integers src, dst, and k, return the cheapest price from src to dst with at most k stops. If there is no such route, return -1.",
       testCases: [
@@ -1319,7 +1319,7 @@ public:
       title: "Network Delay Time",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/network-delay-time/",
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
       question:
         "You are given a network of n nodes, labeled from 1 to n. You are also given times, a list of travel times as directed edges times[i] = (ui, vi, wi), where ui is the source node, vi is the target node, and wi is the time it takes for a signal to travel from source to target. We will send a signal from a given node k. Return the minimum time it takes for all the n nodes to receive the signal. If it is impossible for all the n nodes to receive the signal, return -1.",
       testCases: [
@@ -1518,7 +1518,7 @@ public:
       title: "Clone Graph",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/clone-graph/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given a reference to a node in a connected undirected graph, return a deep copy (clone) of the graph. Each node holds a value and a list of neighbors.",
       testCases: [
@@ -1565,7 +1565,7 @@ public:
       title: "Pacific Atlantic Water Flow",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/pacific-atlantic-water-flow/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n grid of heights, water flows to neighbors of equal or lower height. The Pacific touches the top and left edges, the Atlantic the bottom and right. Return all cells from which water can reach both oceans.",
       testCases: [
@@ -1626,7 +1626,7 @@ public:
       title: "Graph Valid Tree",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/graph-valid-tree/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given n nodes labeled 0..n-1 and a list of undirected edges, determine whether they form a valid tree (connected and acyclic). LeetCode Premium.",
       testCases: [
@@ -1671,7 +1671,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/number-of-connected-components-in-an-undirected-graph/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given n nodes labeled 0..n-1 and a list of undirected edges, return the number of connected components in the graph. LeetCode Premium.",
       testCases: [
@@ -1707,6 +1707,278 @@ public:
       notes: `- Union-Find: start with n components, decrement on each successful union.
 - Edges within the same component don't change the count.
 - Near-constant α(N) per op with path compression; DFS/BFS also works in O(V + E).`,
+    },
+    {
+      id: "max-area-of-island",
+      title: "Max Area of Island",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/max-area-of-island/",
+      tags: ["neetcode-150"],
+      question:
+        "Given an m × n binary grid, return the area of the largest island (group of 1s connected 4-directionally), or 0 if there is none.",
+      testCases: [
+        {
+          input: "grid = [[0,0,1,0,0],[0,0,0,0,0],[0,1,1,0,1],[0,1,0,0,1]]",
+          output: "3",
+        },
+        { input: "grid = [[0,0,0],[0,0,0]]", output: "0" },
+      ],
+      code: `class Solution {
+public:
+    int dfs(vector<vector<int>>& grid, int i, int j) {
+        int m = grid.size(), n = grid[0].size();
+        if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 0) return 0;
+        grid[i][j] = 0; // sink to avoid recount
+        return 1 + dfs(grid, i + 1, j) + dfs(grid, i - 1, j)
+                 + dfs(grid, i, j + 1) + dfs(grid, i, j - 1);
+    }
+
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int res = 0;
+        for (int i = 0; i < (int)grid.size(); i++) // O(M × N)
+            for (int j = 0; j < (int)grid[0].size(); j++)
+                if (grid[i][j] == 1) res = max(res, dfs(grid, i, j));
+        return res;
+    }
+};`,
+      timeComplexity: "O(M × N)",
+      spaceComplexity: "O(M × N)",
+      notes: `- Flood-fill each unvisited land cell, counting its area and sinking it to 0.
+- Track the running maximum island area.
+- Every cell is visited once → linear in the grid size.`,
+    },
+    {
+      id: "walls-and-gates",
+      title: "Walls and Gates",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/walls-and-gates/",
+      tags: ["neetcode-150"],
+      question:
+        "Fill each empty room (INF) with the distance to its nearest gate (0); walls are -1. Unreachable rooms stay INF. LeetCode Premium.",
+      testCases: [
+        {
+          input:
+            "rooms = [[INF,-1,0,INF],[INF,INF,INF,-1],[INF,-1,INF,-1],[0,-1,INF,INF]]",
+          output: "[[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]]",
+        },
+      ],
+      code: `class Solution {
+public:
+    void wallsAndGates(vector<vector<int>>& rooms) {
+        int m = rooms.size(), n = rooms[0].size();
+        queue<pair<int, int>> q;
+        for (int i = 0; i < m; i++) // seed BFS from every gate
+            for (int j = 0; j < n; j++)
+                if (rooms[i][j] == 0) q.push({i, j});
+
+        int dirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        while (!q.empty()) { // O(M × N)
+            auto [i, j] = q.front(); q.pop();
+            for (auto& d : dirs) {
+                int ni = i + d[0], nj = j + d[1];
+                if (ni >= 0 && nj >= 0 && ni < m && nj < n && rooms[ni][nj] == INT_MAX) {
+                    rooms[ni][nj] = rooms[i][j] + 1;
+                    q.push({ni, nj});
+                }
+            }
+        }
+    }
+};`,
+      timeComplexity: "O(M × N)",
+      spaceComplexity: "O(M × N)",
+      notes: `- Multi-source BFS from all gates at once gives each room its nearest gate distance.
+- First time a room is reached is its shortest distance, so no revisits.
+- Walls (-1) and already-filled rooms are skipped by the INF check.`,
+    },
+    {
+      id: "redundant-connection",
+      title: "Redundant Connection",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/redundant-connection/",
+      tags: ["neetcode-150"],
+      question:
+        "A tree of n nodes had one extra edge added, forming exactly one cycle. Return the edge that can be removed so the result is a tree (the last such edge in input order).",
+      testCases: [
+        {
+          input: "edges = [[1,2],[1,3],[2,3]]",
+          output: "[2,3]",
+        },
+        {
+          input: "edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]",
+          output: "[1,4]",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> parent;
+    int find(int x) { return parent[x] == x ? x : parent[x] = find(parent[x]); }
+
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        parent.resize(edges.size() + 1);
+        for (int i = 0; i < (int)parent.size(); i++) parent[i] = i;
+
+        for (auto& e : edges) { // O(E α(N))
+            int a = find(e[0]), b = find(e[1]);
+            if (a == b) return e; // endpoints already connected → this edge closes the cycle
+            parent[a] = b;
+        }
+        return {};
+    }
+};`,
+      timeComplexity: "O(E α(N))",
+      spaceComplexity: "O(N)",
+      notes: `- Union-Find each edge; the first edge whose endpoints already share a root is redundant.
+- Scanning in input order returns the last edge of the cycle as required.
+- Path compression keeps each union/find near O(1).`,
+    },
+    {
+      id: "reconstruct-itinerary",
+      title: "Reconstruct Itinerary",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/reconstruct-itinerary/",
+      tags: ["neetcode-150"],
+      question:
+        "Given airline tickets [from, to], reconstruct the itinerary starting from 'JFK', using every ticket exactly once. Return the lexicographically smallest valid itinerary.",
+      testCases: [
+        {
+          input:
+            'tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]',
+          output: '["JFK","MUC","LHR","SFO","SJC"]',
+        },
+        {
+          input:
+            'tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]',
+          output: '["JFK","ATL","JFK","SFO","ATL","SFO"]',
+        },
+      ],
+      code: `class Solution {
+public:
+    unordered_map<string, multiset<string>> graph; // sorted destinations
+    vector<string> res;
+
+    void dfs(const string& airport) {
+        auto& dests = graph[airport];
+        while (!dests.empty()) {                 // Hierholzer: consume edges
+            string next = *dests.begin();
+            dests.erase(dests.begin());
+            dfs(next);
+        }
+        res.push_back(airport); // post-order → route in reverse
+    }
+
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        for (auto& t : tickets) graph[t[0]].insert(t[1]);
+        dfs("JFK");
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};`,
+      timeComplexity: "O(E log E)",
+      spaceComplexity: "O(E)",
+      notes: `- Eulerian path via Hierholzer's algorithm; a multiset keeps destinations sorted.
+- Always take the smallest next airport; append on the way back (post-order).
+- Reverse the post-order list to get the final itinerary.`,
+    },
+    {
+      id: "min-cost-to-connect-all-points",
+      title: "Min Cost to Connect All Points",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+      tags: ["neetcode-150"],
+      question:
+        "Given points on a plane, connect all of them with minimum total Manhattan-distance cost so every pair is reachable (a minimum spanning tree).",
+      testCases: [
+        {
+          input: "points = [[0,0],[2,2],[3,10],[5,2],[7,0]]",
+          output: "20",
+        },
+        {
+          input: "points = [[3,12],[-2,5],[-4,1]]",
+          output: "18",
+        },
+      ],
+      code: `class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<bool> inMST(n, false);
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {cost, node}
+        pq.push({0, 0});
+
+        int total = 0, used = 0;
+        while (used < n) { // Prim's, O(N² log N)
+            auto [cost, u] = pq.top(); pq.pop();
+            if (inMST[u]) continue;
+            inMST[u] = true; total += cost; used++;
+            for (int v = 0; v < n; v++) {
+                if (!inMST[v]) {
+                    int d = abs(points[u][0] - points[v][0])
+                          + abs(points[u][1] - points[v][1]);
+                    pq.push({d, v});
+                }
+            }
+        }
+
+        return total;
+    }
+};`,
+      timeComplexity: "O(N² log N)",
+      spaceComplexity: "O(N²)",
+      notes: `- Prim's MST: grow the tree by always adding the cheapest edge to a new node.
+- Edge weight is Manhattan distance; a min-heap picks the next cheapest frontier edge.
+- Skip nodes already in the MST when they resurface in the heap.`,
+    },
+    {
+      id: "swim-in-rising-water",
+      title: "Swim in Rising Water",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/swim-in-rising-water/",
+      tags: ["neetcode-150"],
+      question:
+        "In an n × n grid of elevations, at time t water level is t and you can move between cells with elevation ≤ t. Return the least time to reach the bottom-right from the top-left.",
+      testCases: [
+        {
+          input: "grid = [[0,2],[1,3]]",
+          output: "3",
+        },
+        {
+          input:
+            "grid = [[0,1,2,3,4],[24,23,22,21,5],[12,13,14,15,16],[11,17,18,19,20],[10,9,8,7,6]]",
+          output: "16",
+        },
+      ],
+      code: `class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {time so far, r*n+c}
+        vector<vector<bool>> vis(n, vector<bool>(n, false));
+        pq.push({grid[0][0], 0});
+        int dirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        while (!pq.empty()) { // Dijkstra-style, O(N² log N)
+            auto [t, pos] = pq.top(); pq.pop();
+            int r = pos / n, c = pos % n;
+            if (vis[r][c]) continue;
+            vis[r][c] = true;
+            if (r == n - 1 && c == n - 1) return t;
+            for (auto& d : dirs) {
+                int nr = r + d[0], nc = c + d[1];
+                if (nr >= 0 && nc >= 0 && nr < n && nc < n && !vis[nr][nc])
+                    pq.push({max(t, grid[nr][nc]), nr * n + nc}); // path cost = max cell
+            }
+        }
+        return -1;
+    }
+};`,
+      timeComplexity: "O(N² log N)",
+      spaceComplexity: "O(N²)",
+      notes: `- Minimize the maximum elevation along a path — a min-heap Dijkstra variant.
+- A path's "time" is the largest cell value on it; expand the smallest such frontier.
+- First time the target pops is the answer.`,
     },
   ],
 }

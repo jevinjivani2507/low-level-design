@@ -239,7 +239,7 @@ public:
       notes: `- BFS with a queue; snapshot \`q.size()\` at the start of each iteration to process one level at a time.
 - Each node is enqueued and dequeued exactly once → O(N) total.
 - Foundation for many BFS variants: zigzag, right-side-view, level averages, etc.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "maximum-depth-of-binary-tree",
@@ -279,7 +279,7 @@ public:
       notes: `- Recursive post-order: depth of a node = 1 + max(left depth, right depth).
 - Base case: NULL node has depth 0.
 - Classic divide-and-conquer — the pattern is reused in \`Balanced Binary Tree\` and \`Diameter of Binary Tree\`.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "balanced-binary-tree",
@@ -332,7 +332,7 @@ public:
       notes: `- Use -1 as a sentinel to propagate "unbalanced" up the tree — avoids recomputing heights.
 - A naive O(N²) solution calls height() at every node; this post-order DFS is O(N) by doing it in one pass.
 - A node is unbalanced if either child returned -1 or the height difference exceeds 1.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
     },
     {
       id: "diameter-of-binary-tree",
@@ -382,7 +382,7 @@ public:
       notes: `- Diameter through a node = left height + right height; track the global max via a reference parameter.
 - The helper returns the height (longest path going down), not the diameter.
 - Same pattern as \`Binary Tree Maximum Path Sum\` — compute the "through-root" value locally, propagate the "chain" value upward.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
     },
     {
       id: "binary-tree-maximum-path-sum",
@@ -433,7 +433,7 @@ public:
 - At each node, the "through-root" path = left + root->val + right; update global ans.
 - Return only the best single-branch path (root + max(left, right)) for the parent to use.
 - Initialize ans to INT_MIN to handle all-negative trees.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "same-tree",
@@ -479,7 +479,7 @@ public:
       notes: `- Simultaneously recurse both trees; if both NULL they match, if only one is NULL they don't.
 - Short-circuit evaluation means we stop as soon as a mismatch is found.
 - Identical structure to \`Symmetric Tree\` — just change how left/right subtrees are paired.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "binary-tree-zigzag-level-order-traversal",
@@ -691,7 +691,7 @@ public:
       notes: `- BFS level order; at the end of processing each level, the last dequeued node is the rightmost.
 - No special reversal needed — \`node\` naturally holds the last node after the inner loop.
 - For left-side view, collect the first node of each level instead of the last.`,
-      tags: ["striver-a2z"],
+      tags: ["striver-a2z", "neetcode-150"],
     },
     {
       id: "symmetric-tree",
@@ -1096,7 +1096,7 @@ public:
       notes: `- Preorder[0] is always the root; find it in inorder to split into left/right subtrees.
 - Use an \`unordered_map\` for O(1) inorder index lookup — reduces overall time from O(N²) to O(N).
 - Recurse with shrinking [start, end] bounds in inorder; advance \`idx\` in preorder each call.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "construct-binary-tree-from-inorder-and-postorder-traversal",
@@ -1242,7 +1242,7 @@ public:
 - Deserialize by reading tokens in the same BFS order and assigning left/right children from the queue.
 - Null nodes are encoded but not enqueued, so the queue only holds actual nodes.
 - Level-order format matches LeetCode's own tree serialization.`,
-      tags: ["striver-a2z", "blind-75"],
+      tags: ["striver-a2z", "blind-75", "neetcode-150"],
     },
     {
       id: "flatten-binary-tree-to-linked-list",
@@ -1338,7 +1338,7 @@ public:
       notes: `- Recursively invert both subtrees, then swap them at the current node.
 - Works bottom-up; visiting each node once gives O(N).
 - Recursion depth is the tree height H — O(H) stack space.`,
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
     },
     {
       id: "subtree-of-another-tree",
@@ -1388,7 +1388,53 @@ public:
       notes: `- At every node of root, test whether the subtree there equals subRoot via \`sameTree\`.
 - \`sameTree\` compares structure and values in lockstep, failing on any mismatch.
 - N nodes × O(M) comparison → O(N × M); string-serialization + KMP gives O(N + M).`,
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
+    },
+    {
+      id: "count-good-nodes-in-binary-tree",
+      title: "Count Good Nodes in Binary Tree",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
+      question:
+        "A node is good if no node on the path from the root to it has a greater value. Given a binary tree root, return the number of good nodes.",
+      testCases: [
+        {
+          input: "root = [3,1,4,3,null,1,5]",
+          output: "4",
+          explanation: "Nodes 3 (root), 4, 5, and the left 3 are good.",
+          trees: [[3, 1, 4, 3, null, 1, 5]],
+        },
+        {
+          input: "root = [3,3,null,4,2]",
+          output: "3",
+          explanation: "",
+          trees: [[3, 3, null, 4, 2]],
+        },
+      ],
+      type: "TREE",
+      code: `class Solution {
+public:
+    int dfs(TreeNode* node, int maxSoFar) {
+        if (!node) return 0;
+
+        int good = node->val >= maxSoFar ? 1 : 0; // good if not dominated
+        maxSoFar = max(maxSoFar, node->val);
+        good += dfs(node->left, maxSoFar);
+        good += dfs(node->right, maxSoFar);
+        return good;
+    }
+
+    int goodNodes(TreeNode* root) {
+        return dfs(root, INT_MIN); // O(N)
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Carry the maximum value seen on the root-to-node path downward.
+- A node is good when its value ≥ that running max.
+- Single DFS visiting each node once; recursion depth is the height H.`,
+      tags: ["neetcode-150"],
     },
   ],
 }

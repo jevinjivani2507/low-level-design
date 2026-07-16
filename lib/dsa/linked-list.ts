@@ -8,7 +8,7 @@ export const linkedList: DsaTopic = {
       title: "Reverse Linked List",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/reverse-linked-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a singly linked list, reverse the list and return the new head.",
       testCases: [
@@ -47,7 +47,7 @@ public:
       title: "Linked List Cycle",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/linked-list-cycle/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a linked list, return true if the list contains a cycle (a node reachable again by following next pointers), otherwise false.",
       testCases: [
@@ -87,7 +87,7 @@ public:
       title: "Merge Two Sorted Lists",
       difficulty: "Easy",
       leetcodeUrl: "https://leetcode.com/problems/merge-two-sorted-lists/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Merge two sorted linked lists into one sorted list by splicing their nodes together, and return the head of the merged list.",
       testCases: [
@@ -127,7 +127,7 @@ public:
       title: "Merge k Sorted Lists",
       difficulty: "Hard",
       leetcodeUrl: "https://leetcode.com/problems/merge-k-sorted-lists/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an array of k sorted linked lists, merge them into one sorted linked list and return its head.",
       testCases: [
@@ -172,7 +172,7 @@ public:
       difficulty: "Medium",
       leetcodeUrl:
         "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a linked list, remove the nth node from the end and return the head. Do it in one pass.",
       testCases: [
@@ -215,7 +215,7 @@ public:
       title: "Reorder List",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/reorder-list/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given the head of a list L0 → L1 → … → Ln-1 → Ln, reorder it to L0 → Ln → L1 → Ln-1 → … in place, changing only node links.",
       testCases: [
@@ -269,6 +269,217 @@ public:
       notes: `- Three steps: find the middle, reverse the second half, then interleave.
 - Split with slow/fast pointers; cut the first half by nulling slow->next.
 - Weaving alternates one node from each half until the reversed half is consumed.`,
+    },
+    {
+      id: "copy-list-with-random-pointer",
+      title: "Copy List with Random Pointer",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/copy-list-with-random-pointer/",
+      tags: ["neetcode-150"],
+      question:
+        "A linked list where each node has a next and a random pointer (to any node or null). Return a deep copy of the list.",
+      testCases: [
+        {
+          input: "head = [[7,null],[13,0],[11,4],[10,2],[1,0]]",
+          output: "[[7,null],[13,0],[11,4],[10,2],[1,0]]",
+        },
+        { input: "head = []", output: "[]" },
+      ],
+      code: `class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        if (!head) return nullptr;
+        unordered_map<Node*, Node*> map; // original -> clone
+
+        for (Node* cur = head; cur; cur = cur->next) // O(N) create clones
+            map[cur] = new Node(cur->val);
+
+        for (Node* cur = head; cur; cur = cur->next) { // O(N) wire pointers
+            map[cur]->next = map[cur->next];     // map[nullptr] == nullptr
+            map[cur]->random = map[cur->random];
+        }
+
+        return map[head];
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N)",
+      notes: `- First pass clones every node into a map; second pass links next/random via the map.
+- \`map[nullptr]\` default-constructs to nullptr, so null pointers copy correctly.
+- An O(1)-space variant interleaves clones between originals instead of a map.`,
+    },
+    {
+      id: "add-two-numbers",
+      title: "Add Two Numbers",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/add-two-numbers/",
+      tags: ["neetcode-150"],
+      question:
+        "Two non-empty linked lists represent non-negative integers with digits in reverse order. Add them and return the sum as a linked list.",
+      testCases: [
+        {
+          input: "l1 = [2,4,3], l2 = [5,6,4]",
+          output: "[7,0,8]",
+          explanation: "342 + 465 = 807.",
+        },
+        {
+          input: "l1 = [9,9,9,9,9,9,9], l2 = [9,9,9,9]",
+          output: "[8,9,9,9,0,0,0,1]",
+        },
+      ],
+      code: `class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode dummy;
+        ListNode* tail = &dummy;
+        int carry = 0;
+
+        while (l1 || l2 || carry) { // O(max(N, M))
+            int sum = carry;
+            if (l1) { sum += l1->val; l1 = l1->next; }
+            if (l2) { sum += l2->val; l2 = l2->next; }
+            carry = sum / 10;
+            tail->next = new ListNode(sum % 10);
+            tail = tail->next;
+        }
+
+        return dummy.next;
+    }
+};`,
+      timeComplexity: "O(max(N, M))",
+      spaceComplexity: "O(max(N, M))",
+      notes: `- Digits are already reversed, so add from the heads with a running carry.
+- Loop while either list has digits or a carry remains.
+- A dummy head simplifies building the result list.`,
+    },
+    {
+      id: "find-the-duplicate-number",
+      title: "Find the Duplicate Number",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/find-the-duplicate-number/",
+      tags: ["neetcode-150"],
+      question:
+        "Given an array nums of n+1 integers where each is in [1, n], exactly one value is repeated. Find it without modifying the array and in O(1) space.",
+      testCases: [
+        { input: "nums = [1,3,4,2,2]", output: "2" },
+        { input: "nums = [3,1,3,4,2]", output: "3" },
+      ],
+      code: `class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int slow = 0, fast = 0;
+        do { // phase 1: find a meeting point inside the cycle
+            slow = nums[slow];
+            fast = nums[nums[fast]];
+        } while (slow != fast);
+
+        slow = 0;
+        while (slow != fast) { // phase 2: find the cycle entrance
+            slow = nums[slow];
+            fast = nums[fast];
+        }
+        return slow;
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(1)",
+      notes: `- Treat values as next-pointers: the duplicate creates a cycle whose entrance is the answer.
+- Floyd's algorithm: find a meeting point, then walk one pointer from the start.
+- Doesn't modify the array and uses only two indices.`,
+    },
+    {
+      id: "lru-cache",
+      title: "LRU Cache",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/lru-cache/",
+      tags: ["neetcode-150"],
+      question:
+        "Design an LRU cache with get and put in O(1). When capacity is exceeded, evict the least recently used key.",
+      testCases: [
+        {
+          input:
+            "cap=2: put(1,1), put(2,2), get(1)→1, put(3,3) evicts 2, get(2)→-1",
+          output: "1, then -1",
+        },
+      ],
+      code: `class LRUCache {
+    int cap;
+    list<pair<int, int>> dll;                              // front = most recent
+    unordered_map<int, list<pair<int, int>>::iterator> mp; // key -> node
+
+public:
+    LRUCache(int capacity) : cap(capacity) {}
+
+    int get(int key) { // O(1)
+        if (!mp.count(key)) return -1;
+        dll.splice(dll.begin(), dll, mp[key]); // move to front
+        return mp[key]->second;
+    }
+
+    void put(int key, int value) { // O(1)
+        if (mp.count(key)) {
+            mp[key]->second = value;
+            dll.splice(dll.begin(), dll, mp[key]);
+            return;
+        }
+        if ((int)dll.size() == cap) {  // evict least recently used
+            mp.erase(dll.back().first);
+            dll.pop_back();
+        }
+        dll.push_front({key, value});
+        mp[key] = dll.begin();
+    }
+};`,
+      timeComplexity: "O(1) per op",
+      spaceComplexity: "O(capacity)",
+      notes: `- Doubly linked list orders by recency; hash map gives O(1) node lookup.
+- \`splice\` moves an accessed node to the front without reallocating.
+- Evict from the back (least recent) when at capacity.`,
+    },
+    {
+      id: "reverse-nodes-in-k-group",
+      title: "Reverse Nodes in k-Group",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/reverse-nodes-in-k-group/",
+      tags: ["neetcode-150"],
+      question:
+        "Given a linked list, reverse the nodes k at a time and return the modified list. Nodes in a final group of fewer than k stay as is.",
+      testCases: [
+        {
+          input: "head = [1,2,3,4,5], k = 2",
+          output: "[2,1,4,3,5]",
+        },
+        {
+          input: "head = [1,2,3,4,5], k = 3",
+          output: "[3,2,1,4,5]",
+        },
+      ],
+      code: `class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* node = head;
+        for (int i = 0; i < k; i++) { // check there are k nodes
+            if (!node) return head;   // fewer than k → leave unchanged
+            node = node->next;
+        }
+
+        ListNode* prev = reverseKGroup(node, k); // recurse on the rest
+        ListNode* cur = head;
+        for (int i = 0; i < k; i++) { // reverse this group
+            ListNode* next = cur->next;
+            cur->next = prev;
+            prev = cur;
+            cur = next;
+        }
+        return prev; // new head of this group
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(N / k)",
+      notes: `- Verify k nodes exist; if not, return the group unreversed.
+- Reverse the current k nodes, attaching to the already-processed suffix.
+- Recursion depth is N/k; an iterative version reaches O(1) space.`,
     },
   ],
 }

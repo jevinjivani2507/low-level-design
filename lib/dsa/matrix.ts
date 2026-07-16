@@ -8,7 +8,7 @@ export const matrix: DsaTopic = {
       title: "Set Matrix Zeroes",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/set-matrix-zeroes/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n integer matrix, if an element is 0 set its entire row and column to 0. Do it in place using O(1) extra space.",
       testCases: [
@@ -61,7 +61,7 @@ public:
       title: "Spiral Matrix",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/spiral-matrix/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n matrix, return all its elements in spiral order (clockwise from the top-left).",
       testCases: [
@@ -117,7 +117,7 @@ public:
       title: "Rotate Image",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/rotate-image/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an n × n matrix representing an image, rotate it 90 degrees clockwise in place.",
       testCases: [
@@ -163,7 +163,7 @@ public:
       title: "Word Search",
       difficulty: "Medium",
       leetcodeUrl: "https://leetcode.com/problems/word-search/",
-      tags: ["blind-75"],
+      tags: ["blind-75", "neetcode-150"],
       question:
         "Given an m × n board of characters and a word, return true if the word can be formed from sequentially adjacent (horizontal or vertical) cells, using each cell at most once.",
       testCases: [
