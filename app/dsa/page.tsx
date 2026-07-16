@@ -56,23 +56,29 @@ const filterTopics = (
     .filter((topic) => topic.questions.length > 0)
 }
 
-/** Topic + index of `selected` within `filteredTopics` (same list as the table). */
-function topicQuestionContext(
-  selected: DsaQuestion | null,
-  filteredTopics: DsaTopic[]
-): { topicLabel: string; questions: DsaQuestion[]; index: number } | null {
-  if (!selected) return null
-  for (const topic of filteredTopics) {
-    const index = topic.questions.findIndex((q) => q.id === selected.id)
-    if (index !== -1) {
-      return {
+/** A question flattened with its topic and position, for cross-category nav. */
+type FlatQuestion = {
+  q: DsaQuestion
+  topicLabel: string
+  indexInTopic: number
+  topicLength: number
+}
+
+/** Flatten topics into one list (same order as the table) so navigation can
+ * continue past the end of a category into the next one. */
+function flattenTopics(topics: DsaTopic[]): FlatQuestion[] {
+  const out: FlatQuestion[] = []
+  for (const topic of topics) {
+    topic.questions.forEach((q, i) =>
+      out.push({
+        q,
         topicLabel: topic.topic,
-        questions: topic.questions,
-        index,
-      }
-    }
+        indexInTopic: i,
+        topicLength: topic.questions.length,
+      })
+    )
   }
-  return null
+  return out
 }
 
 const DsaPage = () => {
@@ -85,22 +91,33 @@ const DsaPage = () => {
     [selectedTags]
   )
 
-  const drawerNav = useMemo(
-    () => topicQuestionContext(selected, filteredTopics),
-    [selected, filteredTopics]
+  const flatQuestions = useMemo(
+    () => flattenTopics(filteredTopics),
+    [filteredTopics]
   )
 
-  // Move to the sibling problem `offset` positions away within the current topic.
+  const nav = useMemo(() => {
+    if (!selected) return null
+    const i = flatQuestions.findIndex((f) => f.q.id === selected.id)
+    if (i === -1) return null
+    return {
+      current: flatQuestions[i],
+      prev: flatQuestions[i - 1] ?? null,
+      next: flatQuestions[i + 1] ?? null,
+    }
+  }, [selected, flatQuestions])
+
+  // Move to the sibling problem `offset` positions away, crossing categories.
   const go = useCallback(
     (offset: number) => {
       setSelected((cur) => {
         if (!cur) return cur
-        const ctx = topicQuestionContext(cur, filteredTopics)
-        if (!ctx) return cur
-        return ctx.questions[ctx.index + offset] ?? cur
+        const i = flatQuestions.findIndex((f) => f.q.id === cur.id)
+        if (i === -1) return cur
+        return flatQuestions[i + offset]?.q ?? cur
       })
     },
-    [filteredTopics]
+    [flatQuestions]
   )
 
   // Left/right arrows navigate between problems while a detail view is open.
@@ -271,11 +288,10 @@ const DsaPage = () => {
                   <div className="min-h-0 flex-1 overflow-y-auto">
                     <DsaQuestionDetail selected={selected} variant="sheet" />
                   </div>
-                  {drawerNav && (
+                  {nav && (
                     <SheetFooter className="shrink-0 border-t border-border p-3">
                       <QuestionNav
-                        index={drawerNav.index}
-                        total={drawerNav.questions.length}
+                        nav={nav}
                         onPrev={() => go(-1)}
                         onNext={() => go(1)}
                       />
@@ -297,11 +313,10 @@ const DsaPage = () => {
                   <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
                     <DsaQuestionDetail selected={selected} variant="drawer" />
                   </div>
-                  {drawerNav && (
+                  {nav && (
                     <DrawerFooter className="shrink-0 border-t border-border py-3">
                       <QuestionNav
-                        index={drawerNav.index}
-                        total={drawerNav.questions.length}
+                        nav={nav}
                         onPrev={() => go(-1)}
                         onNext={() => go(1)}
                       />
@@ -329,53 +344,75 @@ const DsaPage = () => {
 export default DsaPage
 
 const QuestionNav = ({
-  index,
-  total,
+  nav,
   onPrev,
   onNext,
 }: {
-  index: number
-  total: number
+  nav: {
+    current: FlatQuestion
+    prev: FlatQuestion | null
+    next: FlatQuestion | null
+  }
   onPrev: () => void
   onNext: () => void
-}) => (
-  <div className="flex items-center justify-between gap-3">
-    <button
-      type="button"
-      disabled={index <= 0}
-      onClick={onPrev}
-      aria-label="Previous problem in topic"
-      title="Previous (←)"
-      className={cn(
-        "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
-        "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+}) => {
+  const { current, prev, next } = nav
+  const nextIsNewTopic = !!next && next.topicLabel !== current.topicLabel
+
+  return (
+    <div className="flex flex-col gap-2">
+      {nextIsNewTopic && (
+        <p className="text-center text-[11px] text-muted-foreground">
+          End of {current.topicLabel} — next up{" "}
+          <span className="font-medium text-foreground">{next.topicLabel}</span>
+        </p>
       )}
-    >
-      <CaretLeftIcon className="size-4" aria-hidden />
-      Previous
-    </button>
-    <span
-      className="min-w-[4rem] text-center text-xs text-muted-foreground tabular-nums"
-      aria-live="polite"
-    >
-      {index + 1} / {total}
-    </span>
-    <button
-      type="button"
-      disabled={index >= total - 1}
-      onClick={onNext}
-      aria-label="Next problem in topic"
-      title="Next (→)"
-      className={cn(
-        "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
-        "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
-      )}
-    >
-      Next
-      <CaretRightIcon className="size-4" aria-hidden />
-    </button>
-  </div>
-)
+      <div className="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          disabled={!prev}
+          onClick={onPrev}
+          aria-label="Previous problem"
+          title="Previous (←)"
+          className={cn(
+            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+          )}
+        >
+          <CaretLeftIcon className="size-4" aria-hidden />
+          Previous
+        </button>
+        <span
+          className="flex min-w-0 flex-col items-center text-center"
+          aria-live="polite"
+        >
+          <span className="max-w-[8rem] truncate text-[11px] font-medium text-foreground">
+            {current.topicLabel}
+          </span>
+          <span className="text-[11px] text-muted-foreground tabular-nums">
+            {current.indexInTopic + 1} / {current.topicLength}
+          </span>
+        </span>
+        <button
+          type="button"
+          disabled={!next}
+          onClick={onNext}
+          aria-label={
+            nextIsNewTopic ? `Next: ${next.topicLabel}` : "Next problem"
+          }
+          title="Next (→)"
+          className={cn(
+            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+          )}
+        >
+          Next
+          <CaretRightIcon className="size-4" aria-hidden />
+        </button>
+      </div>
+    </div>
+  )
+}
 
 const QuestionTitleCell = ({
   q,
