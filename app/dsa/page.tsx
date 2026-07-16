@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import {
   Accordion,
@@ -16,7 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetFooter } from "@/components/ui/sheet"
 import { Drawer, DrawerContent, DrawerFooter } from "@/components/ui/drawer"
 import {
   TooltipProvider,
@@ -89,6 +89,43 @@ const DsaPage = () => {
     () => topicQuestionContext(selected, filteredTopics),
     [selected, filteredTopics]
   )
+
+  // Move to the sibling problem `offset` positions away within the current topic.
+  const go = useCallback(
+    (offset: number) => {
+      setSelected((cur) => {
+        if (!cur) return cur
+        const ctx = topicQuestionContext(cur, filteredTopics)
+        if (!ctx) return cur
+        return ctx.questions[ctx.index + offset] ?? cur
+      })
+    },
+    [filteredTopics]
+  )
+
+  // Left/right arrows navigate between problems while a detail view is open.
+  useEffect(() => {
+    if (!selected) return
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement | null
+      if (
+        t &&
+        (t.tagName === "INPUT" ||
+          t.tagName === "TEXTAREA" ||
+          t.isContentEditable)
+      )
+        return
+      if (e.key === "ArrowLeft") {
+        e.preventDefault()
+        go(-1)
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault()
+        go(1)
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [selected, go])
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
@@ -226,9 +263,23 @@ const DsaPage = () => {
             open={!!selected}
             onOpenChange={(open) => !open && setSelected(null)}
           >
-            <SheetContent side="right" className="max-w-2xl overflow-y-auto">
+            <SheetContent side="right" className="flex max-w-2xl flex-col p-0">
               {selected && (
-                <DsaQuestionDetail selected={selected} variant="sheet" />
+                <>
+                  <div className="min-h-0 flex-1 overflow-y-auto">
+                    <DsaQuestionDetail selected={selected} variant="sheet" />
+                  </div>
+                  {drawerNav && (
+                    <SheetFooter className="shrink-0 border-t border-border p-3">
+                      <QuestionNav
+                        index={drawerNav.index}
+                        total={drawerNav.questions.length}
+                        onPrev={() => go(-1)}
+                        onNext={() => go(1)}
+                      />
+                    </SheetFooter>
+                  )}
+                </>
               )}
             </SheetContent>
           </Sheet>
@@ -246,50 +297,12 @@ const DsaPage = () => {
                   </div>
                   {drawerNav && (
                     <DrawerFooter className="shrink-0 border-t border-border py-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <button
-                          type="button"
-                          disabled={drawerNav.index <= 0}
-                          onClick={() =>
-                            setSelected(
-                              drawerNav.questions[drawerNav.index - 1] ?? null
-                            )
-                          }
-                          aria-label="Previous problem in topic"
-                          className={cn(
-                            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
-                            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
-                          )}
-                        >
-                          <CaretLeftIcon className="size-4" aria-hidden />
-                          Previous
-                        </button>
-                        <span
-                          className="min-w-[4rem] text-center text-xs tabular-nums text-muted-foreground"
-                          aria-live="polite"
-                        >
-                          {drawerNav.index + 1} / {drawerNav.questions.length}
-                        </span>
-                        <button
-                          type="button"
-                          disabled={
-                            drawerNav.index >= drawerNav.questions.length - 1
-                          }
-                          onClick={() =>
-                            setSelected(
-                              drawerNav.questions[drawerNav.index + 1] ?? null
-                            )
-                          }
-                          aria-label="Next problem in topic"
-                          className={cn(
-                            "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
-                            "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
-                          )}
-                        >
-                          Next
-                          <CaretRightIcon className="size-4" aria-hidden />
-                        </button>
-                      </div>
+                      <QuestionNav
+                        index={drawerNav.index}
+                        total={drawerNav.questions.length}
+                        onPrev={() => go(-1)}
+                        onNext={() => go(1)}
+                      />
                     </DrawerFooter>
                   )}
                 </>
@@ -300,12 +313,67 @@ const DsaPage = () => {
 
         <div className="mt-6 text-[11px] text-muted-foreground">
           Press <kbd>d</kbd> to toggle dark mode
+          {selected && (
+            <>
+              {" · "}
+              <kbd>←</kbd> <kbd>→</kbd> to navigate problems
+            </>
+          )}
         </div>
       </div>
     </TooltipProvider>
   )
 }
 export default DsaPage
+
+const QuestionNav = ({
+  index,
+  total,
+  onPrev,
+  onNext,
+}: {
+  index: number
+  total: number
+  onPrev: () => void
+  onNext: () => void
+}) => (
+  <div className="flex items-center justify-between gap-3">
+    <button
+      type="button"
+      disabled={index <= 0}
+      onClick={onPrev}
+      aria-label="Previous problem in topic"
+      title="Previous (←)"
+      className={cn(
+        "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+        "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+      )}
+    >
+      <CaretLeftIcon className="size-4" aria-hidden />
+      Previous
+    </button>
+    <span
+      className="min-w-[4rem] text-center text-xs text-muted-foreground tabular-nums"
+      aria-live="polite"
+    >
+      {index + 1} / {total}
+    </span>
+    <button
+      type="button"
+      disabled={index >= total - 1}
+      onClick={onNext}
+      aria-label="Next problem in topic"
+      title="Next (→)"
+      className={cn(
+        "inline-flex items-center gap-1 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium",
+        "hover:bg-muted disabled:pointer-events-none disabled:opacity-40"
+      )}
+    >
+      Next
+      <CaretRightIcon className="size-4" aria-hidden />
+    </button>
+  </div>
+)
 
 const QuestionTitleCell = ({
   q,
