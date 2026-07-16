@@ -59,8 +59,7 @@ public:
         "Design a data structure that supports addNum(num) to add a number from a stream and findMedian() to return the median of all elements so far.",
       testCases: [
         {
-          input:
-            'addNum(1), addNum(2), findMedian(), addNum(3), findMedian()',
+          input: "addNum(1), addNum(2), findMedian(), addNum(3), findMedian()",
           output: "1.5, then 2.0",
           explanation: "Median of [1,2] is 1.5; median of [1,2,3] is 2.",
         },

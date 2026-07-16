@@ -127,8 +127,7 @@ public:
       id: "longest-common-subsequence",
       title: "Longest Common Subsequence",
       difficulty: "Medium",
-      leetcodeUrl:
-        "https://leetcode.com/problems/longest-common-subsequence/",
+      leetcodeUrl: "https://leetcode.com/problems/longest-common-subsequence/",
       tags: ["blind-75"],
       question:
         "Given two strings text1 and text2, return the length of their longest common subsequence (characters in order, not necessarily contiguous), or 0 if none exists.",
@@ -180,7 +179,8 @@ public:
           explanation: '"leet" + "code".',
         },
         {
-          input: 's = "catsandog", wordDict = ["cats","dog","sand","and","cat"]',
+          input:
+            's = "catsandog", wordDict = ["cats","dog","sand","and","cat"]',
           output: "false",
         },
       ],

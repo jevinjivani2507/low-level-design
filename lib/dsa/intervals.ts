@@ -100,8 +100,7 @@ public:
       id: "non-overlapping-intervals",
       title: "Non-overlapping Intervals",
       difficulty: "Medium",
-      leetcodeUrl:
-        "https://leetcode.com/problems/non-overlapping-intervals/",
+      leetcodeUrl: "https://leetcode.com/problems/non-overlapping-intervals/",
       tags: ["blind-75"],
       question:
         "Given an array of intervals, return the minimum number of intervals you must remove so that the rest are non-overlapping.",

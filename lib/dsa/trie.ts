@@ -7,8 +7,7 @@ export const trie: DsaTopic = {
       id: "implement-trie-prefix-tree",
       title: "Implement Trie (Prefix Tree)",
       difficulty: "Medium",
-      leetcodeUrl:
-        "https://leetcode.com/problems/implement-trie-prefix-tree/",
+      leetcodeUrl: "https://leetcode.com/problems/implement-trie-prefix-tree/",
       tags: ["blind-75"],
       question:
         "Implement a Trie with insert(word), search(word) (exact match), and startsWith(prefix) (any word with that prefix).",
@@ -78,8 +77,7 @@ public:
           input:
             'addWord("bad"), addWord("dad"), addWord("mad"), search("pad"), search("bad"), search(".ad"), search("b..")',
           output: "false, true, true, true",
-          explanation:
-            "'.ad' matches bad/dad/mad; 'b..' matches bad.",
+          explanation: "'.ad' matches bad/dad/mad; 'b..' matches bad.",
         },
       ],
       code: `class WordDictionary {
