@@ -9,6 +9,7 @@ import { dynamicProgramming } from "./dsa/dynamic-programming"
 import { intervals } from "./dsa/intervals"
 import { linkedList } from "./dsa/linked-list"
 import { matrix } from "./dsa/matrix"
+import { heap } from "./dsa/heap"
 export const tags: string[] = ["striver-a2z", "neetcode-150", "blind-75"]
 
 /** Extra UI on the DSA sheet (e.g. diagram from level-order array) */
@@ -74,4 +75,5 @@ export const dsaTopics: DsaTopic[] = [
   intervals,
   linkedList,
   matrix,
+  heap,
 ]
