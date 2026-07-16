@@ -1390,5 +1390,51 @@ public:
 - N nodes × O(M) comparison → O(N × M); string-serialization + KMP gives O(N + M).`,
       tags: ["blind-75", "neetcode-150"],
     },
+    {
+      id: "count-good-nodes-in-binary-tree",
+      title: "Count Good Nodes in Binary Tree",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
+      question:
+        "A node is good if no node on the path from the root to it has a greater value. Given a binary tree root, return the number of good nodes.",
+      testCases: [
+        {
+          input: "root = [3,1,4,3,null,1,5]",
+          output: "4",
+          explanation: "Nodes 3 (root), 4, 5, and the left 3 are good.",
+          trees: [[3, 1, 4, 3, null, 1, 5]],
+        },
+        {
+          input: "root = [3,3,null,4,2]",
+          output: "3",
+          explanation: "",
+          trees: [[3, 3, null, 4, 2]],
+        },
+      ],
+      type: "TREE",
+      code: `class Solution {
+public:
+    int dfs(TreeNode* node, int maxSoFar) {
+        if (!node) return 0;
+
+        int good = node->val >= maxSoFar ? 1 : 0; // good if not dominated
+        maxSoFar = max(maxSoFar, node->val);
+        good += dfs(node->left, maxSoFar);
+        good += dfs(node->right, maxSoFar);
+        return good;
+    }
+
+    int goodNodes(TreeNode* root) {
+        return dfs(root, INT_MIN); // O(N)
+    }
+};`,
+      timeComplexity: "O(N)",
+      spaceComplexity: "O(H)",
+      notes: `- Carry the maximum value seen on the root-to-node path downward.
+- A node is good when its value ≥ that running max.
+- Single DFS visiting each node once; recursion depth is the height H.`,
+      tags: ["neetcode-150"],
+    },
   ],
 }
