@@ -1708,5 +1708,277 @@ public:
 - Edges within the same component don't change the count.
 - Near-constant α(N) per op with path compression; DFS/BFS also works in O(V + E).`,
     },
+    {
+      id: "max-area-of-island",
+      title: "Max Area of Island",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/max-area-of-island/",
+      tags: ["neetcode-150"],
+      question:
+        "Given an m × n binary grid, return the area of the largest island (group of 1s connected 4-directionally), or 0 if there is none.",
+      testCases: [
+        {
+          input: "grid = [[0,0,1,0,0],[0,0,0,0,0],[0,1,1,0,1],[0,1,0,0,1]]",
+          output: "3",
+        },
+        { input: "grid = [[0,0,0],[0,0,0]]", output: "0" },
+      ],
+      code: `class Solution {
+public:
+    int dfs(vector<vector<int>>& grid, int i, int j) {
+        int m = grid.size(), n = grid[0].size();
+        if (i < 0 || j < 0 || i >= m || j >= n || grid[i][j] == 0) return 0;
+        grid[i][j] = 0; // sink to avoid recount
+        return 1 + dfs(grid, i + 1, j) + dfs(grid, i - 1, j)
+                 + dfs(grid, i, j + 1) + dfs(grid, i, j - 1);
+    }
+
+    int maxAreaOfIsland(vector<vector<int>>& grid) {
+        int res = 0;
+        for (int i = 0; i < (int)grid.size(); i++) // O(M × N)
+            for (int j = 0; j < (int)grid[0].size(); j++)
+                if (grid[i][j] == 1) res = max(res, dfs(grid, i, j));
+        return res;
+    }
+};`,
+      timeComplexity: "O(M × N)",
+      spaceComplexity: "O(M × N)",
+      notes: `- Flood-fill each unvisited land cell, counting its area and sinking it to 0.
+- Track the running maximum island area.
+- Every cell is visited once → linear in the grid size.`,
+    },
+    {
+      id: "walls-and-gates",
+      title: "Walls and Gates",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/walls-and-gates/",
+      tags: ["neetcode-150"],
+      question:
+        "Fill each empty room (INF) with the distance to its nearest gate (0); walls are -1. Unreachable rooms stay INF. LeetCode Premium.",
+      testCases: [
+        {
+          input:
+            "rooms = [[INF,-1,0,INF],[INF,INF,INF,-1],[INF,-1,INF,-1],[0,-1,INF,INF]]",
+          output: "[[3,-1,0,1],[2,2,1,-1],[1,-1,2,-1],[0,-1,3,4]]",
+        },
+      ],
+      code: `class Solution {
+public:
+    void wallsAndGates(vector<vector<int>>& rooms) {
+        int m = rooms.size(), n = rooms[0].size();
+        queue<pair<int, int>> q;
+        for (int i = 0; i < m; i++) // seed BFS from every gate
+            for (int j = 0; j < n; j++)
+                if (rooms[i][j] == 0) q.push({i, j});
+
+        int dirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        while (!q.empty()) { // O(M × N)
+            auto [i, j] = q.front(); q.pop();
+            for (auto& d : dirs) {
+                int ni = i + d[0], nj = j + d[1];
+                if (ni >= 0 && nj >= 0 && ni < m && nj < n && rooms[ni][nj] == INT_MAX) {
+                    rooms[ni][nj] = rooms[i][j] + 1;
+                    q.push({ni, nj});
+                }
+            }
+        }
+    }
+};`,
+      timeComplexity: "O(M × N)",
+      spaceComplexity: "O(M × N)",
+      notes: `- Multi-source BFS from all gates at once gives each room its nearest gate distance.
+- First time a room is reached is its shortest distance, so no revisits.
+- Walls (-1) and already-filled rooms are skipped by the INF check.`,
+    },
+    {
+      id: "redundant-connection",
+      title: "Redundant Connection",
+      difficulty: "Medium",
+      leetcodeUrl: "https://leetcode.com/problems/redundant-connection/",
+      tags: ["neetcode-150"],
+      question:
+        "A tree of n nodes had one extra edge added, forming exactly one cycle. Return the edge that can be removed so the result is a tree (the last such edge in input order).",
+      testCases: [
+        {
+          input: "edges = [[1,2],[1,3],[2,3]]",
+          output: "[2,3]",
+        },
+        {
+          input: "edges = [[1,2],[2,3],[3,4],[1,4],[1,5]]",
+          output: "[1,4]",
+        },
+      ],
+      code: `class Solution {
+public:
+    vector<int> parent;
+    int find(int x) { return parent[x] == x ? x : parent[x] = find(parent[x]); }
+
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        parent.resize(edges.size() + 1);
+        for (int i = 0; i < (int)parent.size(); i++) parent[i] = i;
+
+        for (auto& e : edges) { // O(E α(N))
+            int a = find(e[0]), b = find(e[1]);
+            if (a == b) return e; // endpoints already connected → this edge closes the cycle
+            parent[a] = b;
+        }
+        return {};
+    }
+};`,
+      timeComplexity: "O(E α(N))",
+      spaceComplexity: "O(N)",
+      notes: `- Union-Find each edge; the first edge whose endpoints already share a root is redundant.
+- Scanning in input order returns the last edge of the cycle as required.
+- Path compression keeps each union/find near O(1).`,
+    },
+    {
+      id: "reconstruct-itinerary",
+      title: "Reconstruct Itinerary",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/reconstruct-itinerary/",
+      tags: ["neetcode-150"],
+      question:
+        "Given airline tickets [from, to], reconstruct the itinerary starting from 'JFK', using every ticket exactly once. Return the lexicographically smallest valid itinerary.",
+      testCases: [
+        {
+          input:
+            'tickets = [["MUC","LHR"],["JFK","MUC"],["SFO","SJC"],["LHR","SFO"]]',
+          output: '["JFK","MUC","LHR","SFO","SJC"]',
+        },
+        {
+          input:
+            'tickets = [["JFK","SFO"],["JFK","ATL"],["SFO","ATL"],["ATL","JFK"],["ATL","SFO"]]',
+          output: '["JFK","ATL","JFK","SFO","ATL","SFO"]',
+        },
+      ],
+      code: `class Solution {
+public:
+    unordered_map<string, multiset<string>> graph; // sorted destinations
+    vector<string> res;
+
+    void dfs(const string& airport) {
+        auto& dests = graph[airport];
+        while (!dests.empty()) {                 // Hierholzer: consume edges
+            string next = *dests.begin();
+            dests.erase(dests.begin());
+            dfs(next);
+        }
+        res.push_back(airport); // post-order → route in reverse
+    }
+
+    vector<string> findItinerary(vector<vector<string>>& tickets) {
+        for (auto& t : tickets) graph[t[0]].insert(t[1]);
+        dfs("JFK");
+        reverse(res.begin(), res.end());
+        return res;
+    }
+};`,
+      timeComplexity: "O(E log E)",
+      spaceComplexity: "O(E)",
+      notes: `- Eulerian path via Hierholzer's algorithm; a multiset keeps destinations sorted.
+- Always take the smallest next airport; append on the way back (post-order).
+- Reverse the post-order list to get the final itinerary.`,
+    },
+    {
+      id: "min-cost-to-connect-all-points",
+      title: "Min Cost to Connect All Points",
+      difficulty: "Medium",
+      leetcodeUrl:
+        "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+      tags: ["neetcode-150"],
+      question:
+        "Given points on a plane, connect all of them with minimum total Manhattan-distance cost so every pair is reachable (a minimum spanning tree).",
+      testCases: [
+        {
+          input: "points = [[0,0],[2,2],[3,10],[5,2],[7,0]]",
+          output: "20",
+        },
+        {
+          input: "points = [[3,12],[-2,5],[-4,1]]",
+          output: "18",
+        },
+      ],
+      code: `class Solution {
+public:
+    int minCostConnectPoints(vector<vector<int>>& points) {
+        int n = points.size();
+        vector<bool> inMST(n, false);
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {cost, node}
+        pq.push({0, 0});
+
+        int total = 0, used = 0;
+        while (used < n) { // Prim's, O(N² log N)
+            auto [cost, u] = pq.top(); pq.pop();
+            if (inMST[u]) continue;
+            inMST[u] = true; total += cost; used++;
+            for (int v = 0; v < n; v++) {
+                if (!inMST[v]) {
+                    int d = abs(points[u][0] - points[v][0])
+                          + abs(points[u][1] - points[v][1]);
+                    pq.push({d, v});
+                }
+            }
+        }
+
+        return total;
+    }
+};`,
+      timeComplexity: "O(N² log N)",
+      spaceComplexity: "O(N²)",
+      notes: `- Prim's MST: grow the tree by always adding the cheapest edge to a new node.
+- Edge weight is Manhattan distance; a min-heap picks the next cheapest frontier edge.
+- Skip nodes already in the MST when they resurface in the heap.`,
+    },
+    {
+      id: "swim-in-rising-water",
+      title: "Swim in Rising Water",
+      difficulty: "Hard",
+      leetcodeUrl: "https://leetcode.com/problems/swim-in-rising-water/",
+      tags: ["neetcode-150"],
+      question:
+        "In an n × n grid of elevations, at time t water level is t and you can move between cells with elevation ≤ t. Return the least time to reach the bottom-right from the top-left.",
+      testCases: [
+        {
+          input: "grid = [[0,2],[1,3]]",
+          output: "3",
+        },
+        {
+          input:
+            "grid = [[0,1,2,3,4],[24,23,22,21,5],[12,13,14,15,16],[11,17,18,19,20],[10,9,8,7,6]]",
+          output: "16",
+        },
+      ],
+      code: `class Solution {
+public:
+    int swimInWater(vector<vector<int>>& grid) {
+        int n = grid.size();
+        priority_queue<pair<int, int>, vector<pair<int, int>>,
+                       greater<>> pq; // {time so far, r*n+c}
+        vector<vector<bool>> vis(n, vector<bool>(n, false));
+        pq.push({grid[0][0], 0});
+        int dirs[4][2] = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        while (!pq.empty()) { // Dijkstra-style, O(N² log N)
+            auto [t, pos] = pq.top(); pq.pop();
+            int r = pos / n, c = pos % n;
+            if (vis[r][c]) continue;
+            vis[r][c] = true;
+            if (r == n - 1 && c == n - 1) return t;
+            for (auto& d : dirs) {
+                int nr = r + d[0], nc = c + d[1];
+                if (nr >= 0 && nc >= 0 && nr < n && nc < n && !vis[nr][nc])
+                    pq.push({max(t, grid[nr][nc]), nr * n + nc}); // path cost = max cell
+            }
+        }
+        return -1;
+    }
+};`,
+      timeComplexity: "O(N² log N)",
+      spaceComplexity: "O(N²)",
+      notes: `- Minimize the maximum elevation along a path — a min-heap Dijkstra variant.
+- A path's "time" is the largest cell value on it; expand the smallest such frontier.
+- First time the target pops is the answer.`,
+    },
   ],
 }
