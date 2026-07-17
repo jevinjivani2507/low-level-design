@@ -7,14 +7,17 @@ import { cn } from "@/lib/utils"
 import { FlashCardTopic } from "@/lib/topics-data"
 import { TopicCodeBlock } from "@/components/topics/topic-code-block"
 
-/** Render inline `**bold**` markers as emphasized text; leaves other text literal. */
+/** Render inline `**text**` markers as highlighter-marked text; leaves other text literal. */
 function renderInline(text: string): ReactNode[] {
   return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) => {
     const m = /^\*\*([^*]+)\*\*$/.exec(part)
     return m ? (
-      <strong key={i} className="font-semibold text-foreground">
+      <mark
+        key={i}
+        className="rounded-[3px] bg-yellow-200/80 box-decoration-clone px-1 font-medium text-yellow-950 dark:bg-yellow-300/25 dark:text-yellow-100"
+      >
         {m[1]}
-      </strong>
+      </mark>
     ) : (
       <span key={i}>{part}</span>
     )
