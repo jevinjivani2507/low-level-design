@@ -206,8 +206,12 @@ public:
 
         int rooms = 0, res = 0, j = 0;
         for (int i = 0; i < n; i++) { // O(N)
-            if (starts[i] < ends[j]) rooms++;   // meeting starts before one ends
-            else j++;                            // a room freed up, reuse it
+            if (starts[i] < ends[j]){
+              rooms++;   // meeting starts before one ends
+            } else {
+              j++;
+              rooms--;
+            }
             res = max(res, rooms);
         }
 
