@@ -1,6 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState } from "react"
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react"
 import Link from "next/link"
 import {
   Accordion,
@@ -30,6 +36,8 @@ import {
   ArrowSquareOutIcon,
   CaretLeftIcon,
   CaretRightIcon,
+  MagnifyingGlassIcon,
+  XIcon,
 } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { useDsaSelectedTags } from "@/hooks/use-dsa-selected-tags"
@@ -38,9 +46,10 @@ import { useMediaQuery } from "@/hooks/use-media-query"
 
 const filterTopics = (
   topics: DsaTopic[],
-  selectedTags: string[]
+  selectedTags: string[],
+  query: string
 ): DsaTopic[] => {
-  if (selectedTags.length === 0) {
+  if (selectedTags.length === 0 && !query) {
     return topics
   }
   const selected = new Set(selectedTags)
@@ -48,12 +57,36 @@ const filterTopics = (
     .map((topic) => ({
       ...topic,
       questions: topic.questions.filter((q) => {
-        const tags = q.tags ?? []
-        if (tags.length === 0) return false
-        return tags.some((t) => selected.has(t.toString()))
+        if (selectedTags.length > 0) {
+          const tags = q.tags ?? []
+          if (!tags.some((t) => selected.has(t.toString()))) return false
+        }
+        if (query) {
+          const haystack = [q.title, ...(q.tags ?? []), q.difficulty ?? ""]
+            .join(" ")
+            .toLowerCase()
+          if (!haystack.includes(query)) return false
+        }
+        return true
       }),
     }))
     .filter((topic) => topic.questions.length > 0)
+}
+
+/** Wrap the first case-insensitive match of `query` in `text` with a highlight. */
+function highlight(text: string, query: string): ReactNode {
+  if (!query) return text
+  const idx = text.toLowerCase().indexOf(query)
+  if (idx === -1) return text
+  return (
+    <>
+      {text.slice(0, idx)}
+      <mark className="rounded-[2px] bg-yellow-200/80 text-yellow-950 dark:bg-yellow-300/25 dark:text-yellow-100">
+        {text.slice(idx, idx + query.length)}
+      </mark>
+      {text.slice(idx + query.length)}
+    </>
+  )
 }
 
 /** A question flattened with its topic and position, for cross-category nav. */
@@ -84,17 +117,27 @@ function flattenTopics(topics: DsaTopic[]): FlatQuestion[] {
 const DsaPage = () => {
   const [selected, setSelected] = useState<DsaQuestion | null>(null)
   const [selectedTags, setSelectedTags] = useDsaSelectedTags()
+  const [query, setQuery] = useState("")
+  const [openTopics, setOpenTopics] = useState<string[]>([])
   const isMdUp = useMediaQuery("(min-width: 768px)")
 
+  const normalizedQuery = query.trim().toLowerCase()
+
   const filteredTopics = useMemo(
-    () => filterTopics(dsaTopics, selectedTags),
-    [selectedTags]
+    () => filterTopics(dsaTopics, selectedTags, normalizedQuery),
+    [selectedTags, normalizedQuery]
   )
 
   const flatQuestions = useMemo(
     () => flattenTopics(filteredTopics),
     [filteredTopics]
   )
+
+  // While searching, force every matching topic open so results are visible;
+  // otherwise the accordion stays user-controlled.
+  const accordionValue = normalizedQuery
+    ? filteredTopics.map((t) => t.topic)
+    : openTopics
 
   const nav = useMemo(() => {
     if (!selected) return null
@@ -178,8 +221,33 @@ const DsaPage = () => {
           </div>
         </div>
 
+        <div className="relative mt-6">
+          <MagnifyingGlassIcon
+            className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden
+          />
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search problems by title, tag, or difficulty…"
+            aria-label="Search problems"
+            className="w-full rounded-md border border-border bg-muted/40 py-2 pr-8 pl-8 text-sm outline-none placeholder:text-muted-foreground focus:border-ring focus:ring-1 focus:ring-ring/50"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => setQuery("")}
+              aria-label="Clear search"
+              className="absolute top-1/2 right-2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+            >
+              <XIcon className="size-4" />
+            </button>
+          )}
+        </div>
+
         {tags.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">
               Tags
             </span>
@@ -216,65 +284,83 @@ const DsaPage = () => {
           </div>
         )}
 
+        {normalizedQuery && (
+          <p className="mt-4 text-xs text-muted-foreground">
+            {flatQuestions.length}{" "}
+            {flatQuestions.length === 1 ? "problem" : "problems"} found
+          </p>
+        )}
+
         <div className="mt-8">
-          <Accordion>
-            {filteredTopics.map((topic) => (
-              <AccordionItem key={topic.topic} value={topic.topic}>
-                <AccordionTrigger>
-                  {topic.topic}
-                  <span className="ml-2 text-muted-foreground">
-                    ({topic.questions.length})
-                  </span>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead className="w-12">#</TableHead>
-                        <TableHead>Problem</TableHead>
-                        <TableHead>Difficulty</TableHead>
-                        <TableHead className="w-20 text-center">
-                          LeetCode
-                        </TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {topic.questions.map((q, i) => (
-                        <TableRow key={q.id}>
-                          <TableCell className="text-muted-foreground">
-                            {i}
-                          </TableCell>
-                          <TableCell>
-                            <QuestionTitleCell
-                              q={q}
-                              onOpen={() => setSelected(q)}
-                            />
-                          </TableCell>
-                          {q.difficulty && (
-                            <TableCell>
-                              <DifficultyBadge difficulty={q.difficulty} />
-                            </TableCell>
-                          )}
-                          {q.leetcodeUrl && (
-                            <TableCell className="text-center">
-                              <a
-                                href={q.leetcodeUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
-                              >
-                                <ArrowSquareOutIcon className="size-3.5" />
-                              </a>
-                            </TableCell>
-                          )}
+          {filteredTopics.length === 0 ? (
+            <p className="py-8 text-center text-sm text-muted-foreground">
+              No problems match your search.
+            </p>
+          ) : (
+            <Accordion
+              multiple
+              value={accordionValue}
+              onValueChange={(value) => setOpenTopics(value as string[])}
+            >
+              {filteredTopics.map((topic) => (
+                <AccordionItem key={topic.topic} value={topic.topic}>
+                  <AccordionTrigger>
+                    {topic.topic}
+                    <span className="ml-2 text-muted-foreground">
+                      ({topic.questions.length})
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="w-12">#</TableHead>
+                          <TableHead>Problem</TableHead>
+                          <TableHead>Difficulty</TableHead>
+                          <TableHead className="w-20 text-center">
+                            LeetCode
+                          </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
+                      </TableHeader>
+                      <TableBody>
+                        {topic.questions.map((q, i) => (
+                          <TableRow key={q.id}>
+                            <TableCell className="text-muted-foreground">
+                              {i}
+                            </TableCell>
+                            <TableCell>
+                              <QuestionTitleCell
+                                q={q}
+                                query={normalizedQuery}
+                                onOpen={() => setSelected(q)}
+                              />
+                            </TableCell>
+                            {q.difficulty && (
+                              <TableCell>
+                                <DifficultyBadge difficulty={q.difficulty} />
+                              </TableCell>
+                            )}
+                            {q.leetcodeUrl && (
+                              <TableCell className="text-center">
+                                <a
+                                  href={q.leetcodeUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center gap-1 text-muted-foreground hover:text-foreground"
+                                >
+                                  <ArrowSquareOutIcon className="size-3.5" />
+                                </a>
+                              </TableCell>
+                            )}
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          )}
         </div>
 
         {isMdUp ? (
@@ -416,9 +502,11 @@ const QuestionNav = ({
 
 const QuestionTitleCell = ({
   q,
+  query,
   onOpen,
 }: {
   q: DsaQuestion
+  query: string
   onOpen: () => void
 }) => {
   const tags = q.tags ?? []
@@ -432,7 +520,7 @@ const QuestionTitleCell = ({
         onClick={onOpen}
         className="cursor-pointer text-left underline underline-offset-4 hover:text-primary"
       >
-        {q.title}
+        {highlight(q.title, query)}
       </button>
       {visible.length > 0 && (
         <span className="inline-flex flex-wrap items-center gap-1">
