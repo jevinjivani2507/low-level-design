@@ -592,8 +592,8 @@ public:
         q.push({root, 0});
         map<int, vector<vector<int>>> mp;
 
+        int level = 0;
         while (!q.empty()) { // O(N)
-            int level = 0;
             int N = q.size();
 
             while (N--) { // O(N) amortized

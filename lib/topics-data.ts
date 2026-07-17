@@ -1,6 +1,7 @@
 import { reactInterviewQuestions } from "./topics/react"
 import { javascriptInterviewNotes } from "./topics/javascript"
 import { jsMachineCoding } from "./topics/js-machine-coding"
+import { amazonLpStories } from "./topics/amazon-lp-stories"
 
 export interface FlashCard {
   id: string
@@ -18,6 +19,7 @@ export interface FlashCardTopic {
 }
 
 export const flashCardTopics: FlashCardTopic[] = [
+  amazonLpStories,
   reactInterviewQuestions,
   javascriptInterviewNotes,
   jsMachineCoding,

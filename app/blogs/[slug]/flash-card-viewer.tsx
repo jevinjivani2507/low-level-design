@@ -1,11 +1,25 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import Link from "next/link"
 import { CaretLeftIcon, CaretRightIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { FlashCardTopic } from "@/lib/topics-data"
 import { TopicCodeBlock } from "@/components/topics/topic-code-block"
+
+/** Render inline `**bold**` markers as emphasized text; leaves other text literal. */
+function renderInline(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, i) => {
+    const m = /^\*\*([^*]+)\*\*$/.exec(part)
+    return m ? (
+      <strong key={i} className="font-semibold text-foreground">
+        {m[1]}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
+  })
+}
 
 export function FlashCardViewer({ topic }: { topic: FlashCardTopic }) {
   const [index, setIndex] = useState(0)
@@ -42,7 +56,7 @@ export function FlashCardViewer({ topic }: { topic: FlashCardTopic }) {
       <div className="shrink-0 px-6 pt-5 pb-0">
         <div className="flex items-baseline justify-between gap-4">
           <h2 className="text-base font-semibold">{card.title}</h2>
-          <span className="shrink-0 tabular-nums text-xs text-muted-foreground">
+          <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
             {index + 1} / {total}
           </span>
         </div>
@@ -55,7 +69,7 @@ export function FlashCardViewer({ topic }: { topic: FlashCardTopic }) {
           {card.bullets.map((bullet, i) => (
             <li key={i} className="flex gap-2 text-sm leading-relaxed">
               <span className="mt-[3px] shrink-0 text-muted-foreground">—</span>
-              <span>{bullet}</span>
+              <span>{renderInline(bullet)}</span>
             </li>
           ))}
         </ul>
@@ -68,7 +82,7 @@ export function FlashCardViewer({ topic }: { topic: FlashCardTopic }) {
       </div>
 
       {/* Navigation — always visible at bottom */}
-      <div className="shrink-0 flex items-center justify-between gap-3 border-t border-border bg-background px-6 py-4">
+      <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border bg-background px-6 py-4">
         <button
           type="button"
           disabled={index <= 0}
