@@ -1,12 +1,12 @@
-import { notFound } from "next/navigation"
-import { flashCardTopics } from "@/lib/topics-data"
-import { FlashCardViewer } from "./flash-card-viewer"
+import { notFound, redirect } from "next/navigation"
+import { flashCardTopics, docHref } from "@/lib/topics-data"
 
 export function generateStaticParams() {
   return flashCardTopics.map((t) => ({ slug: t.slug }))
 }
 
-export default async function TopicPage({
+// A topic has no page of its own — open its first doc.
+export default async function TopicIndex({
   params,
 }: {
   params: Promise<{ slug: string }>
@@ -15,5 +15,5 @@ export default async function TopicPage({
   const topic = flashCardTopics.find((t) => t.slug === slug)
   if (!topic) notFound()
 
-  return <FlashCardViewer topic={topic} />
+  redirect(docHref(topic.slug, topic.cards[0].id))
 }
