@@ -34,7 +34,7 @@ export function DocPager({ prev, next }: { prev: PagerLink; next: PagerLink }) {
   }, [prev, next, router])
 
   return (
-    <nav className="mt-12 grid grid-cols-2 gap-4 border-t border-border pt-6">
+    <nav className="mt-12 grid grid-cols-1 gap-3 border-t border-border pt-6 sm:grid-cols-2">
       {prev ? (
         <Link
           href={prev.href}
@@ -49,12 +49,12 @@ export function DocPager({ prev, next }: { prev: PagerLink; next: PagerLink }) {
           </span>
         </Link>
       ) : (
-        <span />
+        <span className="hidden sm:block" />
       )}
       {next ? (
         <Link
           href={next.href}
-          className="group col-start-2 flex flex-col items-end gap-1 rounded-lg border border-border p-3 text-right transition-colors hover:bg-muted/60"
+          className="group flex flex-col items-end gap-1 rounded-lg border border-border p-3 text-right transition-colors hover:bg-muted/60 sm:col-start-2"
         >
           <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
             Next
