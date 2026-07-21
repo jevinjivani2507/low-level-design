@@ -3,7 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ListIcon, XIcon } from "@phosphor-icons/react"
+import { CaretRightIcon, ListIcon, XIcon } from "@phosphor-icons/react"
 import { cn } from "@/lib/utils"
 import { flashCardTopics, docHref } from "@/lib/topics-data"
 
@@ -14,38 +14,65 @@ function NavList({
   pathname: string
   onNavigate: () => void
 }) {
+  const activeTopicSlug = flashCardTopics.find((t) =>
+    t.cards.some((c) => pathname === docHref(t.slug, c.id))
+  )?.slug
+
+  // Per-topic open state; unset topics default to open only when active.
+  const [overrides, setOverrides] = useState<Record<string, boolean>>({})
+  const isOpen = (slug: string) => overrides[slug] ?? slug === activeTopicSlug
+
   return (
-    <nav className="flex flex-col gap-6">
-      {flashCardTopics.map((topic) => (
-        <div key={topic.slug}>
-          <p className="px-2 text-[11px] font-semibold tracking-wide text-muted-foreground uppercase">
-            {topic.title}
-          </p>
-          <ul className="mt-1.5 flex flex-col gap-0.5">
-            {topic.cards.map((card) => {
-              const href = docHref(topic.slug, card.id)
-              const active = pathname === href
-              return (
-                <li key={card.id}>
-                  <Link
-                    href={href}
-                    onClick={onNavigate}
-                    aria-current={active ? "page" : undefined}
-                    className={cn(
-                      "block rounded-md px-2 py-1.5 text-[13px] leading-snug transition-colors",
-                      active
-                        ? "bg-muted font-medium text-foreground"
-                        : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
-                    )}
-                  >
-                    {card.title}
-                  </Link>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
-      ))}
+    <nav className="flex flex-col gap-2">
+      {flashCardTopics.map((topic) => {
+        const open = isOpen(topic.slug)
+        return (
+          <div key={topic.slug}>
+            <button
+              type="button"
+              onClick={() =>
+                setOverrides((o) => ({ ...o, [topic.slug]: !open }))
+              }
+              aria-expanded={open}
+              className="flex w-full items-start gap-1.5 rounded-md px-2 py-1.5 text-left text-[11px] font-semibold tracking-wide text-muted-foreground uppercase hover:text-foreground"
+            >
+              <CaretRightIcon
+                className={cn(
+                  "mt-0.5 size-3 shrink-0 transition-transform",
+                  open && "rotate-90"
+                )}
+                aria-hidden
+              />
+              <span>{topic.title}</span>
+            </button>
+            {open && (
+              <ul className="mt-0.5 mb-1 flex flex-col gap-0.5">
+                {topic.cards.map((card) => {
+                  const href = docHref(topic.slug, card.id)
+                  const active = pathname === href
+                  return (
+                    <li key={card.id}>
+                      <Link
+                        href={href}
+                        onClick={onNavigate}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "block rounded-md py-1.5 pr-2 pl-[26px] text-[13px] leading-snug transition-colors",
+                          active
+                            ? "bg-muted font-medium text-foreground"
+                            : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+                        )}
+                      >
+                        {card.title}
+                      </Link>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+          </div>
+        )
+      })}
     </nav>
   )
 }
