@@ -18,21 +18,20 @@ function NavList({
     t.cards.some((c) => pathname === docHref(t.slug, c.id))
   )?.slug
 
-  // Per-topic open state; unset topics default to open only when active.
-  const [overrides, setOverrides] = useState<Record<string, boolean>>({})
-  const isOpen = (slug: string) => overrides[slug] ?? slug === activeTopicSlug
+  // Accordion: only one topic is open at a time (starts on the active topic).
+  const [openSlug, setOpenSlug] = useState<string | null>(
+    activeTopicSlug ?? null
+  )
 
   return (
     <nav className="flex flex-col gap-2">
       {flashCardTopics.map((topic) => {
-        const open = isOpen(topic.slug)
+        const open = openSlug === topic.slug
         return (
           <div key={topic.slug}>
             <button
               type="button"
-              onClick={() =>
-                setOverrides((o) => ({ ...o, [topic.slug]: !open }))
-              }
+              onClick={() => setOpenSlug(open ? null : topic.slug)}
               aria-expanded={open}
               className="flex w-full items-start gap-1.5 rounded-md px-2 py-1.5 text-left text-[11px] font-semibold tracking-wide text-muted-foreground uppercase hover:text-foreground"
             >
