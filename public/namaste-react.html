@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Namaste React — Revision Notebook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kalam:wght@400;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#dfe5ee; --paper:#fffefb; --line:#dde6f2; --margin:#f4b9c5;
+  --ink:#1d2b64; --ink-soft:#4f5a88; --pink:#d6336c; --blue:#2f5fd0; --green:#2b8a3e; --orange:#d9480f; --purple:#6741d9;
+  --hl:#fff27a; --hl-pink:#ffdde9; --hl-green:#d8f5dd; --hl-blue:#dfe9ff; --sticky:#fff5ad; --code-bg:#f3f5fb; --code-ink:#1d2b64;
+  --shadow:rgba(29,43,100,.13); --ring:#9aa6c9;
+  --hand:"Patrick Hand","Segoe Print","Comic Sans MS",cursive,sans-serif;
+  --head:"Kalam","Segoe Print","Comic Sans MS",cursive,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --desk:#0e1118; --paper:#1b2030; --line:#262d40; --margin:#5b2c3e;
+    --ink:#e7ebfa; --ink-soft:#a7b0d2; --pink:#ff7eab; --blue:#8fb0ff; --green:#7fe091; --orange:#ffa94d; --purple:#b49cff;
+    --hl:rgba(255,224,70,.30); --hl-pink:rgba(255,126,171,.18); --hl-green:rgba(127,224,145,.15); --hl-blue:rgba(143,176,255,.16);
+    --sticky:#3a3720; --code-bg:#131826; --code-ink:#dfe5ff; --shadow:rgba(0,0,0,.45); --ring:#4b5576;
+  }
+}
+:root[data-theme="dark"]{
+  --desk:#0e1118; --paper:#1b2030; --line:#262d40; --margin:#5b2c3e;
+  --ink:#e7ebfa; --ink-soft:#a7b0d2; --pink:#ff7eab; --blue:#8fb0ff; --green:#7fe091; --orange:#ffa94d; --purple:#b49cff;
+  --hl:rgba(255,224,70,.30); --hl-pink:rgba(255,126,171,.18); --hl-green:rgba(127,224,145,.15); --hl-blue:rgba(143,176,255,.16);
+  --sticky:#3a3720; --code-bg:#131826; --code-ink:#dfe5ff; --shadow:rgba(0,0,0,.45); --ring:#4b5576;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--hand);font-size:19px;line-height:1.5;-webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+a{color:var(--blue)}
+:focus-visible{outline:3px dashed var(--pink);outline-offset:3px}
+
+/* ---------- shell ---------- */
+.shell{display:grid;grid-template-columns:250px minmax(0,1fr);gap:28px;max-width:1240px;margin:0 auto;padding:28px 20px 60px}
+.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 20px);align-self:start;max-height:calc(100vh - 40px);overflow:auto;padding:6px 4px 6px 0}
+.side h1{font-family:var(--head);font-weight:700;font-size:28px;line-height:1.05;margin:0 0 4px;color:var(--ink)}
+.side .sub{color:var(--ink-soft);font-size:16px;margin:0 0 14px}
+.toc{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3px}
+.toc a{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);padding:5px 10px;border-radius:10px;border:2px solid transparent;font-size:18px;line-height:1.25}
+.toc a:hover{background:var(--hl-blue)}
+.toc a[aria-current="page"]{border-color:var(--ink);background:var(--paper);box-shadow:3px 3px 0 var(--shadow)}
+.toc .n{flex:0 0 30px;height:30px;border:2px solid var(--ink-soft);border-radius:50%;display:grid;place-items:center;font-family:var(--head);font-size:14px;color:var(--ink-soft)}
+.toc .done .n{background:var(--green);border-color:var(--green);color:var(--paper)}
+.toc .sep{height:1px;border-top:2px dashed var(--line);margin:8px 6px}
+.side .tools{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+.btn{font-family:var(--hand);font-size:17px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:12px;padding:6px 14px;cursor:pointer;box-shadow:3px 3px 0 var(--shadow)}
+.btn:hover{background:var(--hl)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow)}
+.btn.pink{border-color:var(--pink);color:var(--pink)}
+.btn.green{border-color:var(--green);color:var(--green)}
+
+/* ---------- notebook page ---------- */
+.book{position:relative;min-width:0}
+.page{display:none;position:relative;scroll-margin-top:140px;background-color:var(--paper);
+  background-image:linear-gradient(var(--line) 1.5px,transparent 1.5px);background-size:100% 34px;background-position:0 20px;
+  border-radius:6px 22px 22px 6px;box-shadow:0 1px 0 var(--line),6px 10px 0 var(--shadow);padding:40px 44px 40px 92px;min-height:80vh}
+.page.on{display:block}
+.page::before{content:"";position:absolute;top:0;bottom:0;left:66px;border-left:2px solid var(--margin)}
+.page::after{content:"";position:absolute;top:18px;bottom:18px;left:-14px;width:34px;
+  background:radial-gradient(circle at 17px 11px,var(--desk) 6px,transparent 7px) 0 0/34px 30px repeat-y,
+             radial-gradient(ellipse at 9px 11px,transparent 8px,var(--ring) 9px,var(--ring) 11px,transparent 12px) 0 0/34px 30px repeat-y}
+.page > *{position:relative}
+
+/* ---------- typography ---------- */
+.ep{display:inline-block;font-family:var(--head);font-size:22px;color:var(--pink);border:2.5px solid var(--pink);border-radius:999px;padding:2px 22px;margin:0 0 6px;transform:rotate(-1deg)}
+.page h2{font-family:var(--head);font-weight:700;font-size:clamp(34px,5vw,50px);line-height:1.05;margin:4px 0 18px;color:var(--ink);letter-spacing:.5px}
+.page h3{font-family:var(--head);font-weight:700;font-size:26px;line-height:1.2;margin:34px 0 10px;display:inline-block;padding:0 8px 0 4px;
+  background:linear-gradient(transparent 38%,var(--hl) 38%,var(--hl) 88%,transparent 88%)}
+.page h3 .star{color:var(--pink);margin-right:6px}
+.page h4{font-family:var(--head);font-size:20px;margin:18px 0 4px;color:var(--blue)}
+.page p{margin:8px 0;max-width:68ch}
+.page ul,.page ol{margin:6px 0;padding-left:24px;max-width:68ch}
+.page li{margin:3px 0}
+.page li::marker{color:var(--pink)}
+code{font-family:var(--mono);font-size:.78em;background:var(--hl-blue);padding:1px 5px;border-radius:5px;color:var(--ink)}
+mark{background:linear-gradient(transparent 35%,var(--hl) 35%,var(--hl) 90%,transparent 90%);color:inherit;padding:0 2px}
+.pk{color:var(--pink)} .gr{color:var(--green)} .bl{color:var(--blue)} .og{color:var(--orange)}
+.muted{color:var(--ink-soft)}
+
+/* ---------- boxes ---------- */
+.cloud{border:2.5px solid var(--green);border-radius:40px 34px 44px 30px;padding:14px 26px;margin:6px 0 22px;max-width:760px;font-size:20px;background:var(--paper)}
+.cloud b{font-family:var(--head)}
+.box{border:2.5px dashed var(--blue);border-radius:14px;padding:12px 18px 14px;margin:14px 0;background:var(--paper)}
+.box > .lbl{display:inline-block;font-family:var(--head);font-size:18px;color:var(--blue);background:var(--paper);padding:0 8px;margin:-26px 0 2px -6px;position:relative;top:-4px}
+.box.pink{border-color:var(--pink)} .box.pink > .lbl{color:var(--pink)}
+.box.green{border-color:var(--green)} .box.green > .lbl{color:var(--green)}
+.box.solid{border-style:solid}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:12px 0}
+.grid2 > .box{margin:6px 0}
+.sticky{background:var(--sticky);padding:14px 18px 14px;margin:18px 0;max-width:640px;box-shadow:2px 4px 0 var(--shadow);transform:rotate(-.6deg);border-radius:2px 2px 14px 2px;position:relative}
+.sticky::before{content:"";position:absolute;top:-10px;left:42%;width:88px;height:20px;background:var(--hl-pink);opacity:.9;transform:rotate(2deg)}
+.sticky .t{font-family:var(--head);font-weight:700;color:var(--orange);font-size:19px}
+.sticky:nth-of-type(even){transform:rotate(.5deg)}
+.fix{border-left:5px solid var(--green);background:var(--hl-green);padding:10px 16px;margin:16px 0;border-radius:0 12px 12px 0;max-width:760px}
+.fix .t{font-family:var(--head);font-weight:700;color:var(--green)}
+.versus{display:grid;grid-template-columns:1fr 1fr;border:2.5px solid var(--blue);border-radius:14px;overflow:hidden;margin:14px 0;max-width:760px}
+.versus > div{padding:10px 16px;background:var(--paper)}
+.versus > div + div{border-left:2.5px solid var(--blue)}
+.versus h5{margin:0 0 4px;font-family:var(--head);font-size:19px;color:var(--blue)}
+.versus h5.pk{color:var(--pink)}
+
+/* tables */
+.tbl{overflow-x:auto;margin:12px 0;max-width:100%}
+table{border-collapse:collapse;min-width:480px;background:var(--paper)}
+th,td{border:2px solid var(--ink-soft);padding:6px 12px;text-align:left;vertical-align:top;font-size:18px}
+th{font-family:var(--head);background:var(--hl-blue)}
+
+/* code */
+pre.code{background:var(--code-bg);color:var(--code-ink);border:2px solid var(--ink-soft);border-radius:12px;padding:14px 16px;margin:12px 0;overflow-x:auto;font-family:var(--mono);font-size:13.5px;line-height:1.6;max-width:780px;position:relative}
+pre.code::before{content:attr(data-cap);display:block;font-family:var(--hand);font-size:15px;color:var(--ink-soft);margin:-4px 0 6px}
+pre.code[data-cap=""]::before{display:none}
+.tk-k{color:var(--purple);font-weight:600} .tk-s{color:var(--green)} .tk-c{color:var(--ink-soft);font-style:italic} .tk-t{color:var(--pink)} .tk-n{color:var(--orange)}
+
+/* diagrams */
+.fig{margin:18px 0 8px;overflow-x:auto;max-width:100%}
+.fig svg{display:block;min-width:600px;width:100%;height:auto}
+.fig figcaption{font-size:16px;color:var(--ink-soft);margin-top:4px}
+.d text{font-family:var(--hand);fill:var(--ink);font-size:17px}
+.d .h{font-family:var(--head);font-weight:700;font-size:19px}
+.d .sm{font-size:14.5px;fill:var(--ink-soft)}
+.d .mono{font-family:var(--mono);font-size:12.5px}
+.d .s{stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.d .s.p{stroke:var(--pink)} .d .s.g{stroke:var(--green)} .d .s.b{stroke:var(--blue)} .d .s.o{stroke:var(--orange)} .d .s.v{stroke:var(--purple)}
+.d .s.dash{stroke-dasharray:7 6}
+.d .fb{fill:var(--hl-blue)} .d .fp{fill:var(--hl-pink)} .d .fg{fill:var(--hl-green)} .d .fy{fill:var(--hl)} .d .fw{fill:var(--paper)}
+.d text.p{fill:var(--pink)} .d text.g{fill:var(--green)} .d text.b{fill:var(--blue)} .d text.o{fill:var(--orange)} .d text.v{fill:var(--purple)}
+.mk path{fill:var(--ink)} .mk.p path{fill:var(--pink)} .mk.g path{fill:var(--green)} .mk.b path{fill:var(--blue)}
+
+/* Q&A cards */
+.qa-wrap{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin:12px 0}
+details.qa{background:var(--paper);border:2px solid var(--ink);border-radius:12px;box-shadow:3px 3px 0 var(--shadow);padding:0}
+details.qa summary{cursor:pointer;list-style:none;padding:12px 16px 12px 44px;position:relative;font-size:19px;line-height:1.35}
+details.qa summary::-webkit-details-marker{display:none}
+details.qa summary::before{content:"Q";position:absolute;left:12px;top:11px;width:24px;height:24px;border-radius:50%;background:var(--pink);color:var(--paper);font-family:var(--head);font-weight:700;font-size:15px;display:grid;place-items:center}
+details.qa[open]{border-color:var(--green)}
+details.qa[open] summary::before{content:"✓";background:var(--green)}
+details.qa .a{padding:2px 16px 14px 44px;border-top:2px dashed var(--line);font-size:18px}
+details.qa .a p{margin:6px 0}
+
+/* puzzle */
+.puzzle{border:2.5px solid var(--purple);border-radius:16px;padding:14px 18px;margin:20px 0;max-width:800px;background:var(--paper)}
+.puzzle .t{font-family:var(--head);font-weight:700;color:var(--purple);font-size:21px}
+.puzzle details summary{cursor:pointer;display:inline-block;font-family:var(--hand);font-size:17px;border:2px solid var(--purple);color:var(--purple);border-radius:10px;padding:4px 14px;list-style:none}
+.puzzle details summary::-webkit-details-marker{display:none}
+.puzzle details[open] summary{background:var(--purple);color:var(--paper)}
+.puzzle details > div{margin-top:10px}
+
+/* page footer */
+.pfoot{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:40px;padding-top:18px;border-top:2.5px dashed var(--line)}
+.check{display:inline-flex;align-items:center;gap:10px;font-size:20px;cursor:pointer;user-select:none}
+.check input{appearance:none;width:28px;height:28px;border:2.5px solid var(--ink);border-radius:7px;margin:0;display:grid;place-items:center;cursor:pointer;background:var(--paper)}
+.check input:checked{background:var(--green);border-color:var(--green)}
+.check input:checked::after{content:"✓";color:var(--paper);font-size:20px;line-height:1;font-weight:700}
+
+/* cover */
+.cover-title{font-family:var(--head);font-weight:700;font-size:clamp(48px,9vw,96px);line-height:.95;margin:6px 0 4px;color:var(--ink);letter-spacing:1px}
+.cover-title span{display:block;font-size:.45em;color:var(--pink);letter-spacing:0}
+.pencil{position:relative;height:34px;max-width:620px;margin:10px 0 4px}
+.pencil svg{width:100%;height:34px;min-width:0}
+.idx{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin:16px 0}
+.idx a{display:block;text-decoration:none;color:var(--ink);border:2px solid var(--ink);border-radius:14px;padding:10px 14px 12px;background:var(--paper);box-shadow:3px 3px 0 var(--shadow)}
+.idx a:hover{background:var(--hl-blue)}
+.idx a .e{font-family:var(--head);color:var(--pink);font-size:16px}
+.idx a .tt{font-family:var(--head);font-weight:700;font-size:21px;line-height:1.15;display:block}
+.idx a .hk{font-size:16px;color:var(--ink-soft);display:block;margin-top:2px}
+.idx a.done{border-color:var(--green)}
+.idx a.done .e::after{content:"  ✓ revised";color:var(--green)}
+
+/* drill */
+.deck{max-width:700px;margin:16px 0}
+.card{border:2.5px solid var(--ink);border-radius:18px;background:var(--paper);box-shadow:5px 6px 0 var(--shadow);padding:22px 26px;min-height:240px;position:relative}
+.card .meta{font-family:var(--head);color:var(--pink);font-size:16px}
+.card .q{font-family:var(--head);font-weight:700;font-size:26px;line-height:1.25;margin:6px 0 14px}
+.card .ans{border-top:2.5px dashed var(--line);padding-top:10px;font-size:19px}
+.card .ans[hidden]{display:none}
+.deck-ctl{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+select{font-family:var(--hand);font-size:17px;color:var(--ink);background:var(--paper);border:2px solid var(--ink);border-radius:10px;padding:5px 10px}
+
+/* mobile */
+@media (max-width:900px){
+  .shell{grid-template-columns:1fr;padding:0 0 40px;gap:0}
+  .side{position:sticky;top:0;z-index:5;max-height:none;background:var(--desk);padding:calc(env(safe-area-inset-top,0px) + 10px) 12px 10px;border-bottom:2px dashed var(--ring)}
+  .side h1{font-size:22px}.side .sub{display:none}
+  .toc{flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
+  .toc li{flex:0 0 auto}.toc .sep{display:none}
+  .toc a{font-size:16px;padding:4px 10px;white-space:nowrap}
+  .toc .lab{display:none}.toc a[aria-current="page"] .lab,.toc .always .lab{display:inline}
+  .side .tools{display:none}
+  .page{border-radius:0;padding:28px 18px 30px 26px;box-shadow:none}
+  .page::before{left:12px}.page::after{display:none}
+  .versus{grid-template-columns:1fr}.versus > div + div{border-left:0;border-top:2.5px solid var(--blue)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<!-- shared SVG defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.6"/></filter>
+    <marker id="ah" class="mk" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 L3,5 z"/></marker>
+    <marker id="ahp" class="mk p" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 L3,5 z"/></marker>
+    <marker id="ahg" class="mk g" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 L3,5 z"/></marker>
+    <marker id="ahb" class="mk b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 L3,5 z"/></marker>
+  </defs>
+</svg>
+
+<div class="shell">
+  <nav class="side" aria-label="Chapters">
+    <h1>Namaste React</h1>
+    <p class="sub">Revision notebook for SDE-2 interviews</p>
+    <ul class="toc" id="toc"></ul>
+    <div class="tools">
+      <button class="btn" id="themeBtn" type="button">Switch theme</button>
+    </div>
+  </nav>
+
+  <main class="book" id="book">
+<!-- ================= COVER ================= -->
+<section class="page" id="cover" data-short="Start" data-title="Cover">
+  <div class="ep">Season 1 revision</div>
+  <h1 class="cover-title">Namaste React<span>the night-before notebook</span></h1>
+  <p style="font-size:21px">Nine episodes from your notes, a crash course on episodes 10 to 13, and the extra depth an SDE-2 panel expects. Every page ends with interview cards: tap a question, answer it out loud, then check yourself.</p>
+
+  <div class="pencil" aria-hidden="true">
+    <svg viewBox="0 0 620 34" preserveAspectRatio="none" class="d">
+      <rect x="2" y="7" width="560" height="20" rx="4" class="s fw"/>
+      <rect id="pencilFill" x="2" y="7" width="0" height="20" rx="4" class="fy"/>
+      <rect x="2" y="7" width="560" height="20" rx="4" class="s"/>
+      <path d="M562 7 L608 17 L562 27 Z" class="s fw"/><path d="M596 14.5 L608 17 L596 19.5 Z" fill="var(--ink)"/>
+    </svg>
+  </div>
+  <p id="progressTxt" class="muted" style="margin-top:0"></p>
+
+  <h3><span class="star">★</span>Pick a page</h3>
+  <div class="idx" id="idx"></div>
+
+  <h3><span class="star">★</span>If you only have 10 minutes</h3>
+  <div class="box pink"><span class="lbl">say these out loud</span>
+    <ol>
+      <li>JSX → Babel → <code>React.createElement</code> / <code>jsx()</code> → plain object → ReactDOM commits to the real DOM.</li>
+      <li>State change → component function re-runs → new virtual tree → <mark>reconciliation (diff)</mark> → minimal DOM commit.</li>
+      <li>Keys tell the diff which list item is which. Stable IDs, never <code>Math.random()</code> during render, index only for static lists.</li>
+      <li>Render phase is pure and can be paused (Fiber). Commit phase touches the DOM and runs effects/lifecycles.</li>
+      <li><code>useEffect</code> runs after paint. <code>[]</code> = after mount, <code>[x]</code> = when x changes, none = after every render. Return a cleanup.</li>
+      <li>State is a snapshot per render; updates are batched. Use <code>setX(prev =&gt; ...)</code> when the next value depends on the old one.</li>
+      <li>Rules of hooks: top level only, only in components or custom hooks, because React matches hooks by call order.</li>
+      <li>Client-side routing swaps components without a document request; <code>Link</code> not <code>&lt;a&gt;</code>; <code>Outlet</code> renders child routes.</li>
+      <li>Class lifecycle: constructor → render → commit → componentDidMount; update → render → componentDidUpdate; componentWillUnmount for cleanup.</li>
+      <li>Optimize: custom hooks for logic reuse, <code>lazy()</code> + <code>Suspense</code> for code splitting, memoize only measured hot spots.</li>
+    </ol>
+  </div>
+  <p class="muted" style="font-size:16px">Built from your Episode 1–9 notes. Course: Namaste React by Akshay Saini. Code reference: github.com/chetannada/Namaste-React. Where your notes were imprecise, look for the green “Fix in your notes” strips.</p>
+</section>
+
+<!-- ================= EP 1 ================= -->
+<section class="page" id="ep1" data-n="1" data-short="Inception" data-title="Inception" data-hook="createElement, createRoot, render">
+  <div class="ep">Episode-01</div>
+  <h2>Inception</h2>
+  <div class="cloud"><b>In one breath:</b> React is just JavaScript. <code>React.createElement</code> makes a plain object describing UI, and ReactDOM turns that object into real DOM inside one root node.</div>
+
+  <h3><span class="star">★</span>The three APIs</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">React.createElement(type, props, ...children)</span>
+      <p><b>type</b>: tag string like <code>"h1"</code> or a component.<br><b>props</b>: attributes object (or <code>null</code>).<br><b>children</b>: text, elements, or an array.</p>
+      <p>Returns a <mark>React element</mark>, an object. Not a DOM node.</p></div>
+    <div class="box pink"><span class="lbl">ReactDOM.createRoot(domNode)</span>
+      <p>Tells React “you own everything inside this node”. Returns a root with two methods: <code>render</code> and <code>unmount</code>.</p></div>
+    <div class="box green"><span class="lbl">root.render(reactNode)</span>
+      <p>Converts the element tree into DOM and puts it in the root. Existing children of <code>#root</code> get replaced. Returns <code>undefined</code>.</p></div>
+  </div>
+
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 860 230" role="img" aria-label="createElement produces an object, render converts it into DOM inside root">
+      <g filter="url(#rough)">
+        <rect x="10" y="40" width="190" height="110" rx="14" class="s fb"/>
+        <rect x="240" y="30" width="220" height="130" rx="14" class="s fy"/>
+        <rect x="500" y="55" width="120" height="80" rx="14" class="s p fp"/>
+        <rect x="660" y="30" width="190" height="130" rx="14" class="s g fg"/>
+        <path d="M200 95 L236 95" class="s" marker-end="url(#ah)"/>
+        <path d="M460 95 L496 95" class="s" marker-end="url(#ah)"/>
+        <path d="M620 95 L656 95" class="s" marker-end="url(#ah)"/>
+        <rect x="680" y="85" width="150" height="58" rx="8" class="s g dash"/>
+      </g>
+      <text x="105" y="68" text-anchor="middle" class="h">createElement</text>
+      <text x="105" y="96" text-anchor="middle" class="mono">("h1",</text>
+      <text x="105" y="114" text-anchor="middle" class="mono">{id:"title"},</text>
+      <text x="105" y="132" text-anchor="middle" class="mono">"Namaste")</text>
+      <text x="350" y="56" text-anchor="middle" class="h">React element</text>
+      <text x="350" y="80" text-anchor="middle" class="mono">{ $$typeof: Symbol,</text>
+      <text x="350" y="98" text-anchor="middle" class="mono">  type: "h1",</text>
+      <text x="350" y="116" text-anchor="middle" class="mono">  props: {id, children},</text>
+      <text x="350" y="134" text-anchor="middle" class="mono">  key: null, ref: null }</text>
+      <text x="560" y="90" text-anchor="middle" class="h p">root</text>
+      <text x="560" y="114" text-anchor="middle" class="h p">.render()</text>
+      <text x="755" y="58" text-anchor="middle" class="h g">Real DOM</text>
+      <text x="755" y="78" text-anchor="middle" class="mono">&lt;div id="root"&gt;</text>
+      <text x="755" y="110" text-anchor="middle" class="mono">&lt;h1 id="title"&gt;</text>
+      <text x="755" y="128" text-anchor="middle" class="mono">Namaste&lt;/h1&gt;</text>
+      <text x="105" y="185" text-anchor="middle" class="sm">you describe</text>
+      <text x="350" y="195" text-anchor="middle" class="sm">just a JS object, cheap to create</text>
+      <text x="755" y="195" text-anchor="middle" class="sm">browser paints this</text>
+    </svg>
+    <figcaption>React elements are descriptions; ReactDOM is the renderer that makes them real.</figcaption>
+  </figure>
+
+  <script type="text/x-code" data-cap="index.html — the CDN way (React 18 UMD)">
+<div id="root">Not rendered yet</div>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></scr_ipt>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></scr_ipt>
+<script>
+  const heading1 = React.createElement("h1", { id: "h1", key: "h1" }, "Hello1");
+  const heading2 = React.createElement("h1", { id: "h2", key: "h2" }, "Hello2");
+  const container = React.createElement("div", {}, [heading1, heading2]);
+  const root = ReactDOM.createRoot(document.getElementById("root"));
+  root.render(container);   // replaces "Not rendered yet"
+</scr_ipt>
+  </script>
+
+  <h3><span class="star">★</span>Things the notes taught</h3>
+  <ul>
+    <li><b>React is an island.</b> Divs above and below <code>#root</code> stay untouched, so React can be added to one part of an existing page.</li>
+    <li><b>Script order matters.</b> Your script must run after the React and ReactDOM scripts, otherwise <code>React is not defined</code>.</li>
+    <li><b>“Not rendered yet”</b> placeholder inside root makes it obvious when React failed to mount.</li>
+    <li>Props are passed to DOM as attributes: <code>className</code> (not <code>class</code>), <code>style</code> as an object. Unknown lowercase props like <code>hello: "world"</code> also land as attributes.</li>
+    <li>Multiple children go in an array, and arrays need <code>key</code> on each child.</li>
+  </ul>
+
+  <div class="sticky"><div class="t">Interview gotcha</div>
+    Style keys inside <code>createElement</code> should be camelCase: <code>backgroundColor</code>. The notes wrote <code>"background-color"</code>; React warns about hyphenated style keys (CSS custom properties like <code>--x</code> are the exception).</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> React 19 removed the UMD builds, so the <code>unpkg.com/react@18/umd</code> script pattern only works for React 18. Today you would use a bundler or an ESM CDN. Also, <code>ReactDOM.render</code> (pre-18 API) was removed in React 19; <code>createRoot</code> from <code>react-dom/client</code> is the only client root API.</div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep1"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 2 ================= -->
+<section class="page" id="ep2" data-n="2" data-short="Igniting" data-title="Igniting our App" data-hook="npm, Parcel, HMR, browserslist">
+  <div class="ep">Episode-02</div>
+  <h2>Igniting our App</h2>
+  <div class="cloud"><b>In one breath:</b> React alone doesn't make an app fast. npm manages packages, and a bundler (Parcel) gives us a dev server, HMR, minification, tree shaking and code splitting.</div>
+
+  <h3><span class="star">★</span>npm and the files it creates</h3>
+  <div class="tbl"><table>
+    <tr><th>File / folder</th><th>What it is</th><th>Commit to git?</th></tr>
+    <tr><td><code>package.json</code></td><td>Project config + dependency <b>ranges</b> (<code>^2.8.2</code>)</td><td class="gr">Yes</td></tr>
+    <tr><td><code>package-lock.json</code></td><td><b>Exact</b> installed versions + <code>integrity</code> hash of every package (incl. transitive)</td><td class="gr">Yes, always</td></tr>
+    <tr><td><code>node_modules/</code></td><td>The actual code. Heaviest folder, regenerated with <code>npm install</code></td><td class="pk">No</td></tr>
+    <tr><td><code>dist/</code></td><td>Parcel's build output (dev or production)</td><td class="pk">No</td></tr>
+    <tr><td><code>.parcel-cache/</code></td><td>Parcel's cache so rebuilds are fast</td><td class="pk">No</td></tr>
+  </table></div>
+  <p>Rule of thumb: <mark>anything that can be regenerated goes in <code>.gitignore</code></mark>.</p>
+
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 820 170" role="img" aria-label="Caret allows minor and patch updates up to next major; tilde allows patch updates up to next minor">
+      <g filter="url(#rough)">
+        <path d="M40 110 L790 110" class="s"/>
+        <path d="M120 100 L120 120 M420 100 L420 120 M720 100 L720 120" class="s"/>
+        <rect x="120" y="40" width="600" height="26" rx="8" class="s p fp"/>
+        <rect x="120" y="74" width="300" height="22" rx="8" class="s g fg"/>
+      </g>
+      <text x="120" y="145" text-anchor="middle" class="mono">2.8.2</text>
+      <text x="420" y="145" text-anchor="middle" class="mono">2.9.0</text>
+      <text x="720" y="145" text-anchor="middle" class="mono">3.0.0</text>
+      <text x="420" y="59" text-anchor="middle" class="p">^2.8.2 caret: minor + patch updates, &lt; 3.0.0</text>
+      <text x="270" y="90" text-anchor="middle" class="g">~2.8.2 tilde: patch only, &lt; 2.9.0</text>
+      <text x="770" y="145" text-anchor="middle" class="sm">exact "2.8.2" = pinned</text>
+    </svg>
+    <figcaption>Semver is MAJOR.MINOR.PATCH. The lock file pins the exact version actually installed.</figcaption>
+  </figure>
+
+  <div class="versus">
+    <div><h5>dependencies</h5>Needed when the app runs: <code>react</code>, <code>react-dom</code>, <code>react-router-dom</code>. <code>npm i react</code></div>
+    <div><h5 class="pk">devDependencies</h5>Needed only to build/test: <code>parcel</code>, <code>jest</code>, babel plugins. <code>npm i -D parcel</code></div>
+  </div>
+  <p><b>npm vs npx</b>: <code>npm</code> installs and runs scripts; <code>npx parcel index.html</code> executes a package binary without a global install.</p>
+
+  <h3><span class="star">★</span>What Parcel does for us</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 300" role="img" aria-label="Parcel takes source files and produces a dev server or a production build">
+      <g filter="url(#rough)">
+        <rect x="10" y="80" width="160" height="140" rx="14" class="s fb"/>
+        <rect x="230" y="20" width="360" height="260" rx="18" class="s v"/>
+        <rect x="650" y="30" width="220" height="100" rx="14" class="s g fg"/>
+        <rect x="650" y="170" width="220" height="110" rx="14" class="s p fp"/>
+        <path d="M170 150 L226 150" class="s" marker-end="url(#ah)"/>
+        <path d="M590 100 L646 80" class="s g" marker-end="url(#ahg)"/>
+        <path d="M590 200 L646 220" class="s p" marker-end="url(#ahp)"/>
+      </g>
+      <text x="90" y="108" text-anchor="middle" class="h">your src</text>
+      <text x="90" y="136" text-anchor="middle" class="mono">index.html</text>
+      <text x="90" y="156" text-anchor="middle" class="mono">App.js</text>
+      <text x="90" y="176" text-anchor="middle" class="mono">styles.css</text>
+      <text x="90" y="196" text-anchor="middle" class="mono">images</text>
+      <text x="410" y="50" text-anchor="middle" class="h v">Parcel (zero-config bundler)</text>
+      <text x="250" y="84">👀 File watcher (C++) → HMR</text>
+      <text x="250" y="110">🗄  Caching in .parcel-cache</text>
+      <text x="250" y="136">🔁 Babel transpile (JSX, old browsers)</text>
+      <text x="250" y="162">📦 Bundling + code splitting</text>
+      <text x="250" y="188">🗜  Minify + compress + content hashing</text>
+      <text x="250" y="214">🌳 Tree shaking (drop unused exports)</text>
+      <text x="250" y="240">🖼  Image optimization, dev HTTPS, port</text>
+      <text x="250" y="266">🧯 Friendly error overlay / diagnostics</text>
+      <text x="760" y="58" text-anchor="middle" class="h g">npx parcel index.html</text>
+      <text x="760" y="84" text-anchor="middle">dev server :1234</text>
+      <text x="760" y="108" text-anchor="middle" class="sm">HMR, source maps, fast</text>
+      <text x="760" y="198" text-anchor="middle" class="h p">npx parcel build</text>
+      <text x="760" y="222" text-anchor="middle" class="h p">index.html</text>
+      <text x="760" y="248" text-anchor="middle">dist/ optimized</text>
+      <text x="760" y="270" text-anchor="middle" class="sm">index.[hash].js</text>
+    </svg>
+    <figcaption>Dev build is optimized for speed of iteration; production build is optimized for the user's download.</figcaption>
+  </figure>
+
+  <div class="grid2">
+    <div class="box"><span class="lbl">HMR</span><p>Hot Module Replacement swaps changed modules in the running page, often keeping state. Parcel's file watcher notices the change, cache keeps rebuilds in milliseconds.</p></div>
+    <div class="box pink"><span class="lbl">Tree shaking</span><p>Removes exports you never import. Works because ES module <code>import</code>/<code>export</code> are static and analyzable at build time (CommonJS <code>require</code> is not).</p></div>
+    <div class="box green"><span class="lbl">browserslist</span><p><code>"browserslist": ["last 2 versions"]</code> in package.json tells Babel/Parcel which browsers to support, so it knows how much to transpile and polyfill.</p></div>
+  </div>
+
+  <h3><span class="star">★</span>Errors you met (and why)</h3>
+  <ul>
+    <li><code>Browser scripts cannot have imports or exports</code> → add <code>type="module"</code> to the script tag loading <code>App.js</code>.</li>
+    <li><code>You are importing createRoot from "react-dom"</code> → import from <code>"react-dom/client"</code>.</li>
+    <li>Build fails because <code>"main": "App.js"</code> conflicts with an HTML entry → delete <code>main</code> from package.json.</li>
+  </ul>
+  <p><b>Transitive dependencies:</b> your packages depend on other packages, forming a dependency tree. The lock file pins all of them.</p>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> the tilde line reads <code>"^2.8.2"</code> twice; it should be <code>"~2.8.2"</code> → 2.8.2 up to &lt; 2.9.0. And it's “zero config”, not “xero”. The “consistent hashing” point is better described as <b>content hashing</b> of output file names (<code>index.cbf957bf.js</code>) for long-term browser caching.</div>
+
+  <div class="sticky"><div class="t">SDE-2 context</div>
+    Create React App was officially deprecated by the React team in early 2025. In interviews, know the landscape: <b>Vite</b> (native-ESM dev server, fast), <b>Webpack</b> (most configurable, legacy-heavy), <b>Parcel</b> (zero config), and frameworks like <b>Next.js</b> or <b>React Router</b> (framework mode) that ship their own build.</div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep2"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 3 ================= -->
+<section class="page" id="ep3" data-n="3" data-short="Foundation" data-title="Laying the Foundation" data-hook="JSX, Babel, components">
+  <div class="ep">Episode-03</div>
+  <h2>Laying the Foundation</h2>
+  <div class="cloud"><b>In one breath:</b> JSX is HTML-like syntax that Babel compiles into <code>createElement</code> calls. A functional component is just a function that returns JSX.</div>
+
+  <h3><span class="star">★</span>npm scripts</h3>
+  <script type="text/x-code" data-cap="package.json">
+"scripts": {
+  "start": "parcel index.html",       // npm start  (or npm run start)
+  "build": "parcel build index.html"  // npm run build
+}
+  </script>
+
+  <h3><span class="star">★</span>The JSX journey</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 250" role="img" aria-label="JSX is compiled by Babel into createElement calls which produce objects rendered by ReactDOM">
+      <g filter="url(#rough)">
+        <rect x="10" y="60" width="180" height="90" rx="14" class="s fb"/>
+        <ellipse cx="270" cy="105" rx="56" ry="40" class="s o fy"/>
+        <rect x="350" y="45" width="250" height="120" rx="14" class="s fw"/>
+        <rect x="640" y="60" width="100" height="90" rx="14" class="s fy"/>
+        <rect x="780" y="60" width="90" height="90" rx="14" class="s g fg"/>
+        <path d="M190 105 L210 105" class="s" marker-end="url(#ah)"/>
+        <path d="M326 105 L346 105" class="s" marker-end="url(#ah)"/>
+        <path d="M600 105 L636 105" class="s" marker-end="url(#ah)"/>
+        <path d="M740 105 L776 105" class="s" marker-end="url(#ah)"/>
+      </g>
+      <text x="100" y="88" text-anchor="middle" class="h">JSX</text>
+      <text x="100" y="114" text-anchor="middle" class="mono">&lt;h1 className="t"&gt;</text>
+      <text x="100" y="132" text-anchor="middle" class="mono">Hi&lt;/h1&gt;</text>
+      <text x="270" y="100" text-anchor="middle" class="h o">Babel</text>
+      <text x="270" y="120" text-anchor="middle" class="sm">via Parcel</text>
+      <text x="475" y="72" text-anchor="middle" class="h">compiled JS</text>
+      <text x="475" y="98" text-anchor="middle" class="mono">React.createElement(</text>
+      <text x="475" y="116" text-anchor="middle" class="mono">"h1",{className:"t"},"Hi")</text>
+      <text x="475" y="144" text-anchor="middle" class="sm">or _jsx("h1", {...}) in React 17+</text>
+      <text x="690" y="100" text-anchor="middle" class="h">object</text>
+      <text x="690" y="122" text-anchor="middle" class="sm">React element</text>
+      <text x="825" y="100" text-anchor="middle" class="h g">DOM</text>
+      <text x="825" y="122" text-anchor="middle" class="sm">ReactDOM</text>
+      <text x="440" y="215" text-anchor="middle" class="sm">Browsers can't read JSX. It must be compiled before it ever reaches the JS engine.</text>
+    </svg>
+  </figure>
+
+  <div class="grid2">
+    <div class="box"><span class="lbl">JSX is not HTML</span>
+      <ul><li><code>className</code>, <code>htmlFor</code>, camelCase events (<code>onClick</code>)</li><li>Every tag must close: <code>&lt;img /&gt;</code></li><li><code>{ }</code> embeds a JS <mark>expression</mark> (not a statement)</li><li>JSX is separate from React; React just uses it</li></ul></div>
+    <div class="box pink"><span class="lbl">Babel</span>
+      <p>A JS compiler/transpiler: JSX → JS, and modern syntax → older syntax per browserslist. Missing APIs get <b>polyfills</b> (e.g. core-js) — replacement implementations of features old browsers lack.</p></div>
+    <div class="box green"><span class="lbl">Safety (sanitization)</span>
+      <p>Values inside <code>{ }</code> are escaped before insertion, so <code>{userInput}</code> can't inject a script. The escape hatch <code>dangerouslySetInnerHTML</code> is named that way on purpose.</p></div>
+  </div>
+
+  <h3><span class="star">★</span>Functional components</h3>
+  <script type="text/x-code" data-cap="components + composition">
+const Title = () => <h1 className="head">Namaste React</h1>;   // one line
+
+const HeadingComponent = () => (       // multi-line → wrap in ( )
+  <div>
+    <Title />                          // composition: component inside component
+    {Title()}                          // works, but see the gotcha below
+    {heading1}                         // a plain React element
+    <h2>{100 + 200}</h2>               // any JS expression
+  </div>
+);
+
+root.render(<HeadingComponent />);
+  </script>
+  <p><b>Component composition</b> = building a component out of other components. That's the whole React mental model: small pieces, nested.</p>
+
+  <div class="sticky"><div class="t">Interview gotcha: &lt;Title /&gt; vs {Title()}</div>
+    <code>&lt;Title /&gt;</code> creates an element; React calls the function, gives it its own spot in the tree, its own state and hooks. <code>{Title()}</code> just runs the function inline: its hooks become the <i>parent's</i> hooks, and React can't bail out of rendering it separately. Use the tag.</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> capitalizing a component name is <b>required</b>, not just good practice. In JSX, lowercase <code>&lt;title /&gt;</code> compiles to the string <code>"title"</code> (an HTML tag); capitalized <code>&lt;Title /&gt;</code> compiles to a reference to your function. Also, since React 17's automatic JSX runtime, you don't need <code>import React</code> just to write JSX.</div>
+  <div class="fix"><span class="t">Fix in your notes:</span> Parcel does not strip <code>console.log</code> by default (your notes caught this). Use <code>babel-plugin-transform-remove-console</code> in <code>.babelrc</code>, with <code>{"exclude": ["error","warn"]}</code> to keep errors and warnings.</div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep3"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+<!-- ================= EP 4 ================= -->
+<section class="page" id="ep4" data-n="4" data-short="Show me the code" data-title="Talk is Cheap, Show me the Code" data-hook="Fragments, props, keys, Virtual DOM">
+  <div class="ep">Episode-04</div>
+  <h2>Talk is Cheap, Show me the Code</h2>
+  <div class="cloud"><b>In one breath:</b> We start Food Villa. Props pass data down, <code>map()</code> renders lists, keys let React's diffing algorithm match old and new items, and Fiber is the engine doing that work.</div>
+
+  <h3><span class="star">★</span>The app we're building</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 860 260" role="img" aria-label="AppLayout component tree with Header, Body and Footer">
+      <g filter="url(#rough)">
+        <rect x="350" y="10" width="160" height="44" rx="12" class="s p fp"/>
+        <rect x="70" y="100" width="150" height="40" rx="12" class="s fb"/>
+        <rect x="355" y="100" width="150" height="40" rx="12" class="s fb"/>
+        <rect x="640" y="100" width="150" height="40" rx="12" class="s fb"/>
+        <path d="M430 54 L145 96 M430 54 L430 96 M430 54 L715 96" class="s"/>
+        <rect x="10" y="190" width="80" height="34" rx="10" class="s fw"/>
+        <rect x="100" y="190" width="100" height="34" rx="10" class="s fw"/>
+        <rect x="210" y="190" width="60" height="34" rx="10" class="s fw"/>
+        <rect x="300" y="190" width="100" height="34" rx="10" class="s fw"/>
+        <rect x="410" y="190" width="220" height="34" rx="10" class="s g fg"/>
+        <rect x="660" y="190" width="70" height="34" rx="10" class="s fw"/>
+        <rect x="740" y="190" width="110" height="34" rx="10" class="s fw"/>
+        <path d="M145 140 L50 186 M145 140 L150 186 M145 140 L240 186 M430 140 L350 186 M430 140 L520 186 M715 140 L695 186 M715 140 L795 186" class="s"/>
+      </g>
+      <text x="430" y="38" text-anchor="middle" class="h p">AppLayout</text>
+      <text x="145" y="126" text-anchor="middle" class="h">Header</text>
+      <text x="430" y="126" text-anchor="middle" class="h">Body</text>
+      <text x="715" y="126" text-anchor="middle" class="h">Footer</text>
+      <text x="50" y="212" text-anchor="middle">Logo</text>
+      <text x="150" y="212" text-anchor="middle">NavItems</text>
+      <text x="240" y="212" text-anchor="middle">Cart</text>
+      <text x="350" y="212" text-anchor="middle">SearchBar</text>
+      <text x="520" y="212" text-anchor="middle" class="g">RestaurantList → Card ×N</text>
+      <text x="695" y="212" text-anchor="middle">Links</text>
+      <text x="795" y="212" text-anchor="middle">Copyright</text>
+      <text x="520" y="248" text-anchor="middle" class="sm">image, name, rating, cuisines via props</text>
+    </svg>
+  </figure>
+
+  <h3><span class="star">★</span>Fragments and one parent</h3>
+  <p>A component returns <b>one</b> JSX expression because JSX compiles to <b>one</b> <code>createElement</code> call, and a function can only return one value. Wrapping in a <code>&lt;div&gt;</code> adds a useless DOM node; a fragment doesn't.</p>
+  <script type="text/x-code" data-cap="">
+const Heading = () => (
+  <>   {/* React.Fragment shorthand, no DOM node */}
+    <h1>Hello JSX</h1>
+    <h1>Hello React</h1>
+  </>
+);
+// Need a key? Use the long form: <React.Fragment key={id}>…</React.Fragment>
+  </script>
+
+  <h3><span class="star">★</span>Styling in JSX</h3>
+  <div class="versus">
+    <div><h5>Inline style</h5><code>style={{ backgroundColor: "red" }}</code><br>Outer braces = JS, inner braces = object. camelCase keys, commas not semicolons.</div>
+    <div><h5 class="pk">External CSS</h5><code>className="card"</code> + rules in a .css file. Preferred for anything non-trivial (later: Tailwind, CSS modules).</div>
+  </div>
+
+  <h3><span class="star">★</span>Props</h3>
+  <p>Props are arguments to a component. React collects all attributes into <b>one object</b> and passes it as the first parameter. They flow <mark>parent → child only</mark> and are <mark>read-only</mark> inside the child.</p>
+  <script type="text/x-code" data-cap="three equivalent ways">
+// 1. props object
+const RestaurantCard = (props) => <h2>{props.resData.info.name}</h2>;
+// 2. destructure in params
+const RestaurantCard = ({ resData }) => <h2>{resData.info.name}</h2>;
+// 3. spread at the call site
+const RestaurantCard = ({ name, cuisines, avgRating }) => (
+  <h2>{name} · {cuisines?.join(", ")} · {avgRating}</h2>
+);
+
+<div className="res-container">
+  {resList.map((res) => (
+    <RestaurantCard key={res.info.id} {...res.info} />
+  ))}
+</div>
+  </script>
+  <p><b>Optional chaining</b> <code>res?.info?.name</code> returns <code>undefined</code> instead of throwing when something in the chain is null/undefined. Essential with API data.</p>
+  <p><b>Config-driven UI</b>: the backend sends data describing what to show (which carousels, offers, layout per city) and the UI renders whatever the config says. Swiggy's home page works this way.</p>
+
+  <h3><span class="star">★</span>Virtual DOM, diffing and keys</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 300" role="img" aria-label="React diffs old and new virtual DOM trees and patches only the changed node in the real DOM">
+      <g filter="url(#rough)">
+        <rect x="10" y="10" width="250" height="200" rx="16" class="s b dash"/>
+        <rect x="300" y="10" width="250" height="200" rx="16" class="s b dash"/>
+        <rect x="620" y="10" width="250" height="200" rx="16" class="s g"/>
+        <circle cx="135" cy="55" r="18" class="s fb"/><circle cx="85" cy="125" r="18" class="s fb"/><circle cx="185" cy="125" r="18" class="s fb"/>
+        <circle cx="185" cy="185" r="14" class="s fb"/>
+        <path d="M128 70 L92 109 M142 70 L178 109 M185 143 L185 171" class="s"/>
+        <circle cx="425" cy="55" r="18" class="s fb"/><circle cx="375" cy="125" r="18" class="s fb"/><circle cx="475" cy="125" r="18" class="s fb"/>
+        <circle cx="475" cy="185" r="14" class="s p fp"/>
+        <path d="M418 70 L382 109 M432 70 L468 109 M475 143 L475 171" class="s"/>
+        <path d="M555 110 L615 110" class="s p" marker-end="url(#ahp)"/>
+        <circle cx="745" cy="55" r="18" class="s fg"/><circle cx="695" cy="125" r="18" class="s fg"/><circle cx="795" cy="125" r="18" class="s fg"/>
+        <circle cx="795" cy="185" r="14" class="s p fp"/>
+        <path d="M738 70 L702 109 M752 70 L788 109 M795 143 L795 171" class="s"/>
+      </g>
+      <text x="135" y="245" text-anchor="middle" class="h b">old virtual tree</text>
+      <text x="425" y="245" text-anchor="middle" class="h b">new virtual tree</text>
+      <text x="745" y="245" text-anchor="middle" class="h g">real DOM</text>
+      <text x="585" y="96" text-anchor="middle" class="p">diff</text>
+      <text x="440" y="285" text-anchor="middle" class="sm">Reconciliation: compare trees, then commit only the changed node (pink) to the real DOM.</text>
+    </svg>
+  </figure>
+  <div class="grid2">
+    <div class="box"><span class="lbl">Diffing heuristics (O(n))</span>
+      <ul><li>Different element type → throw away subtree, build new.</li><li>Same type → keep node, update changed attributes.</li><li>Lists → match children <b>by key</b>.</li></ul>
+      <p class="muted">Generic tree diff is O(n³); these two assumptions make it O(n).</p></div>
+    <div class="box pink"><span class="lbl">Key choices</span>
+      <ul><li class="gr">✓ Stable unique ID from data (<code>res.info.id</code>)</li><li class="og">~ Index: only for static lists that never reorder/filter</li><li class="pk">✗ <code>Math.random()</code> / <code>shortid.generate()</code> inside render</li></ul></div>
+  </div>
+
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 860 200" role="img" aria-label="Inserting at the start of a list with index keys versus stable keys">
+      <g filter="url(#rough)">
+        <rect x="20" y="40" width="70" height="34" rx="8" class="s fw"/><rect x="20" y="80" width="70" height="34" rx="8" class="s fw"/>
+        <rect x="160" y="40" width="70" height="34" rx="8" class="s p fp"/><rect x="160" y="80" width="70" height="34" rx="8" class="s p fp"/><rect x="160" y="120" width="70" height="34" rx="8" class="s p fp"/>
+        <path d="M95 97 L150 97" class="s" marker-end="url(#ah)"/>
+        <rect x="470" y="40" width="70" height="34" rx="8" class="s fw"/><rect x="470" y="80" width="70" height="34" rx="8" class="s fw"/>
+        <rect x="610" y="40" width="70" height="34" rx="8" class="s g fg"/><rect x="610" y="80" width="70" height="34" rx="8" class="s fw"/><rect x="610" y="120" width="70" height="34" rx="8" class="s fw"/>
+        <path d="M545 97 L600 97" class="s" marker-end="url(#ah)"/>
+      </g>
+      <text x="125" y="22" text-anchor="middle" class="h p">key = index</text>
+      <text x="55" y="62" text-anchor="middle">0: A</text><text x="55" y="102" text-anchor="middle">1: B</text>
+      <text x="195" y="62" text-anchor="middle">0: Z</text><text x="195" y="102" text-anchor="middle">1: A</text><text x="195" y="142" text-anchor="middle">2: B</text>
+      <text x="250" y="102" class="sm">every row “changed”;</text><text x="250" y="122" class="sm">input state sticks to</text><text x="250" y="142" class="sm">the wrong row</text>
+      <text x="575" y="22" text-anchor="middle" class="h g">key = id</text>
+      <text x="505" y="62" text-anchor="middle">a: A</text><text x="505" y="102" text-anchor="middle">b: B</text>
+      <text x="645" y="62" text-anchor="middle">z: Z</text><text x="645" y="102" text-anchor="middle">a: A</text><text x="645" y="142" text-anchor="middle">b: B</text>
+      <text x="700" y="102" class="sm">only Z inserted,</text><text x="700" y="122" class="sm">A and B reused</text>
+    </svg>
+    <figcaption>Insert “Z” at the top. Index keys make React think every row changed.</figcaption>
+  </figure>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> <code>key={shortid.generate()}</code> inside <code>map</code> creates a <b>new key every render</b>, so React unmounts and remounts every card each time (lost state, wasted work). Generate IDs once when data arrives, or use the API's ID.</div>
+
+  <div class="box green solid"><span class="lbl">React Fiber (React 16+)</span>
+    <p>A rewrite of the reconciler. Each component instance becomes a <b>fiber</b> node, a unit of work. Rendering can be split into chunks, paused, prioritized, resumed or thrown away, while the commit stays synchronous. React keeps two trees (<i>current</i> and <i>work-in-progress</i>) and swaps them on commit. This is what makes concurrent features (transitions, Suspense) possible.</p></div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep4"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 5 ================= -->
+<section class="page" id="ep5" data-n="5" data-short="Hooked" data-title="Let's get Hooked!" data-hook="exports, useState, search bug">
+  <div class="ep">Episode-05</div>
+  <h2>Let's get Hooked!</h2>
+  <div class="cloud"><b>In one breath:</b> Split code into files, export/import components, and use <code>useState</code> so React knows when data changed and re-renders the UI.</div>
+
+  <h3><span class="star">★</span>Folder structure</h3>
+  <script type="text/x-code" data-cap="convention, not a rule">
+src/
+  components/   Header.js  Body.js  RestaurantCard.js  Shimmer.js
+  utils/        constants.js (CDN_URL, LOGO_URL)  mockData.js  useOnlineStatus.js
+  App.js
+  </script>
+
+  <h3><span class="star">★</span>Default vs named exports</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>Default</th><th>Named</th></tr>
+    <tr><td>Export</td><td><code>export default Header;</code></td><td><code>export const LOGO_URL = "...";</code></td></tr>
+    <tr><td>Import</td><td><code>import Header from "./Header";</code></td><td><code>import { LOGO_URL } from "./constants";</code></td></tr>
+    <tr><td>Per file</td><td>Only one</td><td>Many</td></tr>
+    <tr><td>Rename on import</td><td>Any name works</td><td><code>{ LOGO_URL as logo }</code></td></tr>
+    <tr><td>Both together</td><td colspan="2"><code>import Header, { Title } from "./Header";</code> (default first)</td></tr>
+  </table></div>
+  <p class="muted"><code>import * as Obj from "./Title"</code> gives a namespace object for all named exports. <code>export default { Title, Header }</code> exports one object, which is why <code>&lt;Obj.Header/&gt;</code> works there.</p>
+
+  <h3><span class="star">★</span>Why a normal variable doesn't work</h3>
+  <p>A plain <code>let searchText</code> changes in memory, but React has no idea, so nothing re-renders, and the next render resets it anyway. A <b>state variable</b> lives in React (on the component's fiber), survives renders, and its setter <mark>schedules a re-render</mark>.</p>
+
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 860 330" role="img" aria-label="The state update cycle from event to setter to re-render to diff to commit">
+      <g filter="url(#rough)">
+        <rect x="330" y="10" width="200" height="56" rx="14" class="s fb"/>
+        <rect x="620" y="95" width="220" height="56" rx="14" class="s p fp"/>
+        <rect x="560" y="235" width="250" height="56" rx="14" class="s fy"/>
+        <rect x="60" y="235" width="250" height="56" rx="14" class="s v"/>
+        <rect x="20" y="95" width="220" height="56" rx="14" class="s g fg"/>
+        <path d="M530 40 C600 45 690 60 720 92" class="s" marker-end="url(#ah)"/>
+        <path d="M735 151 C740 190 720 215 700 232" class="s" marker-end="url(#ah)"/>
+        <path d="M560 263 L314 263" class="s" marker-end="url(#ah)"/>
+        <path d="M150 235 C140 200 130 175 130 155" class="s" marker-end="url(#ah)"/>
+        <path d="M150 95 C200 50 260 40 326 38" class="s" marker-end="url(#ah)"/>
+      </g>
+      <text x="430" y="36" text-anchor="middle" class="h">User types “Ka”</text>
+      <text x="430" y="56" text-anchor="middle" class="mono">onChange(e)</text>
+      <text x="730" y="121" text-anchor="middle" class="h p">setSearchText("Ka")</text>
+      <text x="730" y="141" text-anchor="middle" class="sm">queues an update, no instant change</text>
+      <text x="685" y="261" text-anchor="middle" class="h">Body() runs again</text>
+      <text x="685" y="281" text-anchor="middle" class="sm">searchText === "Ka" this render</text>
+      <text x="185" y="261" text-anchor="middle" class="h v">Reconciliation</text>
+      <text x="185" y="281" text-anchor="middle" class="sm">diff new vs old virtual tree</text>
+      <text x="130" y="121" text-anchor="middle" class="h g">Commit to DOM</text>
+      <text x="130" y="141" text-anchor="middle" class="sm">only changed nodes</text>
+      <text x="430" y="170" text-anchor="middle" class="sm">one-way data flow: state → UI</text>
+      <text x="430" y="192" text-anchor="middle" class="sm">value + onChange = “two-way binding” by hand</text>
+    </svg>
+  </figure>
+
+  <script type="text/x-code" data-cap="controlled input + filter (final version)">
+import { useState } from "react";
+
+const Body = () => {
+  const [searchText, setSearchText] = useState("");          // always give an initial value
+  const [restaurants, setRestaurants] = useState(resList);
+
+  return (
+    <>
+      <input
+        value={searchText}                                  // React owns the value → controlled
+        onChange={(e) => setSearchText(e.target.value)}
+      />
+      <button onClick={() => {
+        const filtered = resList.filter((r) =>              // filter the ORIGINAL list
+          r.info.name.toLowerCase().includes(searchText.toLowerCase())
+        );
+        setRestaurants(filtered);
+      }}>Search</button>
+      {restaurants.map((r) => <RestaurantCard key={r.info.id} {...r.info} />)}
+    </>
+  );
+};
+  </script>
+
+  <div class="sticky"><div class="t">The search bug, explained properly</div>
+    Searching “K” then “o” gave too few results because the second filter ran on the already-filtered list. Calling <code>setRestaurants(resList)</code> first didn't help: inside this click handler <code>restaurants</code> is a <b>snapshot</b> from the current render. The setter queues a change for the <i>next</i> render; it never mutates the variable you're holding.</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> say “state is a snapshot and updates are <b>batched</b>” rather than “useState is asynchronous”. Also, the warning “changing an uncontrolled input to be controlled” comes from <code>value={undefined}</code> on first render. Initial <code>""</code> fixes it. And <code>useState(default)</code> only uses the default on the <b>first</b> render.</div>
+
+  <div class="puzzle"><div class="t">Predict the output</div>
+    <script type="text/x-code" data-cap="click the button once">
+const [count, setCount] = useState(0);
+function handleClick() {
+  setCount(count + 1);
+  setCount(count + 1);
+  setCount(count + 1);
+  console.log(count);
+}
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p>Logs <b>0</b>. Count becomes <b>1</b>, not 3, with <b>one</b> re-render. All three calls read the same snapshot (<code>count = 0</code>) and React batches them.</p>
+      <p>To get 3, use the updater form: <code>setCount(c =&gt; c + 1)</code> three times. Each updater receives the latest queued value.</p>
+    </div></details>
+  </div>
+
+  <div class="sticky"><div class="t">SDE-2 upgrade</div>
+    Don't store what you can compute. Keep <code>allRestaurants</code> and <code>searchText</code> in state, and derive the filtered list during render: <code>const visible = all.filter(...)</code>. Fewer states, no sync bugs. Wrap in <code>useMemo</code> only if the list is large.</div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep5"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 6 ================= -->
+<section class="page" id="ep6" data-n="6" data-short="Exploring" data-title="Exploring the World" data-hook="useEffect, fetch, shimmer, CORS">
+  <div class="ep">Episode-06</div>
+  <h2>Exploring the World</h2>
+  <div class="cloud"><b>In one breath:</b> Render something immediately, then fetch data in <code>useEffect</code>, show a shimmer while waiting, and re-render when the data arrives.</div>
+
+  <h3><span class="star">★</span>Two ways to load a page</h3>
+  <div class="versus">
+    <div><h5>Fetch → render</h5>Call API (300ms), then render (200ms). User stares at a blank screen for 500ms.</div>
+    <div><h5 class="pk">Render → fetch → re-render ✓</h5>Render skeleton (100ms), fetch (300ms), re-render (200ms). 600ms total, but the user sees UI instantly. Better perceived performance.</div>
+  </div>
+  <p class="muted">The lecture also covers architecture: a <b>monolith</b> ships UI, API, auth, DB access as one deployable; <b>microservices</b> split them into independently deployed services (UI service, API, notifications…) talking over the network. Separation of concerns and single responsibility at system level.</p>
+
+  <h3><span class="star">★</span>useEffect timeline</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 240" role="img" aria-label="Timeline: render shimmer, paint, effect runs and fetches, setState, re-render with data">
+      <g filter="url(#rough)">
+        <path d="M20 120 L860 120" class="s" marker-end="url(#ah)"/>
+        <circle cx="70" cy="120" r="9" class="s fb"/><circle cx="200" cy="120" r="9" class="s fg"/><circle cx="330" cy="120" r="9" class="s p fp"/>
+        <rect x="380" y="104" width="190" height="32" rx="10" class="s o fy"/>
+        <circle cx="620" cy="120" r="9" class="s p fp"/><circle cx="720" cy="120" r="9" class="s fb"/><circle cx="820" cy="120" r="9" class="s fg"/>
+      </g>
+      <text x="70" y="90" text-anchor="middle" class="h">render #1</text><text x="70" y="160" text-anchor="middle" class="sm">data = []</text><text x="70" y="180" text-anchor="middle" class="sm">→ Shimmer</text>
+      <text x="200" y="90" text-anchor="middle" class="h g">paint</text><text x="200" y="160" text-anchor="middle" class="sm">user sees</text><text x="200" y="180" text-anchor="middle" class="sm">skeleton</text>
+      <text x="330" y="90" text-anchor="middle" class="h p">effect runs</text><text x="330" y="160" text-anchor="middle" class="sm">fetchData()</text>
+      <text x="475" y="126" text-anchor="middle" class="o">network ~300ms</text>
+      <text x="610" y="62" text-anchor="middle" class="h p">setList(json)</text><path d="M615 70 L619 106" class="s p"/><text x="620" y="160" text-anchor="middle" class="sm">schedules</text><text x="620" y="180" text-anchor="middle" class="sm">re-render</text>
+      <text x="720" y="90" text-anchor="middle" class="h">render #2</text><text x="720" y="160" text-anchor="middle" class="sm">cards</text>
+      <text x="820" y="90" text-anchor="middle" class="h g">paint</text><text x="820" y="160" text-anchor="middle" class="sm">effect skipped</text><text x="820" y="180" text-anchor="middle" class="sm">(deps [] )</text>
+      <text x="440" y="226" text-anchor="middle" class="sm">“Initial render” logs before “useEffect called” even though useEffect is written first.</text>
+    </svg>
+  </figure>
+
+  <div class="tbl"><table>
+    <tr><th>Dependency array</th><th>Effect runs…</th></tr>
+    <tr><td><i>omitted</i> <code>useEffect(fn)</code></td><td>after <b>every</b> render</td></tr>
+    <tr><td><code>[]</code></td><td>once, after the first render (mount)</td></tr>
+    <tr><td><code>[searchText]</code></td><td>after mount, then whenever <code>searchText</code> changes (compared with <code>Object.is</code>)</td></tr>
+    <tr><td><code>return () =&gt; {...}</code></td><td>cleanup: before the next run and on unmount</td></tr>
+  </table></div>
+
+  <script type="text/x-code" data-cap="Body.js — fetch + shimmer + search on full list">
+const Body = () => {
+  const [allRestaurants, setAllRestaurants] = useState([]);
+  const [filtered, setFiltered] = useState([]);
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {                 // async INSIDE, not the effect itself
+      const res = await fetch(SWIGGY_API);
+      const json = await res.json();
+      const list = json?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants ?? [];
+      setAllRestaurants(list);
+      setFiltered(list);
+    };
+    fetchData();
+  }, []);
+
+  if (allRestaurants.length === 0) return <Shimmer />;   // conditional rendering
+
+  return (
+    <div className="body">
+      {/* search bar stays visible even with zero matches */}
+      {filtered.length === 0
+        ? <p>No restaurant matches “{searchText}”</p>
+        : filtered.map((r) => <RestaurantCard key={r.info.id} resData={r} />)}
+    </div>
+  );
+};
+  </script>
+
+  <div class="grid2">
+    <div class="box"><span class="lbl">Shimmer UI</span><p>A skeleton that looks like the final layout. Better perceived speed than a spinner or blank screen, and no layout shift when data arrives.</p></div>
+    <div class="box pink"><span class="lbl">CORS</span><p>A <b>browser</b> rule: a page can only read cross-origin responses if the server allows it via <code>Access-Control-Allow-Origin</code>. The extension in class is a dev hack; real fixes are server headers or a proxy (your own backend / dev-server proxy).</p></div>
+    <div class="box green"><span class="lbl">Conditional rendering</span><p>Ternary <code>a ? &lt;X/&gt; : &lt;Y/&gt;</code>, logical <code>cond &amp;&amp; &lt;X/&gt;</code>, or an early <code>return</code>. Early returns must come <b>after</b> all hooks.</p></div>
+  </div>
+
+  <div class="sticky"><div class="t">Gotcha: &amp;&amp; with numbers</div>
+    <code>{list.length &amp;&amp; &lt;List/&gt;}</code> renders a literal <b>0</b> when the list is empty. Use <code>list.length &gt; 0 &amp;&amp; ...</code> or a ternary.</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> the effect isn't “called every time useState is called”. Without a dependency array it runs after <b>every render</b>, whatever caused it (state, props, or parent re-render). Also: in development with <code>&lt;StrictMode&gt;</code>, React 18+ mounts, unmounts and re-mounts once, so a <code>[]</code> effect runs twice. That's intentional, to surface missing cleanups. Production runs it once.</div>
+
+  <div class="puzzle"><div class="t">Predict the output</div>
+    <script type="text/x-code" data-cap="mount, then type one letter (no StrictMode)">
+function Search() {
+  const [text, setText] = useState("");
+  console.log("render");
+  useEffect(() => {
+    console.log("effect", text);
+    return () => console.log("cleanup", text);
+  }, [text]);
+  return <input value={text} onChange={(e) => setText(e.target.value)} />;
+}
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p><code>render</code> → <code>effect ""</code> → (type “a”) → <code>render</code> → <code>cleanup ""</code> → <code>effect "a"</code>.</p>
+      <p>Cleanup sees the <b>old</b> value: each effect closes over its own render's snapshot. Rendering always happens before effects.</p>
+    </div></details>
+  </div>
+
+  <p><b>JSX takes expressions only.</b> <code>{cond ? a : b}</code> works; <code>{if (cond) ...}</code> doesn't. Statement test: type it in the console; if it produces a value, it's an expression.</p>
+  <p><b>Re-render scope:</b> when <code>Body</code>'s state changes, <code>Body</code> and its children re-run. The parent <code>AppLayout</code> does not.</p>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep6"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+<!-- ================= EP 7 ================= -->
+<section class="page" id="ep7" data-n="7" data-short="Finding the Path" data-title="Finding the Path" data-hook="Router, Outlet, useParams, rules of hooks">
+  <div class="ep">Episode-07</div>
+  <h2>Finding the Path</h2>
+  <div class="cloud"><b>In one breath:</b> <code>react-router-dom</code> maps URLs to components. Nested routes render into an <code>Outlet</code>, dynamic segments are read with <code>useParams</code>, and <code>Link</code> navigates without reloading.</div>
+
+  <h3><span class="star">★</span>Rules of hooks (and why)</h3>
+  <div class="grid2">
+    <div class="box pink"><span class="lbl">Never</span><ul><li>call hooks inside <code>if</code>, loops, or nested functions</li><li>call hooks outside a component / custom hook</li><li>define a component <b>inside</b> another component</li></ul></div>
+    <div class="box green"><span class="lbl">Why</span><p>React stores hook state as an ordered list on the fiber and matches them <b>by call order</b> each render. Skip one conditionally and every later hook gets the wrong state.</p><p>A component defined inside another is a <b>new function each render</b>, so React sees a different type, unmounts it and loses its state.</p></div>
+  </div>
+  <p><b>Images:</b> import local files from <code>src/assets</code> (<code>import logo from "../assets/logo.png"</code>), but production apps like Swiggy serve images from a <b>CDN</b> (Cloudinary): cached at the edge, optimized per device, high uptime.</p>
+
+  <h3><span class="star">★</span>The route tree</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 330" role="img" aria-label="AppLayout route with Header, Outlet and Footer; child routes render into the Outlet">
+      <g filter="url(#rough)">
+        <rect x="20" y="20" width="330" height="290" rx="18" class="s p"/>
+        <rect x="45" y="70" width="280" height="40" rx="10" class="s fb"/>
+        <rect x="45" y="125" width="280" height="110" rx="12" class="s g dash fg"/>
+        <rect x="45" y="250" width="280" height="40" rx="10" class="s fb"/>
+        <rect x="470" y="20" width="390" height="46" rx="12" class="s fw"/>
+        <rect x="470" y="80" width="390" height="46" rx="12" class="s fw"/>
+        <rect x="500" y="134" width="360" height="40" rx="10" class="s v"/>
+        <rect x="470" y="186" width="390" height="46" rx="12" class="s fw"/>
+        <rect x="470" y="246" width="390" height="46" rx="12" class="s fw"/>
+        <path d="M466 43 C400 60 380 150 330 170" class="s g" marker-end="url(#ahg)"/>
+        <path d="M466 103 C410 115 390 160 330 175" class="s g" marker-end="url(#ahg)"/>
+        <path d="M466 209 C410 200 390 190 330 182" class="s g" marker-end="url(#ahg)"/>
+        <path d="M466 269 C400 260 380 200 330 188" class="s g" marker-end="url(#ahg)"/>
+        <path d="M485 126 L485 154 L496 154" class="s v"/>
+      </g>
+      <text x="185" y="50" text-anchor="middle" class="h p">path: "/"  element: &lt;AppLayout/&gt;</text>
+      <text x="185" y="96" text-anchor="middle">&lt;Header /&gt;  (always visible)</text>
+      <text x="185" y="165" text-anchor="middle" class="h g">&lt;Outlet /&gt;</text>
+      <text x="185" y="190" text-anchor="middle" class="sm">matched child renders here</text>
+      <text x="185" y="212" text-anchor="middle" class="sm">errorElement: &lt;Error/&gt;</text>
+      <text x="185" y="276" text-anchor="middle">&lt;Footer /&gt;</text>
+      <text x="485" y="49" class="mono">"/"                  → &lt;Body /&gt;</text>
+      <text x="485" y="109" class="mono">"/about"             → &lt;About /&gt;</text>
+      <text x="512" y="160" class="mono">"profile" (relative!)  → &lt;Profile/&gt;</text>
+      <text x="485" y="215" class="mono">"/contact"           → &lt;Contact /&gt;</text>
+      <text x="485" y="275" class="mono">"/restaurants/:resId" → &lt;RestaurantMenu/&gt;</text>
+    </svg>
+    <figcaption>Nested children render inside their parent's Outlet. “profile” under “/about” resolves to /about/profile; “/profile” would be absolute.</figcaption>
+  </figure>
+
+  <script type="text/x-code" data-cap="App.js">
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+
+const AppLayout = () => (
+  <div className="app">
+    <Header />
+    <Outlet />
+    <Footer />
+  </div>
+);
+
+const appRouter = createBrowserRouter([
+  {
+    path: "/",
+    element: <AppLayout />,
+    errorElement: <Error />,
+    children: [
+      { path: "/", element: <Body /> },
+      { path: "/about", element: <About />, children: [{ path: "profile", element: <Profile /> }] },
+      { path: "/contact", element: <Contact /> },
+      { path: "/restaurants/:resId", element: <RestaurantMenu /> },
+    ],
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")).render(<RouterProvider router={appRouter} />);
+  </script>
+
+  <script type="text/x-code" data-cap="hooks from the router">
+const { resId } = useParams();              // "/restaurants/123" → "123"
+const err = useRouteError();                // { status: 404, statusText: "Not Found" }
+const navigate = useNavigate();             // navigate("/cart") after an action
+<Link to={"/restaurants/" + res.info.id}><RestaurantCard resData={res} /></Link>
+  </script>
+
+  <div class="versus">
+    <div><h5>Server-side routing</h5>Every URL change asks the server for a new HTML document. Full reload, state lost.</div>
+    <div><h5 class="pk">Client-side routing (SPA)</h5>All components already shipped; the router updates the URL with the History API and swaps components. No document request.</div>
+  </div>
+  <p><b>Link vs &lt;a&gt;:</b> <code>&lt;Link&gt;</code> renders an <code>&lt;a&gt;</code> in the DOM but intercepts the click and calls <code>history.pushState</code>, so the page doesn't reload. A raw <code>&lt;a href&gt;</code> reloads everything.</p>
+
+  <div class="sticky"><div class="t">Shimmer keys</div>
+    For a fixed list of skeleton cards, <code>key={index}</code> is fine: the list never reorders or changes identity.</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> the line says “If we load a path that has been defined…” → should be “<b>not</b> defined” for the 404 error page. Also React Router v7 merged packages: new code can import everything from <code>"react-router"</code>; <code>react-router-dom</code> still works as a re-export. Use <code>&lt;Route index&gt;</code> / <code>{ index: true, element: &lt;Body/&gt; }</code> for the default child.</div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep7"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 8 ================= -->
+<section class="page" id="ep8" data-n="8" data-short="Classy" data-title="Let's get Classy" data-hook="class components, lifecycle, cleanup">
+  <div class="ep">Episode-08</div>
+  <h2>Let's get Classy</h2>
+  <div class="cloud"><b>In one breath:</b> Class components are the older way. Know their lifecycle (render phase vs commit phase), how <code>setState</code> works, and why cleanup matters in an SPA.</div>
+
+  <h3><span class="star">★</span>Class vs function, side by side</h3>
+  <script type="text/x-code" data-cap="UserClass.js">
+import React from "react";
+
+class UserClass extends React.Component {
+  constructor(props) {
+    super(props);                         // makes this.props available in constructor
+    this.state = { count: 0, userInfo: { name: "Dummy" } };
+  }
+
+  async componentDidMount() {             // after first commit → API calls here
+    const res = await fetch("https://api.github.com/users/akshaymarch7");
+    this.setState({ userInfo: await res.json() });
+    this.timer = setInterval(() => console.log("tick"), 1000);
+  }
+
+  componentDidUpdate(prevProps, prevState) {      // after every UPDATE commit
+    if (prevState.count !== this.state.count) { /* like deps [count] */ }
+  }
+
+  componentWillUnmount() { clearInterval(this.timer); }   // cleanup
+
+  render() {
+    const { name } = this.props;
+    const { count } = this.state;
+    return (
+      <button onClick={() => this.setState({ count: count + 1 })}>
+        {name}: {count}
+      </button>
+    );
+  }
+}
+  </script>
+
+  <div class="versus">
+    <div><h5>this.setState({ count: 1 })</h5><b>Shallow-merges</b> into the state object; other keys are kept. Never write <code>this.state.count = 1</code>.</div>
+    <div><h5 class="pk">setCount(1)</h5><b>Replaces</b> the value. For an object state you must spread: <code>setUser(u =&gt; ({...u, name}))</code>.</div>
+  </div>
+
+  <h3><span class="star">★</span>The lifecycle diagram (mounting is the must-know)</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 340" role="img" aria-label="Lifecycle: render phase and commit phase across mounting, updating and unmounting">
+      <g filter="url(#rough)">
+        <rect x="10" y="60" width="860" height="140" rx="16" class="s b dash"/>
+        <rect x="10" y="210" width="860" height="110" rx="16" class="s p dash"/>
+        <rect x="140" y="80" width="200" height="40" rx="10" class="s fb"/>
+        <rect x="140" y="140" width="200" height="40" rx="10" class="s fb"/>
+        <rect x="140" y="225" width="200" height="34" rx="10" class="s fw"/>
+        <rect x="140" y="270" width="200" height="40" rx="10" class="s g fg"/>
+        <rect x="400" y="80" width="230" height="40" rx="10" class="s fw"/>
+        <rect x="400" y="140" width="230" height="40" rx="10" class="s fb"/>
+        <rect x="400" y="225" width="230" height="34" rx="10" class="s fw"/>
+        <rect x="400" y="270" width="230" height="40" rx="10" class="s g fg"/>
+        <rect x="662" y="270" width="206" height="40" rx="10" class="s p fp"/>
+        <path d="M240 121 L240 138" class="s" marker-end="url(#ah)"/><path d="M240 181 L240 222" class="s" marker-end="url(#ah)"/><path d="M515 121 L515 138" class="s" marker-end="url(#ah)"/><path d="M515 181 L515 222" class="s" marker-end="url(#ah)"/><path d="M240 259 L240 270 M515 259 L515 270" class="s"/>
+      </g>
+      <text x="240" y="40" text-anchor="middle" class="h">Mounting</text>
+      <text x="515" y="40" text-anchor="middle" class="h">Updating</text>
+      <text x="770" y="40" text-anchor="middle" class="h">Unmounting</text>
+      <text x="30" y="135" class="h b">Render</text><text x="30" y="155" class="sm">pure, can</text><text x="30" y="173" class="sm">pause/restart</text>
+      <text x="30" y="255" class="h p">Commit</text><text x="30" y="275" class="sm">touches DOM,</text><text x="30" y="293" class="sm">side effects OK</text>
+      <text x="240" y="106" text-anchor="middle">constructor()</text>
+      <text x="240" y="166" text-anchor="middle">render()</text>
+      <text x="240" y="248" text-anchor="middle" class="sm">React updates DOM &amp; refs</text>
+      <text x="240" y="296" text-anchor="middle" class="g">componentDidMount()</text>
+      <text x="515" y="106" text-anchor="middle" class="sm">new props, setState()</text>
+      <text x="515" y="166" text-anchor="middle">render()</text>
+      <text x="515" y="248" text-anchor="middle" class="sm">React updates DOM &amp; refs</text>
+      <text x="515" y="296" text-anchor="middle" class="g">componentDidUpdate()</text>
+      <text x="765" y="296" text-anchor="middle" class="p" style="font-size:15.5px">componentWillUnmount()</text>
+    </svg>
+    <figcaption>Source idea: projects.wojtekmaj.pl/react-lifecycle-methods-diagram</figcaption>
+  </figure>
+
+  <div class="puzzle"><div class="t">Predict the order: parent class with two class children</div>
+    <script type="text/x-code" data-cap="About renders <UserClass name='First'/> and <UserClass name='Second'/>">
+class About extends Component {
+  constructor() { super(); console.log("Parent constructor"); }
+  componentDidMount() { console.log("Parent didMount"); }
+  render() { console.log("Parent render"); return (<><UserClass name="First"/><UserClass name="Second"/></>); }
+}
+    </script>
+    <details><summary>Reveal</summary><div>
+      <ol>
+        <li>Parent constructor</li><li>Parent render</li>
+        <li>First constructor</li><li>First render</li>
+        <li>Second constructor</li><li>Second render</li>
+        <li class="gr">— one batched DOM commit —</li>
+        <li>First didMount</li><li>Second didMount</li><li>Parent didMount</li>
+      </ol>
+      <p>React finishes the <b>render phase for the whole subtree</b> first (cheap), then does one commit (expensive DOM work), then runs didMounts <b>children first</b>, because a parent is only “mounted” once its children are. If a child's didMount is <code>async</code>, anything after its <code>await</code> logs after “Parent didMount”.</p>
+    </div></details>
+  </div>
+
+  <h3><span class="star">★</span>Cleanup: the SPA trap</h3>
+  <p>Navigating away in an SPA doesn't reload the page; it just unmounts components. An interval started on mount keeps running. Come back and you have <b>two</b> intervals, then three…</p>
+  <script type="text/x-code" data-cap="same fix in a function component">
+useEffect(() => {
+  const timer = setInterval(() => console.log("Namaste React OP"), 1000);
+  return () => clearInterval(timer);     // runs on unmount (and before re-running the effect)
+}, []);
+  </script>
+
+  <div class="sticky"><div class="t">Why not useEffect(async () =&gt; …)?</div>
+    An async function always returns a Promise. React expects the effect to return a cleanup function or nothing. Define an async function inside and call it.</div>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> <code>componentDidUpdate</code> is <b>not</b> called after the initial render; it only runs after updates. So it's not “like an empty dependency array” — <code>componentDidMount</code> is the closest to <code>[]</code>, and <code>componentDidUpdate</code> + prev-value checks is the closest to <code>[deps]</code>. And as the notes say: don't map lifecycles 1:1 to hooks. Effects are about <b>synchronizing</b> with something external, not about moments in time.</div>
+
+  <div class="box green solid"><span class="lbl">Still class-only in 2026</span>
+    <p><b>Error boundaries</b>: <code>static getDerivedStateFromError()</code> + <code>componentDidCatch()</code>. No hook equivalent; libraries like react-error-boundary wrap a class for you. They catch errors during rendering and lifecycles, not in event handlers or async code.</p></div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep8"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= EP 9 ================= -->
+<section class="page" id="ep9" data-n="9" data-short="Optimizing" data-title="Optimizing our App" data-hook="custom hooks, lazy, Suspense">
+  <div class="ep">Episode-09</div>
+  <h2>Optimizing our App</h2>
+  <div class="cloud"><b>In one breath:</b> Pull stateful logic into custom hooks (single responsibility), and split the bundle so users only download code for the page they open.</div>
+
+  <h3><span class="star">★</span>Custom hooks</h3>
+  <p>A custom hook is a function whose name starts with <code>use</code> and that calls other hooks. It reuses <b>logic</b>, not state: two components calling <code>useOnlineStatus()</code> each get their own state.</p>
+  <ul><li>Readable, reusable, maintainable, testable.</li><li>Live in <code>src/utils/</code> (or <code>hooks/</code>), file named <code>useSomething.js</code>, <b>named export</b> preferred.</li></ul>
+
+  <div class="grid2">
+  <div>
+  <script type="text/x-code" data-cap="useRestaurantMenu.js — fetching">
+import { useEffect, useState } from "react";
+import { MENU_API } from "./constants";
+
+export const useRestaurantMenu = (resId) => {
+  const [resInfo, setResInfo] = useState(null);
+
+  useEffect(() => {
+    const fetchMenu = async () => {
+      const data = await fetch(MENU_API + resId);
+      setResInfo(await data.json());
+    };
+    fetchMenu();
+  }, [resId]);
+
+  return resInfo;   // null first → Shimmer, then data
+};
+  </script>
+  </div>
+  <div>
+  <script type="text/x-code" data-cap="useOnlineStatus.js — with cleanup">
+import { useEffect, useState } from "react";
+
+export const useOnlineStatus = () => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+
+  useEffect(() => {
+    const on = () => setIsOnline(true);
+    const off = () => setIsOnline(false);
+    window.addEventListener("online", on);
+    window.addEventListener("offline", off);
+    return () => {                           // otherwise listeners pile up
+      window.removeEventListener("online", on);
+      window.removeEventListener("offline", off);
+    };
+  }, []);
+
+  return isOnline;
+};
+  </script>
+  </div>
+  </div>
+  <p>The component shrinks to: <code>const resInfo = useRestaurantMenu(resId); if (!resInfo) return &lt;Shimmer/&gt;;</code> Rendering and fetching are now separate concerns.</p>
+
+  <div class="fix"><span class="t">Fix in your notes:</span> a custom hook isn't a “child component”. Its state lives on the component that calls it, so when the hook's state changes, the <b>calling component</b> re-renders (and its children). Also initialize with <code>navigator.onLine</code> rather than <code>true</code>, so a page that loads offline shows the right status.</div>
+
+  <h3><span class="star">★</span>Code splitting with lazy + Suspense</h3>
+  <p>Also called chunking, dynamic bundling, lazy loading, on-demand loading, dynamic import. One giant bundle means users download Instamart's code even if they never open it.</p>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 280" role="img" aria-label="Main bundle loads first; Instamart chunk loads only when its route is visited, with Suspense fallback meanwhile">
+      <g filter="url(#rough)">
+        <rect x="20" y="40" width="200" height="190" rx="14" class="s p fp"/>
+        <rect x="320" y="40" width="200" height="110" rx="14" class="s fb"/>
+        <rect x="320" y="170" width="200" height="60" rx="14" class="s g dash fg"/>
+        <rect x="640" y="40" width="220" height="70" rx="14" class="s fy"/>
+        <rect x="640" y="150" width="220" height="80" rx="14" class="s g fg"/>
+        <path d="M220 135 L316 95" class="s" marker-end="url(#ah)"/>
+        <path d="M220 135 L316 200" class="s g dash" marker-end="url(#ahg)"/>
+        <path d="M520 200 C580 200 590 90 636 78" class="s" marker-end="url(#ah)"/>
+        <path d="M750 110 L750 146" class="s g" marker-end="url(#ahg)"/>
+      </g>
+      <text x="120" y="22" text-anchor="middle" class="h p">before: one bundle</text>
+      <text x="120" y="80" text-anchor="middle" class="mono">index.js</text>
+      <text x="120" y="110" text-anchor="middle">Header Body</text><text x="120" y="135" text-anchor="middle">About Menu</text><text x="120" y="160" text-anchor="middle">Instamart Grocery</text>
+      <text x="120" y="200" text-anchor="middle" class="sm">downloaded on every visit</text>
+      <text x="420" y="22" text-anchor="middle" class="h">after: chunks</text>
+      <text x="420" y="74" text-anchor="middle" class="mono">index.[hash].js</text>
+      <text x="420" y="100" text-anchor="middle">loads at start</text>
+      <text x="420" y="196" text-anchor="middle" class="mono">Instamart.[hash].js</text>
+      <text x="420" y="218" text-anchor="middle" class="sm">loads on navigation</text>
+      <text x="750" y="70" text-anchor="middle" class="h">Suspense fallback</text>
+      <text x="750" y="94" text-anchor="middle" class="sm">shimmer while promise pending</text>
+      <text x="750" y="186" text-anchor="middle" class="h g">&lt;Instamart /&gt;</text>
+      <text x="750" y="210" text-anchor="middle" class="sm">import() promise resolved</text>
+      <text x="580" y="262" text-anchor="middle" class="sm">user clicks “Instamart” → network request for the chunk</text>
+    </svg>
+  </figure>
+  <script type="text/x-code" data-cap="App.js">
+import { lazy, Suspense } from "react";
+
+const Instamart = lazy(() => import("./components/Instamart"));   // top level, NOT inside a component
+
+{ path: "/instamart",
+  element: (
+    <Suspense fallback={<Shimmer />}>
+      <Instamart />
+    </Suspense>
+  ) }
+  </script>
+  <ul>
+    <li><code>import()</code> returns a Promise. Without <code>Suspense</code>, React has nothing to render while it's pending and throws.</li>
+    <li><code>lazy</code> expects a module with a <b>default export</b>. For a named one: <code>lazy(() =&gt; import("./X").then(m =&gt; ({ default: m.X })))</code>.</li>
+    <li>Never call <code>lazy()</code> inside a component: a new lazy component each render means remount and state loss.</li>
+    <li>Split by <b>route</b> first (biggest win), then by heavy widgets (charts, editors, maps).</li>
+  </ul>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep9"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+<!-- ================= BONUS 10-13 ================= -->
+<section class="page" id="ep10" data-n="10" data-short="Ep 10–13" data-title="Episodes 10–13 crash course" data-hook="Tailwind, Context, Redux Toolkit, testing">
+  <div class="ep">Episodes 10 to 13 (bonus)</div>
+  <h2>The rest of Season 1, fast</h2>
+  <div class="cloud"><b>In one breath:</b> Style with Tailwind, share data with Context, manage app-wide state with Redux Toolkit, and prove it works with Jest + React Testing Library. Your notes stop at 9; panels don't.</div>
+
+  <h3><span class="star">★</span>Ep 10 — Jo dikhta hai, vo bikta hai (styling)</h3>
+  <p>Options: plain CSS, SCSS, CSS modules, styled-components / CSS-in-JS, component libraries (MUI, Chakra, shadcn), and <b>Tailwind</b>. Tailwind = utility classes (<code>flex p-4 bg-pink-100 rounded-lg</code>) compiled by PostCSS; only classes you use end up in the CSS.</p>
+  <div class="versus"><div><h5>Tailwind pros</h5>Fast to write, no naming, tiny CSS, consistent design tokens.</div><div><h5 class="pk">Tailwind cons</h5>Long class strings, learning curve, markup gets noisy.</div></div>
+
+  <h3><span class="star">★</span>Ep 11 — Data is the new oil</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">Higher-order component</span><p>A function that takes a component and returns an enhanced one. <code>withPromotedLabel(RestaurantCard)</code> adds a “Promoted” badge without touching the card.</p></div>
+    <div class="box pink"><span class="lbl">Lifting state up</span><p>Accordion: each category shouldn't own “am I open?”. The parent holds <code>showIndex</code> and passes <code>isOpen</code> + <code>setShowIndex</code> down. Children become <b>controlled</b>.</p></div>
+    <div class="box green"><span class="lbl">Props drilling → Context</span><p>Passing <code>user</code> through five layers that don't use it is drilling. <code>createContext</code> + <code>&lt;Ctx.Provider value&gt;</code> + <code>useContext(Ctx)</code> lets any descendant read it. Class components use <code>&lt;Ctx.Consumer&gt;</code>.</p></div>
+  </div>
+  <script type="text/x-code" data-cap="UserContext">
+const UserContext = createContext({ loggedInUser: "Default" });
+
+<UserContext.Provider value={{ loggedInUser: userName, setUserName }}>
+  <Header />          {/* const { loggedInUser } = useContext(UserContext); */}
+  <Outlet />
+</UserContext.Provider>
+  </script>
+  <div class="sticky"><div class="t">Context performance gotcha</div>Every consumer re-renders when the Provider's <code>value</code> changes identity. Passing a fresh object literal each render re-renders all consumers. Memoize the value or split contexts.</div>
+
+  <h3><span class="star">★</span>Ep 12 — Let's build our store (Redux Toolkit)</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 250" role="img" aria-label="Redux flow: component dispatches action, reducer updates slice in store, selector reads it back">
+      <g filter="url(#rough)">
+        <rect x="20" y="90" width="170" height="70" rx="14" class="s fb"/>
+        <rect x="260" y="20" width="180" height="60" rx="14" class="s o fy"/>
+        <rect x="520" y="20" width="190" height="60" rx="14" class="s v"/>
+        <rect x="520" y="140" width="340" height="90" rx="16" class="s p fp"/>
+        <rect x="260" y="170" width="180" height="60" rx="14" class="s g fg"/>
+        <path d="M120 90 C140 50 200 50 256 50" class="s" marker-end="url(#ah)"/>
+        <path d="M440 50 L516 50" class="s" marker-end="url(#ah)"/>
+        <path d="M615 80 L615 136" class="s" marker-end="url(#ah)"/>
+        <path d="M516 200 L444 200" class="s" marker-end="url(#ah)"/>
+        <path d="M260 200 C200 200 140 190 120 164" class="s" marker-end="url(#ah)"/>
+        <rect x="540" y="180" width="140" height="36" rx="8" class="s fw"/>
+        <rect x="700" y="180" width="140" height="36" rx="8" class="s fw"/>
+      </g>
+      <text x="105" y="122" text-anchor="middle" class="h">Component</text><text x="105" y="144" text-anchor="middle" class="sm">“Add +” clicked</text>
+      <text x="350" y="46" text-anchor="middle" class="h o">dispatch(action)</text><text x="350" y="68" text-anchor="middle" class="mono">addItem(pizza)</text>
+      <text x="615" y="46" text-anchor="middle" class="h v">reducer fn</text><text x="615" y="68" text-anchor="middle" class="sm">in cartSlice</text>
+      <text x="690" y="164" text-anchor="middle" class="h p">store (configureStore)</text>
+      <text x="610" y="204" text-anchor="middle" class="mono">cart slice</text><text x="770" y="204" text-anchor="middle" class="mono">user slice</text>
+      <text x="350" y="196" text-anchor="middle" class="h g">useSelector</text><text x="350" y="218" text-anchor="middle" class="sm">subscribe → re-render</text>
+    </svg>
+  </figure>
+  <script type="text/x-code" data-cap="cartSlice.js">
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: { items: [] },
+  reducers: {
+    addItem: (state, action) => { state.items.push(action.payload); },  // "mutation" is fine: Immer
+    clearCart: (state) => { state.items.length = 0; },                   // or return { items: [] }
+  },
+});
+export const { addItem, clearCart } = cartSlice.actions;
+export default cartSlice.reducer;
+
+const appStore = configureStore({ reducer: { cart: cartReducer } });
+<Provider store={appStore}><App /></Provider>
+
+const items = useSelector((store) => store.cart.items);   // subscribe to the SMALLEST slice you need
+const dispatch = useDispatch();
+  </script>
+  <div class="sticky"><div class="t">Classic question</div><code>useSelector(store =&gt; store)</code> works but re-renders the component on <b>any</b> store change. Select narrowly. And <code>state = []</code> inside a reducer does nothing: reassigning the local parameter doesn't mutate the draft. Mutate it or <b>return</b> a new value.</div>
+
+  <h3><span class="star">★</span>Ep 13 — Time for the test</h3>
+  <div class="tbl"><table>
+    <tr><th>Type</th><th>Tests</th><th>Tools</th></tr>
+    <tr><td>Unit</td><td>One component/function in isolation</td><td>Jest + React Testing Library</td></tr>
+    <tr><td>Integration</td><td>Several components together (search filters cards)</td><td>Jest + RTL, mocked fetch</td></tr>
+    <tr><td>End-to-end</td><td>Real browser, real user flow</td><td>Playwright, Cypress</td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="Header.test.js">
+import { render, screen, fireEvent } from "@testing-library/react";
+import "@testing-library/jest-dom";
+
+it("toggles Login → Logout", () => {
+  render(<Provider store={appStore}><BrowserRouter><Header /></BrowserRouter></Provider>);
+  const btn = screen.getByRole("button", { name: "Login" });
+  fireEvent.click(btn);
+  expect(screen.getByRole("button", { name: "Logout" })).toBeInTheDocument();
+});
+
+global.fetch = jest.fn(() => Promise.resolve({ json: () => Promise.resolve(MOCK_DATA) }));
+  </script>
+  <p><b>Setup in the course:</b> jest, babel-jest, @babel/preset-env/react, jest-environment-jsdom, @testing-library/react, @testing-library/jest-dom, plus a <code>.parcelrc</code> so Parcel's own Babel handling doesn't conflict with your <code>babel.config.js</code>. RTL philosophy: <mark>test what the user sees</mark>, query by role/label/text, not by class names.</p>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="ep10"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= SDE-2 ================= -->
+<section class="page" id="sde2" data-n="★" data-short="SDE-2 deep cuts" data-title="SDE-2 deep cuts" data-hook="perf, React 18/19, patterns, machine coding">
+  <div class="ep">Beyond the course</div>
+  <h2>SDE-2 deep cuts</h2>
+  <div class="cloud"><b>What changes at SDE-2:</b> they expect <i>why</i> and <i>trade-offs</i>, not definitions. Explain re-render causes, when memoization pays off, how you'd structure state, and how you'd measure performance.</div>
+
+  <h3><span class="star">★</span>Why did this re-render?</h3>
+  <ol>
+    <li>Its own state changed (via setter, and the new value isn't <code>Object.is</code>-equal).</li>
+    <li>Its parent re-rendered (props “changing” doesn't matter; parent rendering is enough).</li>
+    <li>A context it reads changed value.</li>
+    <li>A store it subscribes to (Redux selector) returned a new value.</li>
+  </ol>
+
+  <h3><span class="star">★</span>Memoization toolbox</h3>
+  <div class="tbl"><table>
+    <tr><th>Tool</th><th>Caches</th><th>Use when</th></tr>
+    <tr><td><code>React.memo(Comp)</code></td><td>A component's render, skipped if props are shallow-equal</td><td>Expensive child re-rendering because of an unrelated parent update</td></tr>
+    <tr><td><code>useMemo(fn, deps)</code></td><td>A computed <b>value</b></td><td>Heavy computation, or keeping an object/array prop referentially stable for a memo child</td></tr>
+    <tr><td><code>useCallback(fn, deps)</code></td><td>A <b>function</b> reference</td><td>Passing callbacks to <code>React.memo</code> children or as effect deps</td></tr>
+  </table></div>
+  <p>Measure first with the React DevTools Profiler. Memoizing everything adds comparison cost and memory. The <b>React Compiler</b> now auto-memoizes at build time, which is shifting this advice further toward “write plain code”. Other levers: list virtualization (react-window), debouncing input, moving state down (colocation), splitting a component so the fast-changing part is small.</p>
+
+  <h3><span class="star">★</span>State management ladder</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 210" role="img" aria-label="Escalate state from local to lifted to context to external store, with server cache as a separate category">
+      <g filter="url(#rough)">
+        <path d="M30 180 L200 180 L200 145 L370 145 L370 110 L540 110 L540 75 L710 75 L710 40 L860 40" class="s"/>
+        <rect x="560" y="140" width="300" height="56" rx="12" class="s o fy"/>
+      </g>
+      <text x="115" y="170" text-anchor="middle" class="h">useState</text><text x="115" y="200" text-anchor="middle" class="sm">local, one component</text>
+      <text x="285" y="135" text-anchor="middle" class="h">lift state up</text><text x="285" y="165" text-anchor="middle" class="sm">siblings share</text>
+      <text x="455" y="100" text-anchor="middle" class="h">Context</text><text x="455" y="130" text-anchor="middle" class="sm">theme, auth, locale</text>
+      <text x="625" y="65" text-anchor="middle" class="h">Redux / Zustand</text>
+      <text x="785" y="30" text-anchor="middle" class="sm">frequent, app-wide updates</text>
+      <text x="710" y="164" text-anchor="middle" class="h o">server state is different:</text>
+      <text x="710" y="186" text-anchor="middle" class="sm">TanStack Query / RTK Query (cache, refetch)</text>
+    </svg>
+  </figure>
+
+  <h3><span class="star">★</span>React 18 and 19, what to name-drop correctly</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">React 18</span><ul>
+      <li><code>createRoot</code> + concurrent rendering</li>
+      <li><b>Automatic batching</b> everywhere (timeouts, promises too)</li>
+      <li><code>useTransition</code> / <code>startTransition</code>: mark an update non-urgent so typing stays snappy</li>
+      <li><code>useDeferredValue</code>: lagging copy of a value for slow children</li>
+      <li>Streaming SSR with Suspense, selective hydration</li>
+      <li><code>useId</code>, <code>useSyncExternalStore</code></li></ul></div>
+    <div class="box pink"><span class="lbl">React 19</span><ul>
+      <li><b>Actions</b>: async functions in transitions; <code>&lt;form action={fn}&gt;</code></li>
+      <li><code>useActionState</code>, <code>useFormStatus</code>, <code>useOptimistic</code></li>
+      <li><code>use(promise | context)</code> — can be called conditionally</li>
+      <li><code>ref</code> as a normal prop (no <code>forwardRef</code> needed)</li>
+      <li>Server Components + Server Functions (via frameworks)</li>
+      <li><code>&lt;title&gt;</code>/<code>&lt;meta&gt;</code> hoisted from components</li></ul></div>
+  </div>
+
+  <h3><span class="star">★</span>Rendering strategies</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>HTML built</th><th>Good for</th><th>Cost</th></tr>
+    <tr><td>CSR</td><td>In the browser (our Parcel app)</td><td>Dashboards, logged-in apps</td><td>Blank first paint, weaker SEO</td></tr>
+    <tr><td>SSR</td><td>On server per request, then <b>hydrated</b></td><td>Personalized, SEO pages</td><td>Server load, TTFB</td></tr>
+    <tr><td>SSG</td><td>At build time</td><td>Docs, blogs, marketing</td><td>Rebuild to update</td></tr>
+    <tr><td>ISR</td><td>Static, revalidated in background</td><td>Catalogs, listings</td><td>Briefly stale data</td></tr>
+    <tr><td>RSC</td><td>Components run on server, ship zero JS</td><td>Data-heavy, mostly static UI</td><td>New mental model, framework needed</td></tr>
+  </table></div>
+  <p><b>Hydration</b> = React attaching event handlers to server-rendered HTML. If the first client render differs (e.g. <code>Date.now()</code>, <code>window</code> checks), you get a hydration mismatch.</p>
+
+  <h3><span class="star">★</span>Hooks you must also know</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">useRef</span><p>A mutable box <code>{ current }</code> that survives renders and <b>doesn't</b> trigger re-render. DOM access (<code>inputRef.current.focus()</code>), timer IDs, previous values.</p></div>
+    <div class="box green"><span class="lbl">useLayoutEffect</span><p>Runs after DOM mutation but <b>before paint</b>, synchronously. For measuring layout (tooltip position) to avoid flicker. Blocks paint, so use sparingly.</p></div>
+    <div class="box pink"><span class="lbl">useReducer</span><p>For state with several related fields and named transitions. <code>dispatch({ type: "added" })</code>. Easier to test; same idea as Redux, locally.</p></div>
+  </div>
+
+  <div class="puzzle"><div class="t">Classic: the stale closure</div>
+    <script type="text/x-code" data-cap="what does the counter show after 5 seconds?">
+const [count, setCount] = useState(0);
+useEffect(() => {
+  const id = setInterval(() => setCount(count + 1), 1000);
+  return () => clearInterval(id);
+}, []);
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p>It shows <b>1</b> forever. The interval callback was created in the first render, where <code>count</code> is 0, so it keeps setting <code>0 + 1</code>.</p>
+      <p>Fix: <code>setCount(c =&gt; c + 1)</code>. Adding <code>count</code> to deps also works but recreates the interval every second.</p>
+    </div></details>
+  </div>
+
+  <h3><span class="star">★</span>Fetching correctly (race conditions)</h3>
+  <script type="text/x-code" data-cap="debounced search that ignores stale responses">
+useEffect(() => {
+  if (!query) return;
+  const controller = new AbortController();
+  const t = setTimeout(async () => {
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+      setResults(await res.json());
+    } catch (e) {
+      if (e.name !== "AbortError") setError(e);
+    }
+  }, 300);                                         // debounce
+  return () => { clearTimeout(t); controller.abort(); };   // newer query cancels older one
+}, [query]);
+  </script>
+
+  <h3><span class="star">★</span>Patterns worth naming</h3>
+  <ul>
+    <li><b>Compound components</b>: <code>&lt;Tabs&gt;&lt;Tabs.List/&gt;&lt;Tabs.Panel/&gt;&lt;/Tabs&gt;</code> sharing state via context.</li>
+    <li><b>Controlled vs uncontrolled</b>: parent owns value via props, or the DOM/component owns it (<code>defaultValue</code>, refs).</li>
+    <li><b>Render props / HOCs</b>: older logic-sharing patterns, mostly replaced by custom hooks.</li>
+    <li><b>Reset with key</b>: <code>&lt;Profile key={userId} /&gt;</code> remounts and clears state when the user changes.</li>
+    <li><b>Portals</b>: <code>createPortal(child, document.body)</code> for modals and tooltips that must escape <code>overflow: hidden</code>; events still bubble through the React tree.</li>
+  </ul>
+
+  <h3><span class="star">★</span>Machine-coding round checklist</h3>
+  <div class="box pink"><span class="lbl">usual asks</span>
+    <p>Debounced autocomplete, infinite scroll (IntersectionObserver), pagination, nested comments, accordion, tabs, star rating, OTP input, image carousel, todo with filters, file explorer tree, progress bar, modal.</p></div>
+  <div class="box green"><span class="lbl">what scores points</span>
+    <ol>
+      <li>Clarify requirements and edge cases first (empty, loading, error, very long lists).</li>
+      <li>Sketch the component tree and where state lives before typing.</li>
+      <li>Get it working, then clean: custom hook for logic, small presentational components.</li>
+      <li>Handle loading/error/empty states and stale requests.</li>
+      <li>Accessibility: real <code>&lt;button&gt;</code>s, labels, keyboard support, <code>aria-expanded</code>.</li>
+      <li>Talk about what you'd optimize and test with more time.</li>
+    </ol></div>
+  <p><b>Web Vitals to mention:</b> LCP (load), INP (responsiveness, replaced FID in 2024), CLS (layout shift). Shimmers help CLS when they match the final layout.</p>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="sde2"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= DRILL ================= -->
+<section class="page" id="drill" data-n="⚡" data-short="Rapid-fire drill" data-title="Rapid-fire drill" data-hook="every card, shuffled">
+  <div class="ep">Rapid-fire</div>
+  <h2>Rapid-fire drill</h2>
+  <p>Read the question, answer out loud in under 30 seconds, then reveal. Arrow keys work too: → next, ← previous, space to reveal.</p>
+  <div class="deck">
+    <div class="deck-ctl" style="margin:0 0 14px">
+      <label for="deckFilter">Chapter</label>
+      <select id="deckFilter"><option value="all">All chapters</option></select>
+      <button class="btn" id="shuffleBtn" type="button">Shuffle</button>
+    </div>
+    <div class="card" id="card" aria-live="polite">
+      <div class="meta" id="cardMeta"></div>
+      <div class="q" id="cardQ"></div>
+      <div class="ans" id="cardA" hidden></div>
+    </div>
+    <div class="deck-ctl">
+      <button class="btn" id="prevBtn" type="button">Previous</button>
+      <button class="btn pink" id="revealBtn" type="button">Show answer</button>
+      <button class="btn green" id="nextBtn" type="button">Next card</button>
+      <span class="muted" id="deckCount"></span>
+    </div>
+  </div>
+</section>
+
+  </main>
+</div>
+<script>
+const QA = {
+ep1: [
+ ["What does React.createElement return?", "A plain JS object called a React element: <code>{$$typeof, type, props, key, ref}</code>. It's a description, not a DOM node. ReactDOM turns it into DOM when you render."],
+ ["What's the difference between react and react-dom?", "<code>react</code> is the core: elements, components, hooks, reconciliation contracts. <code>react-dom</code> is the browser renderer: <code>createRoot</code>, portals, hydration. The same core powers React Native and other renderers."],
+ ["What happens to existing content inside #root when you call root.render()?", "It's replaced. React owns everything inside the root and nothing outside it, which is why React can be dropped into one part of an existing page."],
+ ["Why is $$typeof a Symbol?", "Security. JSON can't contain Symbols, so if an attacker gets server JSON shaped like an element rendered, React rejects it. It blocks a class of injection attacks."],
+ ["Is React a library or a framework?", "A library for the view layer. You call it; routing, data fetching and build tooling are separate choices. Frameworks (Next.js, React Router framework mode) bundle those decisions and call your code."],
+ ["Why the crossorigin attribute on CDN script tags?", "It fetches the script in CORS mode so errors inside it expose full messages and stack traces to <code>window.onerror</code> instead of a generic “Script error.”"],
+ ["createRoot vs ReactDOM.render?", "<code>createRoot</code> (React 18) enables concurrent rendering and automatic batching. <code>ReactDOM.render</code> was the legacy API, deprecated in 18 and removed in 19."]
+],
+ep2: [
+ ["dependencies vs devDependencies?", "dependencies are needed at runtime (react, react-dom). devDependencies are only for building/testing (parcel, jest, babel plugins). <code>npm i -D</code> adds a dev dependency."],
+ ["^ vs ~ in package.json?", "<code>^2.8.2</code> allows minor and patch updates (&lt;3.0.0). <code>~2.8.2</code> allows only patch updates (&lt;2.9.0). The lock file records what was actually installed."],
+ ["Should package-lock.json and node_modules be committed?", "Lock file: yes, it guarantees identical installs across machines and CI (versions + integrity hashes). node_modules: no, it's huge and regenerated from the lock file with <code>npm ci</code>/<code>npm install</code>."],
+ ["npm vs npx?", "npm installs packages and runs scripts. npx executes a package's binary (local or downloaded on the fly) without a global install, e.g. <code>npx parcel index.html</code>."],
+ ["What is HMR and how does Parcel know a file changed?", "Hot Module Replacement swaps changed modules in the running page without a full reload, often keeping state. Parcel's file watcher (native, written in C++) detects changes; the cache makes rebuilds near-instant."],
+ ["What is tree shaking and what does it depend on?", "Removing unused exports from the production bundle. It needs ES modules because <code>import</code>/<code>export</code> are static and analyzable; dynamic CommonJS <code>require</code> can't be safely shaken. Side-effectful modules limit it."],
+ ["Why do we need a bundler at all?", "Browsers would otherwise fetch hundreds of modules, can't read JSX, and get unminified code. A bundler resolves imports, transpiles, minifies, splits code, hashes filenames for caching and optimizes assets."],
+ ["What does browserslist do?", "Declares target browsers (e.g. “last 2 versions”). Babel/Parcel use it to decide what syntax to transpile and which polyfills to include."],
+ ["Parcel vs Vite vs Webpack?", "Parcel: zero config. Webpack: most configurable, big ecosystem. Vite: serves native ESM in dev (very fast startup) and does an optimized production build. CRA is deprecated (2025); new React apps start on Vite or a framework."]
+],
+ep3: [
+ ["Is JSX HTML?", "No. It's syntax sugar for <code>createElement</code>/<code>jsx()</code> calls. Differences: <code>className</code>, <code>htmlFor</code>, camelCase events/attributes, mandatory closing tags, <code>{}</code> for expressions."],
+ ["Who converts JSX and into what?", "Babel (Parcel runs it for us). Classic runtime → <code>React.createElement(type, props, ...children)</code>; automatic runtime (React 17+) → <code>_jsx(type, props)</code> imported from <code>react/jsx-runtime</code>."],
+ ["Why must component names be capitalized?", "JSX treats lowercase tags as strings (HTML elements) and capitalized ones as variable references. <code>&lt;title/&gt;</code> → <code>\"title\"</code>; <code>&lt;Title/&gt;</code> → your function."],
+ ["&lt;Title /&gt; vs {Title()}?", "The tag lets React call the component, giving it its own fiber, state and hooks. Calling it as a function inlines it: its hooks belong to the parent and React can't treat it as a separate component."],
+ ["How does JSX protect against XSS?", "Values in <code>{}</code> are escaped before insertion, so strings render as text, not HTML. Bypassing needs <code>dangerouslySetInnerHTML</code>, which you should sanitize (e.g. DOMPurify). <code>href=\"javascript:...\"</code> is still a risk to validate."],
+ ["Transpiling vs polyfilling?", "Transpiling rewrites syntax (arrow functions, optional chaining) into older syntax. Polyfilling adds missing runtime APIs (<code>Promise</code>, <code>Array.prototype.includes</code>) by implementing them in JS."],
+ ["What is component composition?", "Building components out of other components. Nesting small, focused components instead of one big one."]
+],
+ep4: [
+ ["Why must JSX have a single parent?", "JSX compiles to a single function call and a function returns one value. Use a fragment <code>&lt;&gt;&lt;/&gt;</code> to group without adding a DOM node."],
+ ["Fragment shorthand vs React.Fragment?", "Same output. Only the long form accepts a <code>key</code>, which you need when mapping a list of fragments."],
+ ["What are props? Can a child modify them?", "The single object of inputs a parent passes to a child. Read-only: data flows down only. To change something, the parent passes down a callback that updates its own state."],
+ ["What is config-driven UI?", "The backend sends data describing what UI to render (sections, carousels, offers, per city/user), and the frontend renders components based on that config. Lets the business change the UI without a release."],
+ ["Why are keys needed? Why not index?", "Keys let the diff match items between renders. With index keys, inserting/removing/reordering shifts identities, so React updates every row and attaches state (like input text) to the wrong item. Index is OK only for static lists."],
+ ["What is the Virtual DOM and reconciliation?", "An in-memory tree of React elements. On update, React builds a new tree, diffs it with the previous one (reconciliation), and commits only the minimal changes to the real DOM."],
+ ["What diffing assumptions keep React O(n)?", "Elements of different types produce different trees (subtree replaced), and keys identify list children across renders. A general tree diff would be O(n³)."],
+ ["What is React Fiber?", "The reconciler rewrite in React 16. Work is split into fiber units that can be paused, prioritized, resumed or discarded during the render phase; commit is synchronous. It enables concurrent features like transitions and Suspense."],
+ ["What does optional chaining do?", "<code>a?.b?.c</code> returns <code>undefined</code> if anything in the chain is null/undefined instead of throwing. Pair with <code>??</code> for defaults."]
+],
+ep5: [
+ ["Default vs named exports?", "One default per file, imported with any name. Many named exports, imported with exact names in braces (or renamed with <code>as</code>). Named exports help refactoring, autocomplete and tree shaking."],
+ ["What is a hook?", "A function starting with <code>use</code> that lets function components use React features (state, effects, context, refs). They must be called unconditionally at the top level."],
+ ["Why not use a normal variable for UI data?", "Changing it doesn't tell React to re-render, and it resets on every render anyway. State persists across renders and its setter schedules a re-render."],
+ ["Controlled vs uncontrolled input?", "Controlled: React state is the source of truth (<code>value</code> + <code>onChange</code>). Uncontrolled: the DOM holds the value, read via ref or <code>defaultValue</code>. Switching from <code>undefined</code> to a string triggers the warning."],
+ ["setCount(count+1) three times in one click?", "Count increases by 1. All three read the same snapshot. Use the updater <code>setCount(c =&gt; c + 1)</code> to increase by 3."],
+ ["Is setState asynchronous?", "Not in the Promise sense. Calls are queued and batched; the new value appears on the next render. The variable in the current render never changes. You can't await it."],
+ ["What is automatic batching?", "React 18+ groups multiple state updates into one re-render, including inside timeouts, promises and native handlers (before 18 only React event handlers batched). <code>flushSync</code> opts out."],
+ ["Does React have two-way binding?", "No, it's one-way: state → UI. You build “two-way” manually with <code>value</code> + <code>onChange</code> on controlled inputs."]
+],
+ep6: [
+ ["When does useEffect run?", "After React commits the render to the DOM and usually after the browser paints. Then again whenever a dependency changes (no array = after every render)."],
+ ["[] vs no dependency array vs [x]?", "<code>[]</code>: once after mount. None: after every render. <code>[x]</code>: after mount and whenever <code>x</code> changes by <code>Object.is</code>."],
+ ["Why does my effect run twice in development?", "StrictMode in React 18+ mounts, unmounts and re-mounts components once in dev to expose missing cleanups. Production runs it once. Fix the cleanup, don't disable StrictMode."],
+ ["Why can't the effect callback be async?", "It would return a Promise, but React expects either a cleanup function or nothing. Define an async function inside and call it."],
+ ["How do you avoid race conditions when fetching?", "Abort the previous request with <code>AbortController</code> in the cleanup, or set an <code>ignore</code> flag in cleanup and skip <code>setState</code> when it's true. Libraries like TanStack Query handle this."],
+ ["What is CORS?", "A browser security policy: scripts can only read cross-origin responses if the server allows the origin via <code>Access-Control-Allow-Origin</code>. Non-simple requests trigger a preflight OPTIONS. Fix on the server or via a proxy."],
+ ["Why shimmer UI instead of a spinner?", "It mirrors the final layout, so the page feels faster (perceived performance) and doesn't jump when data arrives (better CLS)."],
+ ["Ways to conditionally render?", "Ternary, <code>&amp;&amp;</code>, early return, or a variable holding JSX. Watch out: <code>0 &amp;&amp; &lt;X/&gt;</code> renders 0. Early returns must come after all hooks."],
+ ["Monolith vs microservices?", "Monolith: one deployable with UI, API, DB access together; simple but scales and deploys as a unit. Microservices: independent services owned by separate teams, deployed separately, communicating over the network; flexible but operationally complex."]
+],
+ep7: [
+ ["What are the rules of hooks, and why?", "Call hooks at the top level of components or custom hooks, never in conditions/loops/nested functions. React identifies hooks by call order on each render; changing the order corrupts state."],
+ ["Why not define a component inside another component?", "It's a new function every render, so React sees a new type, unmounts the old one and mounts a fresh one: lost state, lost focus, wasted work."],
+ ["Link vs &lt;a href&gt;?", "Both render an anchor. <code>Link</code> intercepts the click and updates the URL with the History API, so there's no document reload and app state survives."],
+ ["What does Outlet do?", "It's the placeholder in a parent route's element where the matched child route renders, letting Header/Footer stay while the middle changes."],
+ ["Client-side vs server-side routing?", "Server-side: each navigation requests a new HTML page. Client-side: the JS router swaps components in place. Faster navigation, but initial bundle and SEO need care."],
+ ["How do dynamic routes work?", "Define <code>/restaurants/:resId</code>; read it with <code>const { resId } = useParams()</code>. Usually it's a fetch dependency: <code>useEffect(..., [resId])</code>."],
+ ["How do you navigate programmatically?", "<code>const navigate = useNavigate(); navigate(\"/cart\")</code> or <code>navigate(-1)</code> to go back. <code>&lt;Navigate to=\"/login\" /&gt;</code> redirects during render."],
+ ["How would you build protected routes?", "Wrap private routes in a guard component that checks auth and renders <code>&lt;Outlet/&gt;</code> or <code>&lt;Navigate to=\"/login\" replace state={{from}}/&gt;</code>. Or use a route <code>loader</code> that redirects. Real enforcement still happens on the server."],
+ ["createBrowserRouter vs HashRouter?", "BrowserRouter uses clean URLs via the History API and needs the server to return index.html for all routes. HashRouter uses <code>#/path</code>, works on static hosts without config, but URLs are uglier."]
+],
+ep8: [
+ ["Why super(props) in the constructor?", "A subclass must call <code>super()</code> before using <code>this</code>. Passing <code>props</code> makes <code>this.props</code> available inside the constructor itself (React sets it afterwards anyway)."],
+ ["this.setState vs a useState setter?", "<code>setState</code> shallow-merges into the state object. A useState setter replaces the value. Both are batched and accept an updater function."],
+ ["Lifecycle order with a parent and two class children?", "Parent constructor → parent render → child1 constructor → child1 render → child2 constructor → child2 render → commit → child1 didMount → child2 didMount → parent didMount."],
+ ["Render phase vs commit phase?", "Render: calling components/render() to compute the new tree; pure, can be interrupted, may run more than once. Commit: applying changes to the DOM, then running lifecycle methods/effects; synchronous."],
+ ["Is useEffect(fn, []) the same as componentDidMount?", "Close, not identical. didMount runs synchronously after commit before paint; useEffect usually runs after paint. useLayoutEffect matches the timing. And effects are meant for syncing, with cleanup."],
+ ["How do you mimic a dependency array in a class?", "In <code>componentDidUpdate(prevProps, prevState)</code>, compare old and new values: <code>if (prevState.count !== this.state.count) {...}</code>."],
+ ["Why is cleanup important in an SPA?", "Navigating doesn't reload the page, it unmounts components. Intervals, listeners and subscriptions keep running and pile up unless cleared in componentWillUnmount / effect cleanup."],
+ ["What can only class components do?", "Error boundaries (<code>getDerivedStateFromError</code>, <code>componentDidCatch</code>). They catch render/lifecycle errors in their subtree, not errors in event handlers or async code."]
+],
+ep9: [
+ ["What is a custom hook and when do you write one?", "A <code>use</code>-prefixed function that composes hooks. Write one when stateful logic (fetching, subscriptions, form handling) repeats or clutters a component."],
+ ["Do two components using the same custom hook share state?", "No. Each call has its own state. To share state, lift it up, use context, or an external store."],
+ ["Custom hook vs plain utility function?", "If it calls hooks, it must be a hook (named <code>use…</code>, follows hook rules). If it's pure computation, keep it a plain function."],
+ ["What are code splitting and lazy loading?", "Splitting the bundle into chunks loaded on demand. <code>lazy(() =&gt; import(\"./X\"))</code> creates a component that loads its chunk on first render; <code>Suspense</code> shows a fallback meanwhile."],
+ ["Why not call lazy() inside a component?", "A new lazy component would be created every render, so React would remount it each time and lose state."],
+ ["lazy() with a named export?", "lazy needs a default export. Map it: <code>lazy(() =&gt; import(\"./X\").then(m =&gt; ({ default: m.X })))</code>."],
+ ["Why remove event listeners in useOnlineStatus?", "Each mount adds listeners. Without cleanup they accumulate on window across navigations, leaking memory and firing multiple times."],
+ ["Other bundle optimizations?", "Route-level splitting, prefetching likely next routes, tree shaking, avoiding heavy libraries (date-fns over moment), compressing images, analyzing bundles (source-map-explorer), long-term caching via hashed filenames."]
+],
+ep10: [
+ ["What is a higher-order component?", "A function that takes a component and returns a new one with added behavior or UI, e.g. <code>withPromotedLabel(Card)</code>. Mostly replaced by hooks for logic, still handy for wrapping UI."],
+ ["What is lifting state up?", "Moving state to the closest common parent so siblings stay in sync. The accordion keeps <code>openIndex</code> in the parent and passes <code>isOpen</code> and a setter down."],
+ ["What is props drilling and how do you fix it?", "Passing props through components that don't use them. Fix with Context, composition (passing children), or a store."],
+ ["Context vs Redux?", "Context is dependency injection for values; every consumer re-renders when the value changes. Redux/Zustand is a store with selectors (fine-grained subscriptions), middleware and devtools. Context for rarely-changing globals, a store for frequently-changing shared state."],
+ ["Explain the Redux Toolkit flow.", "Component <code>dispatch</code>es an action → the slice reducer computes the next state → the store updates → components whose <code>useSelector</code> result changed re-render."],
+ ["Why can you 'mutate' state in createSlice?", "RTK uses Immer: you mutate a draft and Immer produces an immutable copy. Reassigning the <code>state</code> parameter doesn't work; return a new value instead."],
+ ["getBy vs queryBy vs findBy in RTL?", "getBy throws if not found (assert presence). queryBy returns null (assert absence). findBy returns a Promise and waits (async UI)."],
+ ["Unit vs integration vs e2e?", "Unit: one piece in isolation. Integration: several pieces together with mocked boundaries. E2E: real app in a real browser. Most value per cost usually comes from integration tests."]
+],
+sde2: [
+ ["When would you use useMemo vs useCallback vs React.memo?", "React.memo skips a child's render on equal props. useMemo caches a computed value; useCallback caches a function reference. The latter two mostly matter to keep props stable for memo'd children or effect deps. Profile first."],
+ ["What is useRef for?", "A mutable container that persists across renders without causing re-renders: DOM nodes, timer IDs, previous values, latest-callback refs."],
+ ["useEffect vs useLayoutEffect?", "useLayoutEffect runs synchronously after DOM mutations, before paint; use it to measure layout and avoid flicker. useEffect runs after paint and doesn't block it; default choice."],
+ ["What problem does useTransition solve?", "Marks a state update as non-urgent so urgent updates (typing) aren't blocked by a heavy re-render (filtering a huge list). React can interrupt the transition render. <code>isPending</code> shows progress."],
+ ["What is hydration and what causes mismatches?", "Attaching React to server-rendered HTML. Mismatches happen when the first client render differs: random values, dates, <code>window</code>/<code>localStorage</code> reads, invalid HTML nesting."],
+ ["What are React Server Components?", "Components that run only on the server (or at build), can access data directly, and send rendered output rather than JS to the client. Interactive parts are Client Components (<code>\"use client\"</code>). Needs a framework like Next.js."],
+ ["What is a stale closure?", "A callback capturing values from an old render (interval, listener, async). Fix with functional updates, correct deps, or a ref holding the latest value."],
+ ["Why derive state instead of syncing it?", "Storing something computable (filtered list, full name) means keeping two states in sync and inviting bugs. Compute it during render; memoize if expensive."],
+ ["How do you reset a component's state when an ID changes?", "Give it a <code>key</code> tied to the ID: <code>&lt;Chat key={roomId}/&gt;</code>. A new key means a fresh instance."],
+ ["How do you find a performance problem in React?", "React DevTools Profiler (which components rendered, why, how long), Chrome Performance panel, Lighthouse/Web Vitals (LCP, INP, CLS), bundle analyzer. Then fix the measured hot spot."],
+ ["How would you design an autocomplete?", "Controlled input → debounced query → fetch with AbortController (or a query cache) → keyboard navigation with <code>aria-activedescendant</code> → loading/empty/error states → highlight matches → cache recent results."],
+ ["What are portals used for?", "Rendering into a different DOM node (modals, toasts, tooltips) to escape overflow/z-index stacking. Events still bubble through the React tree, not the DOM tree."]
+]
+};
+const TITLES = {ep1:"Ep 1 · Inception",ep2:"Ep 2 · Igniting",ep3:"Ep 3 · Foundation",ep4:"Ep 4 · Show me the code",ep5:"Ep 5 · Hooked",ep6:"Ep 6 · Exploring",ep7:"Ep 7 · Finding the Path",ep8:"Ep 8 · Classy",ep9:"Ep 9 · Optimizing",ep10:"Ep 10–13 · Crash course",sde2:"SDE-2 deep cuts"};
+
+/* ---------- code blocks ---------- */
+const KW = /\b(const|let|var|function|return|import|from|export|default|class|extends|new|async|await|if|else|this|super|try|catch|static|of|in|typeof)\b/;
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function highlight(src){
+  const re = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/|\{\/\*[\s\S]*?\*\/\})|("(?:[^"\\\n]|\\.)*"|'(?:[^'\\\n]|\\.)*'|`(?:[^`\\]|\\.)*`)|(<\/?[A-Za-z][\w.]*|(?<!=)\/?>)|\b(\d+(?:\.\d+)?)\b|\b([A-Za-z_$][\w$]*)\b/g;
+  let out="", last=0, m;
+  while((m = re.exec(src))){
+    out += esc(src.slice(last, m.index)); last = re.lastIndex;
+    if(m[1]) out += '<span class="tk-c">'+esc(m[1])+'</span>';
+    else if(m[2]) out += '<span class="tk-s">'+esc(m[2])+'</span>';
+    else if(m[3]) out += '<span class="tk-t">'+esc(m[3])+'</span>';
+    else if(m[4]) out += '<span class="tk-n">'+m[4]+'</span>';
+    else if(m[5]) out += KW.test(m[5]) && m[5].match(KW)[0]===m[5] ? '<span class="tk-k">'+m[5]+'</span>' : esc(m[5]);
+  }
+  return out + esc(src.slice(last));
+}
+function dedent(t){
+  t = t.replace(/^\n+|\s+$/g,"").replace(/scr_ipt/g,"script");
+  const lines = t.split("\n");
+  const ind = Math.min(...lines.filter(l=>l.trim()).map(l=>l.match(/^ */)[0].length));
+  return lines.map(l=>l.slice(ind)).join("\n");
+}
+document.querySelectorAll('script[type="text/x-code"]').forEach(s=>{
+  const pre = document.createElement("pre"); pre.className="code"; pre.dataset.cap = s.dataset.cap || "";
+  const code = document.createElement("code"); code.style.background="none"; code.style.padding="0"; code.style.fontSize="inherit"; code.style.color="inherit";
+  code.innerHTML = highlight(dedent(s.textContent));
+  pre.appendChild(code); s.replaceWith(pre);
+});
+
+/* ---------- Q&A cards ---------- */
+document.querySelectorAll("[data-qa]").forEach(w=>{
+  (QA[w.dataset.qa]||[]).forEach(([q,a])=>{
+    const d=document.createElement("details"); d.className="qa";
+    d.innerHTML='<summary>'+q+'</summary><div class="a"><p>'+a+'</p></div>';
+    w.appendChild(d);
+  });
+});
+
+/* ---------- storage ---------- */
+const store = {
+  get(k,f){try{const v=localStorage.getItem(k);return v==null?f:JSON.parse(v);}catch(e){return f;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+let revised = store.get("nr-revised", {});
+
+/* ---------- navigation ---------- */
+const pages = [...document.querySelectorAll(".page")];
+const order = pages.map(p=>p.id);
+const toc = document.getElementById("toc");
+pages.forEach(p=>{
+  if(p.id==="ep10"){const s=document.createElement("li");s.className="sep";s.setAttribute("aria-hidden","true");toc.appendChild(s);}
+  const li=document.createElement("li");
+  const n = p.dataset.n || "⌂";
+  li.innerHTML='<a href="#'+p.id+'" data-id="'+p.id+'"'+(p.id==="cover"?' class="always"':'')+'><span class="n">'+n+'</span><span class="lab">'+p.dataset.short+'</span></a>';
+  toc.appendChild(li);
+});
+const idx = document.getElementById("idx");
+pages.filter(p=>p.dataset.hook).forEach(p=>{
+  const a=document.createElement("a"); a.href="#"+p.id; a.dataset.id=p.id;
+  const lab = /^\d+$/.test(p.dataset.n) && p.id!=="ep10" ? "Episode-0"+p.dataset.n : (p.id==="ep10"?"Episodes 10–13":p.id==="sde2"?"Beyond the course":"Practice");
+  a.innerHTML='<span class="e">'+lab+'</span><span class="tt">'+p.dataset.title+'</span><span class="hk">'+p.dataset.hook+'</span>';
+  idx.appendChild(a);
+});
+
+document.querySelectorAll("[data-foot]").forEach(f=>{
+  const id=f.closest(".page").id; const i=order.indexOf(id);
+  const prev=order[i-1], next=order[i+1];
+  f.innerHTML='<label class="check"><input type="checkbox" data-rev="'+id+'"> I revised this page</label>'+
+    '<span style="display:flex;gap:10px">'+(prev?'<a class="btn" href="#'+prev+'">Previous page</a>':'')+(next?'<a class="btn green" href="#'+next+'">Next page</a>':'')+'</span>';
+});
+document.querySelectorAll("[data-rev]").forEach(cb=>{
+  cb.checked=!!revised[cb.dataset.rev];
+  cb.addEventListener("change",()=>{revised[cb.dataset.rev]=cb.checked;store.set("nr-revised",revised);paintProgress();});
+});
+document.querySelectorAll(".pfoot a.btn").forEach(a=>a.style.textDecoration="none");
+
+function paintProgress(){
+  const ids = order.filter(id=>QA[id]);
+  const done = ids.filter(id=>revised[id]).length;
+  document.getElementById("progressTxt").textContent = done+" of "+ids.length+" pages revised"+(done===ids.length?" — you're ready. Go get that offer.":"");
+  document.getElementById("pencilFill").setAttribute("width", Math.round(560*done/ids.length));
+  document.querySelectorAll("#toc a, #idx a").forEach(a=>{
+    const isDone=!!revised[a.dataset.id];
+    (a.matches("#toc a")?a.parentElement:a).classList.toggle("done",isDone);
+  });
+}
+function show(){
+  let id = location.hash.slice(1); if(!order.includes(id)) id="cover";
+  pages.forEach(p=>p.classList.toggle("on",p.id===id));
+  document.querySelectorAll("#toc a").forEach(a=>{ if(a.dataset.id===id) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current"); });
+  const cur=toc.querySelector('[aria-current="page"]');
+  if(cur && window.innerWidth<=900){ const li=cur.parentElement; toc.scrollLeft = li.offsetLeft - toc.clientWidth/2 + li.offsetWidth/2; }
+  requestAnimationFrame(()=>window.scrollTo(0,0));
+}
+window.addEventListener("hashchange",show);
+
+/* ---------- drill ---------- */
+const ALL = Object.entries(QA).flatMap(([k,arr])=>arr.map(([q,a])=>({k,q,a})));
+let deck=[], pos=0;
+const sel=document.getElementById("deckFilter");
+Object.keys(QA).forEach(k=>{const o=document.createElement("option");o.value=k;o.textContent=TITLES[k];sel.appendChild(o);});
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function build(doShuffle){deck = ALL.filter(c=>sel.value==="all"||c.k===sel.value); if(doShuffle) shuffle(deck); pos=0; paintCard();}
+function paintCard(){
+  const c=deck[pos]; if(!c) return;
+  document.getElementById("cardMeta").textContent=TITLES[c.k];
+  document.getElementById("cardQ").innerHTML=c.q;
+  const a=document.getElementById("cardA"); a.innerHTML=c.a; a.hidden=true;
+  document.getElementById("revealBtn").textContent="Show answer";
+  document.getElementById("deckCount").textContent=(pos+1)+" / "+deck.length;
+}
+function reveal(){const a=document.getElementById("cardA"); a.hidden=!a.hidden; document.getElementById("revealBtn").textContent=a.hidden?"Show answer":"Hide answer";}
+function step(d){pos=(pos+d+deck.length)%deck.length;paintCard();}
+sel.addEventListener("change",()=>build(true));
+document.getElementById("shuffleBtn").onclick=()=>build(true);
+document.getElementById("revealBtn").onclick=reveal;
+document.getElementById("nextBtn").onclick=()=>step(1);
+document.getElementById("prevBtn").onclick=()=>step(-1);
+document.addEventListener("keydown",e=>{
+  if(e.target.closest("input,select,textarea")||e.metaKey||e.ctrlKey||e.altKey) return;
+  const id=location.hash.slice(1)||"cover";
+  if(id==="drill"){
+    if(e.key==="ArrowRight"){step(1);e.preventDefault();}
+    else if(e.key==="ArrowLeft"){step(-1);e.preventDefault();}
+    else if(e.key===" "){reveal();e.preventDefault();}
+  } else {
+    const i=order.indexOf(order.includes(id)?id:"cover");
+    if(e.key==="ArrowRight"&&order[i+1]) location.hash=order[i+1];
+    if(e.key==="ArrowLeft"&&order[i-1]) location.hash=order[i-1];
+  }
+});
+
+/* ---------- theme ---------- */
+const root=document.documentElement;
+const savedTheme=store.get("nr-theme",null); if(savedTheme) root.dataset.theme=savedTheme;
+document.getElementById("themeBtn").onclick=()=>{
+  const dark = root.dataset.theme ? root.dataset.theme==="dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  root.dataset.theme = dark?"light":"dark"; store.set("nr-theme",root.dataset.theme);
+};
+
+build(true); paintProgress(); show();
+</script>
+</body>
+</html>
