@@ -205,9 +205,7 @@ export function GraphDiagram({
   }, [adjacency, directed, edgeList])
 
   if (layout === null) {
-    return (
-      <p className="text-xs text-muted-foreground">Empty graph</p>
-    )
+    return <p className="text-xs text-muted-foreground">Empty graph</p>
   }
 
   const { nodes, edges } = layout

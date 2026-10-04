@@ -29,9 +29,7 @@ export function BinaryTreeDiagram({
   )
 
   if (nodes.length === 0) {
-    return (
-      <p className="text-xs text-muted-foreground">Empty tree</p>
-    )
+    return <p className="text-xs text-muted-foreground">Empty tree</p>
   }
 
   return (
@@ -83,7 +81,12 @@ export function BinaryTreeDiagram({
 function computeLayout(levelOrder: (number | null)[]) {
   const root = buildTreeFromLevelOrder(levelOrder)
   if (!root) {
-    return { nodes: [] as PixelNode[], edges: [] as Edge[], width: 0, height: 0 }
+    return {
+      nodes: [] as PixelNode[],
+      edges: [] as Edge[],
+      width: 0,
+      height: 0,
+    }
   }
 
   const positions: TreeNodePosition[] = []

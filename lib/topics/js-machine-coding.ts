@@ -3,7 +3,13 @@ import { FlashCardTopic } from "../topics-data"
 export const jsMachineCoding: FlashCardTopic = {
   slug: "js-machine-coding-questions",
   title: "JS Machine Coding Questions — Implementations You Must Know",
-  tags: ["JavaScript", "Machine Coding", "Closures", "Functional Programming", "Interview"],
+  tags: [
+    "JavaScript",
+    "Machine Coding",
+    "Closures",
+    "Functional Programming",
+    "Interview",
+  ],
   cards: [
     {
       id: "mc-1",

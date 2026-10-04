@@ -3,9 +3,7 @@ import { persist } from "zustand/middleware"
 
 type DsaSelectedTagsState = {
   selectedTags: string[]
-  setSelectedTags: (
-    update: string[] | ((prev: string[]) => string[])
-  ) => void
+  setSelectedTags: (update: string[] | ((prev: string[]) => string[])) => void
 }
 
 const useDsaSelectedTagsStore = create<DsaSelectedTagsState>()(
@@ -15,9 +13,7 @@ const useDsaSelectedTagsStore = create<DsaSelectedTagsState>()(
       setSelectedTags: (update) =>
         set((state) => ({
           selectedTags:
-            typeof update === "function"
-              ? update(state.selectedTags)
-              : update,
+            typeof update === "function" ? update(state.selectedTags) : update,
         })),
     }),
     {

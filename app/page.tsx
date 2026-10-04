@@ -45,8 +45,8 @@ export default function Page() {
           <code className="rounded bg-muted px-1.5 py-0.5">content/</code> with{" "}
           <code className="rounded bg-muted px-1.5 py-0.5">question.md</code>{" "}
           and{" "}
-          <code className="rounded bg-muted px-1.5 py-0.5">solution.md</code>{" "}
-          to get started.
+          <code className="rounded bg-muted px-1.5 py-0.5">solution.md</code> to
+          get started.
         </div>
       ) : (
         <div className="mt-8">

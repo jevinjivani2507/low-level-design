@@ -5,6 +5,7 @@ import { PrismLight as SyntaxHighlighter } from "react-syntax-highlighter"
 import javascript from "react-syntax-highlighter/dist/esm/languages/prism/javascript"
 import typescript from "react-syntax-highlighter/dist/esm/languages/prism/typescript"
 import tsx from "react-syntax-highlighter/dist/esm/languages/prism/tsx"
+import python from "react-syntax-highlighter/dist/esm/languages/prism/python"
 import {
   oneDark,
   oneLight,
@@ -13,6 +14,7 @@ import {
 SyntaxHighlighter.registerLanguage("javascript", javascript)
 SyntaxHighlighter.registerLanguage("typescript", typescript)
 SyntaxHighlighter.registerLanguage("tsx", tsx)
+SyntaxHighlighter.registerLanguage("python", python)
 
 const LANGUAGE_MAP: Record<string, string> = {
   js: "javascript",
@@ -20,6 +22,8 @@ const LANGUAGE_MAP: Record<string, string> = {
   tsx: "tsx",
   javascript: "javascript",
   typescript: "typescript",
+  py: "python",
+  python: "python",
 }
 
 export function TopicCodeBlock({
