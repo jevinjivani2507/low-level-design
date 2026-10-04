@@ -24,6 +24,18 @@ export default function Page() {
           </p>
         </div>
         <div className="flex gap-4">
+           <Link
+            href="/namaste-react.html"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Namaste-React
+          </Link>
+           <Link
+            href="https://alok722.github.io/namaste-javascript-notes/lectures.html"
+            className="text-sm text-muted-foreground hover:text-foreground"
+          >
+            Namaste-JavaScript
+          </Link>
           <Link
             href="/dsa"
             className="text-sm text-muted-foreground hover:text-foreground"
