@@ -97,6 +97,8 @@ mark{background:linear-gradient(transparent 35%,var(--hl) 35%,var(--hl) 90%,tran
 .box.solid{border-style:solid}
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:12px 0}
 .grid2 > .box{margin:6px 0}
+.grid2.three{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.tbl.hdrs td:first-child code{white-space:nowrap}
 .sticky{background:var(--sticky);padding:14px 18px 14px;margin:18px 0;max-width:640px;box-shadow:2px 4px 0 var(--shadow);transform:rotate(-.6deg);border-radius:2px 2px 14px 2px;position:relative}
 .sticky::before{content:"";position:absolute;top:-10px;left:42%;width:88px;height:20px;background:var(--hl-pink);opacity:.9;transform:rotate(2deg)}
 .sticky .t{font-family:var(--head);font-weight:700;color:var(--orange);font-size:19px}
@@ -104,7 +106,7 @@ mark{background:linear-gradient(transparent 35%,var(--hl) 35%,var(--hl) 90%,tran
 .fix{border-left:5px solid var(--green);background:var(--hl-green);padding:10px 16px;margin:16px 0;border-radius:0 12px 12px 0;max-width:760px}
 .fix .t{font-family:var(--head);font-weight:700;color:var(--green)}
 .versus{display:grid;grid-template-columns:1fr 1fr;border:2.5px solid var(--blue);border-radius:14px;overflow:hidden;margin:14px 0;max-width:760px}
-.versus > div{padding:10px 16px;background:var(--paper)}
+.versus > div{padding:10px 16px;background:var(--paper);min-width:0}
 .versus > div + div{border-left:2.5px solid var(--blue)}
 .versus h5{margin:0 0 4px;font-family:var(--head);font-size:19px;color:var(--blue)}
 .versus h5.pk{color:var(--pink)}
@@ -230,7 +232,7 @@ select{font-family:var(--hand);font-size:17px;color:var(--ink);background:var(--
 <section class="page" id="cover" data-short="Start" data-title="Cover">
   <div class="ep">Season 1 revision</div>
   <h1 class="cover-title">Namaste React<span>the night-before notebook</span></h1>
-  <p style="font-size:21px">Nine episodes from your notes, a crash course on episodes 10 to 13, and the extra depth an SDE-2 panel expects. Every page ends with interview cards: tap a question, answer it out loud, then check yourself.</p>
+  <p style="font-size:21px">Nine episodes from your notes, a crash course on episodes 10 to 13, the extra depth an SDE-2 panel expects, plus chapters on frontend security, JavaScript polyfills, frontend theory and an HTML &amp; CSS brush-up. Every page ends with interview cards: tap a question, answer it out loud, then check yourself.</p>
 
   <div class="pencil" aria-hidden="true">
     <svg viewBox="0 0 620 34" preserveAspectRatio="none" class="d">
@@ -1455,6 +1457,1184 @@ useEffect(() => {
   <div class="pfoot" data-foot></div>
 </section>
 
+<!-- ================= SECURITY ================= -->
+<section class="page" id="security" data-n="🔒" data-short="Frontend security" data-title="Frontend security" data-hook="XSS, CSRF, CORS, CSP, tokens, SRI">
+  <div class="ep">Beyond the course</div>
+  <h2>Frontend security</h2>
+  <div class="cloud"><b>In one breath:</b> never trust anything that crosses a boundary. Encrypt the pipe (HTTPS), treat every input as hostile and encode every output for its context (XSS), make sure requests are really intended (CSRF), keep tokens where scripts can't steal them, and tell the browser your rules with headers (CSP, HSTS, frame-ancestors).</div>
+
+  <h3><span class="star">★</span>HTTPS: what the padlock really means</h3>
+  <p>TLS gives you three things: <b>encryption</b> (nobody on the Wi-Fi can read it), <b>integrity</b> (nobody can change it in transit) and <b>authentication</b> (the server proved it owns the domain via a certificate). It does <i>not</i> make your app secure; it only secures the pipe.</p>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 300" role="img" aria-label="TLS handshake: client hello, server hello with certificate, browser verifies certificate and both derive a session key, then encrypted HTTP traffic">
+      <g filter="url(#rough)">
+        <rect x="60" y="10" width="160" height="44" rx="12" class="s fb"/>
+        <rect x="660" y="10" width="160" height="44" rx="12" class="s g fg"/>
+        <path d="M140 54 L140 290" class="s dash"/>
+        <path d="M740 54 L740 290" class="s dash"/>
+        <path d="M144 96 L734 96" class="s" marker-end="url(#ah)"/>
+        <path d="M736 156 L146 156" class="s b" marker-end="url(#ahb)"/>
+        <rect x="230" y="182" width="420" height="50" rx="10" class="s p fp"/>
+        <path d="M146 266 L734 266" class="s g" marker-start="url(#ahg)" marker-end="url(#ahg)"/>
+      </g>
+      <text x="140" y="38" text-anchor="middle" class="h">Browser</text>
+      <text x="740" y="38" text-anchor="middle" class="h g">Server</text>
+      <text x="440" y="86" text-anchor="middle">1. ClientHello</text>
+      <text x="440" y="116" text-anchor="middle" class="sm">TLS versions, cipher suites, key share</text>
+      <text x="440" y="146" text-anchor="middle" class="b">2. ServerHello + certificate + key share</text>
+      <text x="440" y="176" text-anchor="middle" class="sm">certificate is signed by a CA the browser trusts</text>
+      <text x="440" y="204" text-anchor="middle" class="p">3. Browser checks CA chain, hostname, expiry</text>
+      <text x="440" y="224" text-anchor="middle" class="sm">both sides derive the same symmetric session key (ECDHE)</text>
+      <text x="440" y="256" text-anchor="middle" class="g">4. Encrypted HTTP, using fast symmetric crypto</text>
+    </svg>
+    <figcaption>TLS 1.3, simplified. Asymmetric crypto proves identity and agrees on a key; symmetric crypto (AES-GCM) carries the data because it's much faster.</figcaption>
+  </figure>
+  <div class="grid2">
+    <div class="box"><span class="lbl">MITM + HSTS</span><p>An attacker on the network can downgrade <code>http://</code> links before the redirect to HTTPS happens. <code>Strict-Transport-Security</code> tells the browser to use HTTPS only for this domain from now on. The very first visit is still exposed, which is why the <b>HSTS preload list</b> exists.</p></div>
+    <div class="box pink"><span class="lbl">mixed content</span><p>An HTTPS page loading HTTP scripts or iframes. Browsers block active mixed content and upgrade or flag images. One HTTP script can rewrite the whole “secure” page.</p></div>
+  </div>
+
+  <h3><span class="star">★</span>Same-origin policy and CORS (deeper than Ep 6)</h3>
+  <p>An origin is <b>protocol + host + port</b>. Scripts can freely <i>send</i> many cross-origin requests, but can only <i>read</i> the response if the server opts in with CORS headers.</p>
+  <div class="tbl"><table>
+    <tr><th>Compared with <code>https://app.com</code></th><th>Same origin?</th><th>Why</th></tr>
+    <tr><td><code>https://app.com/cart</code></td><td class="gr">Yes</td><td>Path doesn't matter</td></tr>
+    <tr><td><code>http://app.com</code></td><td class="pk">No</td><td>Different protocol</td></tr>
+    <tr><td><code>https://api.app.com</code></td><td class="pk">No</td><td>Different host (subdomains count)</td></tr>
+    <tr><td><code>https://app.com:8443</code></td><td class="pk">No</td><td>Different port</td></tr>
+  </table></div>
+  <div class="versus">
+    <div><h5>Simple request (no preflight)</h5><p>GET, HEAD or POST, only safelisted headers, and <code>Content-Type</code> is form-urlencoded, multipart or text/plain. Sent straight away; the browser just checks the response headers.</p></div>
+    <div><h5 class="pk">Preflighted request</h5><p>PUT/DELETE/PATCH, custom headers like <code>Authorization</code>, or <code>application/json</code>. The browser first sends <code>OPTIONS</code>; cached with <code>Access-Control-Max-Age</code>.</p></div>
+  </div>
+  <pre class="code" data-cap="response headers for a credentialed request"><code style="background:none;padding:0;font-size:inherit;color:inherit">Access-Control-Allow-Origin: https://app.com
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: GET, POST, PUT
+Access-Control-Allow-Headers: Content-Type, Authorization
+Vary: Origin</code></pre>
+  <p>With credentials the origin must be exact, never <code>*</code>. <code>Vary: Origin</code> stops a cache serving one origin's answer to another.</p>
+  <div class="sticky"><div class="t">Trick question alert</div>“Does CORS protect my API?” No. CORS is enforced by browsers to protect <i>users</i>. curl, Postman and server code ignore it. And simple requests still reach your server and change data even when the response is blocked, so CORS is not CSRF protection either.</div>
+
+  <h3><span class="star">★</span>XSS: the most-asked topic</h3>
+  <p>Cross-site scripting means an attacker's JavaScript runs on <i>your</i> origin. From there it can read the DOM and localStorage, call your APIs as the user, and fake login forms.</p>
+  <div class="grid2 three">
+    <div class="box"><span class="lbl">stored</span><p>The payload is saved on the server (a comment, a username) and served to every visitor. The most damaging kind.</p></div>
+    <div class="box pink"><span class="lbl">reflected</span><p>The payload is in the URL (<code>?q=&lt;script&gt;</code>) and the server echoes it into the page. The victim has to click a crafted link.</p></div>
+    <div class="box green"><span class="lbl">DOM-based</span><p>Never touches the server: client JS reads <code>location.hash</code> or <code>postMessage</code> data and writes it into a sink like <code>innerHTML</code>.</p></div>
+  </div>
+  <p>React escapes everything inside <code>{}</code>, so most XSS questions become “where can it still leak?”</p>
+  <script type="text/x-code" data-cap="the four React holes, and their fixes">
+// 1. Raw HTML
+<div dangerouslySetInnerHTML={{ __html: comment }} />                      // unsafe
+<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment) }} />  // safe
+
+// 2. URLs: escaping doesn't help, "javascript:alert(1)" is a valid string
+<a href={user.website}>Website</a>                                         // unsafe
+const safeUrl = (u) => {
+  try { return ["http:", "https:"].includes(new URL(u).protocol) ? u : "#"; }
+  catch { return "#"; }
+};
+
+// 3. Leaving React: refs, eval, document.write
+ref.current.innerHTML = html;   // same as any innerHTML sink
+
+// 4. SSR state embedded in a script tag
+`<script>window.__STATE__ = ${JSON.stringify(state)}</scr_ipt>`
+// a value containing "</scr_ipt>" breaks out; escape "<" as \u003c or use serialize-javascript
+  </script>
+  <div class="fix"><span class="t">Defense in depth:</span> encode output by default (React does), sanitize the rare HTML you must render (DOMPurify), validate URL protocols, add a strict CSP so an injected script still can't run, and keep tokens in HttpOnly cookies so a successful XSS can't steal them.</div>
+
+  <div class="puzzle"><div class="t">Spot the hole</div>
+    <script type="text/x-code" data-cap="a search page">
+const q = new URLSearchParams(location.search).get("q");
+document.getElementById("title").innerHTML = `Results for ${q}`;
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p>DOM-based XSS. <code>?q=&lt;img src=x onerror=alert(document.cookie)&gt;</code> runs code. (A plain <code>&lt;script&gt;</code> tag won't execute via innerHTML, but event-handler attributes do.)</p>
+      <p>Fix: <code>textContent</code> instead of <code>innerHTML</code>, or render it through JSX.</p>
+    </div></details>
+  </div>
+
+  <h3><span class="star">★</span>Input validation, sanitization, output encoding</h3>
+  <div class="tbl"><table>
+    <tr><th>Step</th><th>What it does</th><th>Example</th></tr>
+    <tr><td><b>Validation</b></td><td>Rejects input that doesn't match the expected shape</td><td>Age must be an integer 0–120; email must match a pattern</td></tr>
+    <tr><td><b>Sanitization</b></td><td>Cleans input by removing dangerous parts</td><td>DOMPurify strips <code>&lt;script&gt;</code> and <code>onerror</code> from rich-text HTML</td></tr>
+    <tr><td><b>Encoding / escaping</b></td><td>Makes data safe for the specific place it's output</td><td>HTML body: <code>&amp;lt;</code>. URL: <code>encodeURIComponent</code>. JS: <code>JSON.stringify</code></td></tr>
+  </table></div>
+  <p>Client-side validation is for user experience only; anyone can bypass it with DevTools or curl. <mark>The server must validate again.</mark> Encoding depends on context: what's safe in HTML text is not safe inside an attribute, a URL or a script.</p>
+
+  <h3><span class="star">★</span>Security headers and CSP</h3>
+  <div class="tbl hdrs"><table>
+    <tr><th>Header</th><th>What it does</th><th>Typical value</th></tr>
+    <tr><td><code>Content-Security-Policy</code></td><td>Allowlists where scripts, styles, frames, images can come from; blocks inline scripts</td><td>see below</td></tr>
+    <tr><td><code>Strict-Transport-Security</code></td><td>HTTPS only, for future visits</td><td><code>max-age=31536000; includeSubDomains; preload</code></td></tr>
+    <tr><td><code>X-Content-Type-Options</code></td><td>Stops MIME sniffing (a .txt upload run as script)</td><td><code>nosniff</code></td></tr>
+    <tr><td><code>X-Frame-Options</code></td><td>Stops your page being framed (clickjacking); CSP <code>frame-ancestors</code> is the modern version</td><td><code>DENY</code> or <code>SAMEORIGIN</code></td></tr>
+    <tr><td><code>Referrer-Policy</code></td><td>Limits how much of the URL leaks to other sites</td><td><code>strict-origin-when-cross-origin</code></td></tr>
+    <tr><td><code>Permissions-Policy</code></td><td>Turns off browser features you don't use</td><td><code>camera=(), geolocation=()</code></td></tr>
+    <tr><td><code>Cross-Origin-Opener-Policy</code></td><td>Isolates your window from cross-origin popups</td><td><code>same-origin</code></td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="a strict, nonce-based CSP">
+Content-Security-Policy:
+  default-src 'self';
+  script-src 'self' 'nonce-R4nd0mPerRequest';   // only scripts carrying this nonce run
+  object-src 'none';
+  base-uri 'none';
+  frame-ancestors 'none';                        // replaces X-Frame-Options
+  upgrade-insecure-requests;
+
+<script nonce="R4nd0mPerRequest" src="/app.js"></scr_ipt>   // runs
+<script>alert(1)</scr_ipt>                                    // injected, no nonce: blocked
+  </script>
+  <p>The nonce must be random and new on every response, otherwise an attacker just copies it. Roll out with <code>Content-Security-Policy-Report-Only</code> first to see what would break. <b>Trusted Types</b> (<code>require-trusted-types-for 'script'</code>) goes further and makes DOM sinks like <code>innerHTML</code> refuse plain strings.</p>
+  <div class="sticky"><div class="t">Bonus point</div><code>X-XSS-Protection</code> is dead. Browsers removed the XSS auditor; saying “use CSP instead” shows you're current.</div>
+
+  <h3><span class="star">★</span>Authentication, authorization and tokens</h3>
+  <div class="versus">
+    <div><h5>Authentication: who are you?</h5><p>Login, passwords, OTP, OAuth/SSO. Failure is <code>401 Unauthorized</code> (the name is misleading: it means “not authenticated”).</p></div>
+    <div><h5 class="pk">Authorization: what may you do?</h5><p>Roles, permissions, ownership checks. Failure is <code>403 Forbidden</code>. Must happen on the server for every request.</p></div>
+  </div>
+  <div class="versus">
+    <div><h5>Session cookie</h5><p>Server stores the session, browser holds an ID. Easy to revoke (delete the session). Sent automatically, so it needs CSRF protection.</p></div>
+    <div><h5 class="pk">JWT</h5><p><code>header.payload.signature</code>, base64url-<i>encoded</i>, not encrypted: anyone can read the payload. Stateless and easy to scale, but hard to revoke before expiry, so keep it short-lived.</p></div>
+  </div>
+
+  <h4>Where do tokens live?</h4>
+  <div class="tbl"><table>
+    <tr><th>Storage</th><th>JS can read it?</th><th>Sent automatically?</th><th>Lasts until</th><th>Main risk</th></tr>
+    <tr><td>localStorage</td><td>Yes</td><td>No</td><td>Cleared manually</td><td>Any XSS can steal it</td></tr>
+    <tr><td>sessionStorage</td><td>Yes</td><td>No</td><td>Tab closes</td><td>Same as localStorage, per tab</td></tr>
+    <tr><td>Cookie, <code>HttpOnly</code></td><td>No</td><td>Yes, to its domain</td><td>Expiry</td><td>CSRF (fix with SameSite + token)</td></tr>
+    <tr><td>In-memory variable</td><td>Only your running code</td><td>No</td><td>Refresh</td><td>Lost on reload, so pair with a refresh cookie</td></tr>
+  </table></div>
+  <div class="tbl"><table>
+    <tr><th>Cookie attribute</th><th>Meaning</th></tr>
+    <tr><td><code>HttpOnly</code></td><td>Not visible to <code>document.cookie</code>, so XSS can't read it</td></tr>
+    <tr><td><code>Secure</code></td><td>Only sent over HTTPS</td></tr>
+    <tr><td><code>SameSite=Strict</code></td><td>Never sent on cross-site requests, even when clicking a link from another site</td></tr>
+    <tr><td><code>SameSite=Lax</code></td><td>Sent on top-level GET navigations only. Chrome and Edge use this when SameSite is missing</td></tr>
+    <tr><td><code>SameSite=None</code></td><td>Sent everywhere; requires <code>Secure</code>. Needed for third-party embeds</td></tr>
+    <tr><td><code>__Host-</code> prefix</td><td>Cookie must be Secure, have <code>Path=/</code> and no Domain, so subdomains can't overwrite it</td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="common SPA answer: access token in memory, refresh token in an HttpOnly cookie">
+let accessToken = null;                       // never written to storage
+
+async function api(url, opts = {}, retried = false) {
+  const res = await fetch(url, {
+    ...opts,
+    headers: { ...opts.headers, Authorization: `Bearer ${accessToken}` },
+  });
+  if (res.status !== 401 || retried) return res;
+  const r = await fetch("/auth/refresh", { method: "POST", credentials: "include" }); // cookie rides along
+  if (!r.ok) throw new Error("Session expired");
+  accessToken = (await r.json()).accessToken;
+  return api(url, opts, true);                // retry once
+}
+  </script>
+  <div class="fix"><span class="t">SDE-2 nuance:</span> HttpOnly stops XSS from <i>stealing</i> the token, not from <i>using</i> it. Injected script can still call your API from the victim's tab. That's why CSP and output encoding still matter. For OAuth in SPAs, use Authorization Code + <b>PKCE</b>; the old implicit flow put tokens in the URL.</div>
+
+  <h3><span class="star">★</span>CSRF: the request you didn't mean to send</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 240" role="img" aria-label="CSRF: a page on evil.com makes your browser send a request to bank.com, and the browser attaches your bank cookie automatically">
+      <g filter="url(#rough)">
+        <rect x="20" y="80" width="210" height="96" rx="14" class="s fb"/>
+        <rect x="340" y="6" width="200" height="72" rx="14" class="s p fp"/>
+        <rect x="650" y="80" width="210" height="96" rx="14" class="s g fg"/>
+        <path d="M340 50 Q 260 50 200 78" class="s p" marker-end="url(#ahp)"/>
+        <path d="M230 150 L646 150" class="s" marker-end="url(#ah)"/>
+      </g>
+      <text x="125" y="108" text-anchor="middle" class="h">Your browser</text>
+      <text x="125" y="132" text-anchor="middle" class="sm">logged in to bank.com</text>
+      <text x="125" y="158" text-anchor="middle" class="mono">cookie: session=abc</text>
+      <text x="440" y="36" text-anchor="middle" class="h p">evil.com</text>
+      <text x="440" y="60" text-anchor="middle" class="sm">hidden auto-submitting form</text>
+      <text x="200" y="40" text-anchor="middle" class="sm">1. you open the page</text>
+      <text x="440" y="140" text-anchor="middle">2. POST bank.com/transfer</text>
+      <text x="440" y="172" text-anchor="middle" class="sm">browser attaches the bank cookie automatically</text>
+      <text x="755" y="114" text-anchor="middle" class="h g">bank.com</text>
+      <text x="755" y="140" text-anchor="middle" class="sm">valid session, so it obeys</text>
+      <text x="755" y="208" text-anchor="middle" class="h p">3. money moves</text>
+      <text x="755" y="230" text-anchor="middle" class="sm">attacker never saw the cookie</text>
+    </svg>
+    <figcaption>CSRF abuses automatic cookies. The attacker can trigger the request but can't read the response.</figcaption>
+  </figure>
+  <div class="box green"><span class="lbl">defenses</span>
+    <ol>
+      <li><b>SameSite</b> cookies (<code>Lax</code> or <code>Strict</code>), set explicitly rather than relying on browser defaults.</li>
+      <li><b>CSRF token</b>: a random value the server issues and checks on every state-changing request (synchronizer token, or double-submit cookie).</li>
+      <li>Check the <code>Origin</code> / <code>Referer</code> header on the server.</li>
+      <li>Never change state with GET. Require a custom header (like <code>X-Requested-With</code>) or JSON, which forces a preflight that evil.com can't pass.</li>
+    </ol></div>
+  <p><b>XSS vs CSRF in one line:</b> XSS runs the attacker's code <i>on</i> your site; CSRF makes the user's browser send a request <i>to</i> your site from somewhere else. If you have XSS, CSRF tokens don't save you, because the script can read the token.</p>
+
+  <h3><span class="star">★</span>Iframes: clickjacking and postMessage</h3>
+  <div class="grid2">
+    <div class="box pink"><span class="lbl">your site inside their frame</span><p><b>Clickjacking:</b> the attacker loads your page in an invisible iframe over a “Win a prize” button, so the user really clicks your “Delete account”. Fix with <code>frame-ancestors 'none'</code> (or <code>'self'</code>) in CSP, plus <code>X-Frame-Options</code> for old browsers.</p></div>
+    <div class="box"><span class="lbl">their frame inside your site</span><p>Use <code>sandbox</code> to strip powers, then add back only what's needed (<code>allow-scripts</code>, <code>allow-forms</code>). Never combine <code>allow-scripts</code> + <code>allow-same-origin</code> for same-origin content: the frame can remove its own sandbox.</p></div>
+  </div>
+  <script type="text/x-code" data-cap="postMessage done right">
+// receiving
+window.addEventListener("message", (e) => {
+  if (e.origin !== "https://pay.example.com") return;   // always check who sent it
+  if (typeof e.data?.status !== "string") return;       // and validate the shape
+  setPaymentStatus(e.data.status);
+});
+
+// sending
+frame.contentWindow.postMessage({ orderId }, "https://pay.example.com"); // never "*"
+  </script>
+  <p>Related: <code>target="_blank"</code> links used to give the new tab <code>window.opener</code> access (reverse tabnabbing). Modern browsers imply <code>rel="noopener"</code> now, but writing it explicitly is still a good answer.</p>
+
+  <h3><span class="star">★</span>SRI: trusting a CDN without trusting it</h3>
+  <script type="text/x-code" data-cap="Subresource Integrity">
+<script
+  src="https://cdn.jsdelivr.net/npm/some-lib@1.2.3/dist/lib.min.js"
+  integrity="sha384-BASE64_HASH_OF_THE_EXACT_FILE"
+  crossorigin="anonymous"></scr_ipt>
+
+// generate the hash
+openssl dgst -sha384 -binary lib.min.js | openssl base64 -A
+  </script>
+  <p>If one byte of the file changes (CDN hacked, file swapped), the browser refuses to run it. Needs an exact pinned version, and <code>crossorigin="anonymous"</code> so the browser can check a cross-origin file. Real example: in 2024 the polyfill.io domain changed owners and started serving malicious code to the sites that loaded it. It generated different code per browser, so it couldn't be pinned with SRI at all: the lesson is to self-host or pin scripts you don't control.</p>
+
+  <h3><span class="star">★</span>Server-side ones a frontend dev should know</h3>
+  <p>These show up because frontend engineers now write Node, Next.js API routes and backend-for-frontend layers.</p>
+  <div class="grid2">
+    <div class="box pink"><span class="lbl">SSRF</span><p><b>Server-Side Request Forgery:</b> your server fetches a URL the user controls, like a link-preview route <code>/api/preview?url=</code>. The attacker passes <code>http://169.254.169.254/</code> (cloud metadata with credentials) or <code>http://localhost:6379</code>.</p><p>Fix: allowlist hosts, resolve DNS and block private IP ranges, don't follow redirects blindly, set timeouts.</p></div>
+    <div class="box"><span class="lbl">SSJI</span><p><b>Server-Side JavaScript Injection:</b> user input executed as code in Node. Sinks: <code>eval</code>, <code>new Function</code>, <code>setTimeout("string")</code>, the <code>vm</code> module (not a security sandbox), Mongo <code>$where</code>.</p><p>Fix: never execute input. Use <code>JSON.parse</code>, a safe expression parser, and type-check inputs so <code>{"$gt": ""}</code> can't sneak into a query.</p></div>
+  </div>
+  <script type="text/x-code" data-cap="SSJI in one line">
+// calculator endpoint
+app.get("/calc", (req, res) => res.send(String(eval(req.query.expr))));
+// ?expr=require('child_process').execSync('cat /etc/passwd')   -> full server takeover
+  </script>
+
+  <h3><span class="star">★</span>The “much more” list</h3>
+  <ul>
+    <li><b>Secrets in env vars:</b> anything prefixed <code>VITE_</code>, <code>NEXT_PUBLIC_</code> or <code>REACT_APP_</code> is baked into the bundle and public. Real secrets stay on a server; the browser calls your backend, which calls the third party.</li>
+    <li><b>Supply chain:</b> commit the lock file, run <code>npm audit</code>, use Dependabot/Renovate, review new dependencies, prefer <code>npm ci</code> in CI.</li>
+    <li><b>Open redirect:</b> <code>/login?next=https://evil.com</code>. Allow only relative paths or an allowlist of hosts.</li>
+    <li><b>Prototype pollution:</b> a naive deep merge of <code>{"__proto__": {"isAdmin": true}}</code> adds <code>isAdmin</code> to every object. Skip <code>__proto__</code>/<code>constructor</code> keys, use <code>Object.create(null)</code> or <code>Map</code>.</li>
+    <li><b>Sensitive data in the client:</b> don't trust hidden fields, prices or roles sent from the browser; the server recomputes them.</li>
+    <li><b>Rate limiting and brute force</b> on login and OTP endpoints, with a generic “invalid email or password” message so you don't reveal which accounts exist.</li>
+  </ul>
+
+  <h3><span class="star">★</span>Scenario round</h3>
+  <div class="box pink"><span class="lbl">a typical senior question</span>
+    <p>“You're building a comment section that supports bold, italics and links. Walk me through every security concern.”</p></div>
+  <div class="box green"><span class="lbl">what scores points</span>
+    <ol>
+      <li>Store the raw input; sanitize with an allowlist (DOMPurify: only <code>b</code>, <code>i</code>, <code>a</code>) or, better, store Markdown and render it safely.</li>
+      <li>Validate link protocols (<code>http/https</code> only), add <code>rel="noopener nofollow ugc"</code>.</li>
+      <li>Strict CSP as a second layer in case sanitization misses something.</li>
+      <li>Auth on create; authorization on edit/delete (only the owner or a moderator), enforced on the server.</li>
+      <li>CSRF protection on the POST, rate limiting against spam, length limits.</li>
+      <li>Tokens in HttpOnly cookies so one missed XSS doesn't leak sessions.</li>
+    </ol></div>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="security"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= POLYFILLS ================= -->
+<section class="page" id="polyfills" data-n="🧩" data-lab="Machine coding" data-short="JS polyfills" data-title="JavaScript polyfills" data-hook="Promise, map/reduce, bind, debounce, memoize">
+  <div class="ep">Write it from scratch</div>
+  <h2>JavaScript polyfills</h2>
+  <div class="cloud"><b>What they're really testing:</b> do you know the spec well enough to rebuild it? Handle <code>this</code> correctly, cover edge cases (empty arrays, holes, no initial value, errors), keep the original's return value, and narrate as you type. Every snippet here runs as written.</div>
+
+  <div class="sticky"><div class="t">Interview habits</div>Name it <code>myMap</code>, not <code>map</code>, so you don't overwrite the real one. Write a regular <code>function</code>, never an arrow, when attaching to a prototype, because you need <code>this</code>. Start by stating the signature and edge cases out loud.</div>
+
+  <h3><span class="star">★</span>Promise from scratch</h3>
+  <p>The four ideas they want to hear: a promise <b>settles once</b> (pending → fulfilled or rejected), <code>then</code> callbacks are <b>queued until it settles</b>, callbacks <b>always run asynchronously</b> as microtasks, and <code>then</code> <b>returns a new promise</b> resolved with whatever the callback returns (including adopting a returned promise). That last one is what makes chaining work.</p>
+  <script type="text/x-code" data-cap="MyPromise: states, queued handlers, microtasks, chaining">
+class MyPromise {
+  #state = "pending";        // "pending" | "fulfilled" | "rejected"
+  #value;
+  #handlers = [];            // then() callbacks waiting for settlement
+
+  constructor(executor) {
+    let done = false;        // resolve/reject only count once
+    const resolve = (v) => { if (!done) { done = true; this.#resolve(v); } };
+    const reject = (e) => { if (!done) { done = true; this.#settle("rejected", e); } };
+    try { executor(resolve, reject); } catch (e) { reject(e); }
+  }
+
+  #resolve(v) {
+    if (v === this) return this.#settle("rejected", new TypeError("Chaining cycle"));
+    if (v !== null && (typeof v === "object" || typeof v === "function")) {
+      let then;
+      try { then = v.then; } catch (e) { return this.#settle("rejected", e); }
+      if (typeof then === "function") {          // a thenable: adopt its state
+        let called = false;
+        try {
+          then.call(v,
+            (y) => { if (!called) { called = true; this.#resolve(y); } },
+            (r) => { if (!called) { called = true; this.#settle("rejected", r); } });
+        } catch (e) { if (!called) { called = true; this.#settle("rejected", e); } }
+        return;
+      }
+    }
+    this.#settle("fulfilled", v);
+  }
+
+  #settle(state, value) {
+    this.#state = state;
+    this.#value = value;
+    this.#handlers.forEach((h) => this.#run(h));
+    this.#handlers = [];
+  }
+
+  #run({ onFulfilled, onRejected, resolve, reject }) {
+    queueMicrotask(() => {                       // callbacks are always async
+      const ok = this.#state === "fulfilled";
+      const cb = ok ? onFulfilled : onRejected;
+      if (typeof cb !== "function") return ok ? resolve(this.#value) : reject(this.#value);
+      try { resolve(cb(this.#value)); } catch (e) { reject(e); }
+    });
+  }
+
+  then(onFulfilled, onRejected) {
+    return new MyPromise((resolve, reject) => {
+      const h = { onFulfilled, onRejected, resolve, reject };
+      if (this.#state === "pending") this.#handlers.push(h);
+      else this.#run(h);
+    });
+  }
+  catch(onRejected) { return this.then(undefined, onRejected); }
+  finally(cb) {
+    return this.then(
+      (v) => MyPromise.resolve(cb()).then(() => v),
+      (e) => MyPromise.resolve(cb()).then(() => { throw e; }));
+  }
+  static resolve(v) { return v instanceof MyPromise ? v : new MyPromise((res) => res(v)); }
+  static reject(e) { return new MyPromise((_, rej) => rej(e)); }
+}
+  </script>
+  <p class="muted" style="font-size:16px">If time is short, drop thenable adoption and <code>finally</code>; the state machine, the handler queue, <code>queueMicrotask</code> and returning a new promise from <code>then</code> are the core.</p>
+
+  <h3><span class="star">★</span>Promise.all, allSettled, race, any</h3>
+  <div class="tbl"><table>
+    <tr><th>Method</th><th>Fulfils when</th><th>Rejects when</th><th>Empty input</th></tr>
+    <tr><td><code>all</code></td><td>Every input fulfils (array, in input order)</td><td>The first input rejects</td><td>Fulfils with <code>[]</code></td></tr>
+    <tr><td><code>allSettled</code></td><td>Every input settles (array of <code>{status, value | reason}</code>)</td><td>Never</td><td>Fulfils with <code>[]</code></td></tr>
+    <tr><td><code>race</code></td><td>The first input to settle fulfils</td><td>The first input to settle rejects</td><td>Stays pending forever</td></tr>
+    <tr><td><code>any</code></td><td>The first input fulfils</td><td>Every input rejects (<code>AggregateError</code>)</td><td>Rejects with <code>AggregateError</code></td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="the four combinators">
+Promise.myAll = function (iterable) {
+  return new Promise((resolve, reject) => {
+    const items = Array.from(iterable);
+    const results = new Array(items.length);
+    let remaining = items.length;
+    if (remaining === 0) return resolve(results);
+    items.forEach((item, i) => {
+      Promise.resolve(item).then((value) => {
+        results[i] = value;                     // input order, not finish order
+        if (--remaining === 0) resolve(results);
+      }, reject);                               // first rejection wins
+    });
+  });
+};
+
+Promise.myAllSettled = function (iterable) {
+  return Promise.myAll(Array.from(iterable, (item) =>
+    Promise.resolve(item).then(
+      (value) => ({ status: "fulfilled", value }),
+      (reason) => ({ status: "rejected", reason }))));
+};
+
+Promise.myRace = function (iterable) {
+  return new Promise((resolve, reject) => {
+    for (const item of iterable) Promise.resolve(item).then(resolve, reject);
+  });                                           // empty input: pending forever
+};
+
+Promise.myAny = function (iterable) {
+  return new Promise((resolve, reject) => {
+    const items = Array.from(iterable);
+    const errors = new Array(items.length);
+    let remaining = items.length;
+    if (remaining === 0) return reject(new AggregateError([], "All promises were rejected"));
+    items.forEach((item, i) => {
+      Promise.resolve(item).then(resolve, (e) => {
+        errors[i] = e;
+        if (--remaining === 0) reject(new AggregateError(errors, "All promises were rejected"));
+      });
+    });
+  });
+};
+  </script>
+  <div class="fix"><span class="t">Two bugs interviewers watch for:</span> pushing results in finish order instead of writing <code>results[i]</code>, and checking <code>results.length === items.length</code> to detect completion (assigning index 4 first makes length 5 immediately). Use a <code>remaining</code> counter. Wrapping each item in <code>Promise.resolve</code> lets plain values like <code>3</code> work too.</div>
+
+  <h3><span class="star">★</span>map, filter, reduce, forEach</h3>
+  <script type="text/x-code" data-cap="array methods on the prototype">
+Array.prototype.myMap = function (cb, thisArg) {
+  if (typeof cb !== "function") throw new TypeError(cb + " is not a function");
+  const len = this.length;
+  const out = new Array(len);
+  for (let i = 0; i < len; i++) {
+    if (i in this) out[i] = cb.call(thisArg, this[i], i, this);   // skip holes like the real one
+  }
+  return out;
+};
+
+Array.prototype.myFilter = function (cb, thisArg) {
+  if (typeof cb !== "function") throw new TypeError(cb + " is not a function");
+  const len = this.length;
+  const out = [];
+  for (let i = 0; i < len; i++) {
+    if (i in this && cb.call(thisArg, this[i], i, this)) out.push(this[i]);
+  }
+  return out;
+};
+
+Array.prototype.myReduce = function (cb, ...init) {
+  if (typeof cb !== "function") throw new TypeError(cb + " is not a function");
+  const len = this.length;
+  let i = 0, acc;
+  if (init.length) acc = init[0];
+  else {
+    while (i < len && !(i in this)) i++;       // first real element is the start value
+    if (i >= len) throw new TypeError("Reduce of empty array with no initial value");
+    acc = this[i++];
+  }
+  for (; i < len; i++) {
+    if (i in this) acc = cb(acc, this[i], i, this);
+  }
+  return acc;
+};
+
+Array.prototype.myForEach = function (cb, thisArg) {
+  if (typeof cb !== "function") throw new TypeError(cb + " is not a function");
+  const len = this.length;
+  for (let i = 0; i < len; i++) {
+    if (i in this) cb.call(thisArg, this[i], i, this);
+  }
+  // returns undefined; no way to break out except throwing
+};
+  </script>
+  <div class="grid2">
+    <div class="box"><span class="lbl">edge cases to mention</span><p><code>i in this</code> skips holes in sparse arrays (<code>[1, , 3]</code>), matching the real methods. Length is read once at the start. A callback that isn't a function throws a <code>TypeError</code>.</p></div>
+    <div class="box pink"><span class="lbl">reduce specifically</span><p>No initial value: the first element is the accumulator and the loop starts at index 1. Empty array with no initial value throws. Use rest params (<code>...init</code>) so an explicit <code>undefined</code> initial value still counts as provided.</p></div>
+  </div>
+  <div class="puzzle"><div class="t">Classic: what does this print?</div>
+    <script type="text/x-code" data-cap="">
+["1", "2", "3"].map(parseInt);
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p><b>[1, NaN, NaN]</b>. <code>map</code> passes <code>(value, index, array)</code>, and <code>parseInt</code> takes <code>(string, radix)</code>. So it runs <code>parseInt("1", 0)</code> (radix 0 means default, so 1), <code>parseInt("2", 1)</code> (radix 1 is invalid, NaN) and <code>parseInt("3", 2)</code> (3 isn't a binary digit, NaN).</p>
+      <p>Fix: <code>.map(Number)</code> or <code>.map((s) =&gt; parseInt(s, 10))</code>.</p>
+    </div></details>
+  </div>
+
+  <h3><span class="star">★</span>call, apply, bind</h3>
+  <div class="versus">
+    <div><h5>call / apply</h5><p>Invoke the function right now with a chosen <code>this</code>. <code>call(ctx, a, b)</code> takes arguments one by one; <code>apply(ctx, [a, b])</code> takes an array.</p></div>
+    <div><h5 class="pk">bind</h5><p>Doesn't call anything. Returns a new function with <code>this</code> fixed and optionally some arguments preset (partial application). A bound function can't be re-bound.</p></div>
+  </div>
+  <script type="text/x-code" data-cap="the trick: call the function as a method of ctx, so this === ctx">
+Function.prototype.myCall = function (ctx, ...args) {
+  ctx = ctx == null ? globalThis : Object(ctx);  // null/undefined -> global, primitives boxed
+  const key = Symbol("fn");                      // unique key, can't clash with real props
+  ctx[key] = this;                               // "this" is the function being called
+  try { return ctx[key](...args); }              // called as a method, so this === ctx
+  finally { delete ctx[key]; }
+};
+
+Function.prototype.myApply = function (ctx, args) {
+  return this.myCall(ctx, ...(args ?? []));
+};
+
+Function.prototype.myBind = function (ctx, ...preset) {
+  const fn = this;
+  function bound(...later) {
+    if (new.target) return new fn(...preset, ...later);   // `new` ignores the bound this
+    return fn.apply(ctx, [...preset, ...later]);          // partial application
+  }
+  bound.prototype = fn.prototype;                         // keeps instanceof working
+  return bound;
+};
+  </script>
+  <p>Arrow functions ignore all three for <code>this</code>; they take <code>this</code> from where they were defined. The <code>new.target</code> branch is the detail that separates a good <code>bind</code> answer from an average one.</p>
+
+  <h3><span class="star">★</span>once</h3>
+  <script type="text/x-code" data-cap="run once, return the first result forever (init, payment button, analytics)">
+function once(fn) {
+  let called = false, result;
+  return function (...args) {
+    if (!called) {
+      called = true;
+      result = fn.apply(this, args);
+      fn = null;                       // let the original be garbage-collected
+    }
+    return result;
+  };
+}
+  </script>
+
+  <h3><span class="star">★</span>Debounce and throttle</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 215" role="img" aria-label="A burst of events. Throttle with a 100 millisecond limit fires at regular intervals during the burst. Debounce fires once, 100 milliseconds after the last event.">
+      <g filter="url(#rough)">
+        <path d="M150 50 L650 50" class="s dash"/>
+        <path d="M150 110 L650 110" class="s dash"/>
+        <path d="M150 170 L650 170" class="s dash"/>
+        <path d="M200 36 L200 50 M230 36 L230 50 M250 36 L250 50 M280 36 L280 50 M340 36 L340 50 M370 36 L370 50 M390 36 L390 50 M410 36 L410 50 M450 36 L450 50 M470 36 L470 50" class="s"/>
+        <circle cx="200" cy="104" r="9" class="s b fb"/><circle cx="300" cy="104" r="9" class="s b fb"/><circle cx="400" cy="104" r="9" class="s b fb"/><circle cx="500" cy="104" r="9" class="s b fb"/>
+        <circle cx="570" cy="164" r="9" class="s g fg"/>
+        <path d="M470 186 L560 186" class="s g" marker-end="url(#ahg)"/>
+      </g>
+      <text x="20" y="54" class="h">events</text>
+      <text x="20" y="114" class="h b">throttle</text>
+      <text x="20" y="174" class="h g">debounce</text>
+      <text x="680" y="40" class="sm">typing, scrolling, resizing</text>
+      <text x="680" y="100" class="sm">once per 100 ms, the last</text>
+      <text x="680" y="120" class="sm">one with the latest input</text>
+      <text x="680" y="160" class="sm">once, 100 ms after the</text>
+      <text x="680" y="180" class="sm">last event</text>
+      <text x="515" y="208" text-anchor="middle" class="sm">wait</text>
+    </svg>
+    <figcaption>Throttle limits the rate during the burst; debounce waits for the burst to end.</figcaption>
+  </figure>
+  <script type="text/x-code" data-cap="debounce, and throttle in two strengths">
+function debounce(fn, delay) {
+  let timer;
+  function debounced(...args) {
+    clearTimeout(timer);                              // every call restarts the wait
+    timer = setTimeout(() => fn.apply(this, args), delay);
+  }
+  debounced.cancel = () => clearTimeout(timer);
+  return debounced;
+}
+
+// throttle, simplest version: run at most once per `limit` ms, drop the rest
+function throttleSimple(fn, limit) {
+  let last = 0;
+  return function (...args) {
+    if (Date.now() - last >= limit) {
+      last = Date.now();
+      fn.apply(this, args);
+    }
+  };
+}
+
+// throttle with a trailing call, so the final input isn't lost (scroll end, last resize)
+function throttle(fn, limit) {
+  let last = 0, timer = null, lastArgs, lastThis;
+  return function (...args) {
+    lastArgs = args; lastThis = this;                 // always remember the latest call
+    const remaining = limit - (Date.now() - last);
+    if (remaining <= 0) {
+      clearTimeout(timer); timer = null;
+      last = Date.now();
+      fn.apply(lastThis, lastArgs);
+    } else if (!timer) {
+      timer = setTimeout(() => {
+        last = Date.now(); timer = null;
+        fn.apply(lastThis, lastArgs);
+      }, remaining);
+    }
+  };
+}
+  </script>
+  <div class="versus">
+    <div><h5>Use debounce for</h5><p>Search-as-you-type, autosave, validating a field, window resize when you only care about the final size.</p></div>
+    <div><h5 class="pk">Use throttle for</h5><p>Scroll position, infinite-scroll checks, drag and mousemove, rate-limiting a button. Things that need updates <i>during</i> the activity.</p></div>
+  </div>
+  <p>In React, create the debounced function once (<code>useMemo</code> or <code>useRef</code>) and cancel it in effect cleanup. A new debounce on every render means a new timer every render, so it never fires as intended.</p>
+
+  <h3><span class="star">★</span>get and set (lodash style)</h3>
+  <script type="text/x-code" data-cap="safe deep access with string paths">
+const toPath = (path) =>
+  Array.isArray(path) ? path : String(path).replace(/\[(\w+)\]/g, ".$1").split(".").filter(Boolean);
+
+function get(obj, path, defaultValue) {
+  let cur = obj;
+  for (const key of toPath(path)) {
+    if (cur == null) return defaultValue;            // stop safely on null/undefined
+    cur = cur[key];
+  }
+  return cur === undefined ? defaultValue : cur;
+}
+
+function set(obj, path, value) {
+  const keys = toPath(path);
+  let cur = obj;
+  keys.forEach((key, i) => {
+    if (key === "__proto__" || key === "constructor") throw new Error("Unsafe key");  // prototype pollution
+    if (i === keys.length - 1) { cur[key] = value; return; }
+    if (cur[key] == null || typeof cur[key] !== "object") {
+      cur[key] = /^\d+$/.test(keys[i + 1]) ? [] : {};   // next key numeric -> create an array
+    }
+    cur = cur[key];
+  });
+  return obj;
+}
+
+// get({ a: { b: [{ c: 5 }] } }, "a.b[0].c")   -> 5
+// get({ a: 1 }, "a.x.y", "none")               -> "none"
+// set({}, "a.b[0].c", 5)                       -> { a: { b: [ { c: 5 } ] } }
+  </script>
+  <p>The <code>__proto__</code> check is a nice link back to the security page: a naive <code>set</code> is exactly how prototype pollution happens. Optional chaining (<code>a?.b?.[0]?.c ?? "none"</code>) replaces <code>get</code> when the path is known at write time.</p>
+
+  <h3><span class="star">★</span>memoize</h3>
+  <script type="text/x-code" data-cap="cache results by arguments">
+function memoize(fn, resolver = (...args) => JSON.stringify(args)) {
+  const cache = new Map();
+  return function (...args) {
+    const key = resolver(...args);
+    if (cache.has(key)) return cache.get(key);   // has(), so cached undefined still counts
+    const result = fn.apply(this, args);
+    cache.set(key, result);
+    return result;
+  };
+}
+
+const slowSquare = (n) => { for (let i = 0; i < 1e8; i++); return n * n; };
+const fastSquare = memoize(slowSquare);
+fastSquare(9);   // slow
+fastSquare(9);   // instant, from cache
+  </script>
+  <div class="box green"><span class="lbl">follow-up questions</span>
+    <ul>
+      <li><b>Only for pure functions:</b> same input must always give the same output.</li>
+      <li><b>Key choice:</b> <code>JSON.stringify</code> fails on functions, cyclic objects and treats different objects with the same contents as equal. Accept a custom resolver, or use a <code>WeakMap</code> keyed by the object for single-object arguments.</li>
+      <li><b>Memory:</b> the cache grows forever. Mention an LRU limit or TTL.</li>
+      <li><b>Async functions:</b> cache the promise (so parallel calls share one request) and delete it on rejection so errors aren't cached.</li>
+    </ul></div>
+
+  <h3><span class="star">★</span>EventEmitter (pub/sub)</h3>
+  <script type="text/x-code" data-cap="on, off, once, emit">
+class EventEmitter {
+  #events = new Map();                 // event name -> array of listeners
+
+  on(event, listener) {
+    if (!this.#events.has(event)) this.#events.set(event, []);
+    this.#events.get(event).push(listener);
+    return () => this.off(event, listener);          // unsubscribe function
+  }
+
+  off(event, listener) {
+    const list = this.#events.get(event);
+    if (!list) return;
+    const i = list.findIndex((l) => l === listener || l.original === listener);
+    if (i !== -1) list.splice(i, 1);
+    if (list.length === 0) this.#events.delete(event);
+  }
+
+  once(event, listener) {
+    const wrapper = (...args) => { this.off(event, wrapper); listener(...args); };
+    wrapper.original = listener;                     // so off(event, listener) still works
+    return this.on(event, wrapper);
+  }
+
+  emit(event, ...args) {
+    const list = this.#events.get(event);
+    if (!list) return false;
+    [...list].forEach((l) => l(...args));            // copy: once() removes itself mid-loop
+    return true;
+  }
+}
+
+const bus = new EventEmitter();
+const stop = bus.on("login", (user) => console.log("hi", user));
+bus.once("login", () => console.log("first login only"));
+bus.emit("login", "Ana");   // hi Ana, first login only
+bus.emit("login", "Ben");   // hi Ben
+stop();
+  </script>
+  <p>Talking points: <code>on</code> returning an unsubscribe function (like React effect cleanup), copying the array before emitting so <code>once</code> removing itself doesn't skip the next listener, and storing <code>original</code> so <code>off</code> works for <code>once</code> listeners. Forgetting <code>off</code> is a classic memory leak.</p>
+
+  <h3><span class="star">★</span>groupBy</h3>
+  <script type="text/x-code" data-cap="group by a key name or a function">
+function groupBy(arr, keyOrFn) {
+  const getKey = typeof keyOrFn === "function" ? keyOrFn : (item) => item[keyOrFn];
+  return arr.reduce((groups, item, i) => {
+    const key = getKey(item, i);
+    (groups[key] ??= []).push(item);
+    return groups;
+  }, {});
+}
+
+groupBy([6.1, 4.2, 6.3], Math.floor);          // { 4: [4.2], 6: [6.1, 6.3] }
+groupBy(["one", "two", "three"], "length");     // { 3: ["one", "two"], 5: ["three"] }
+
+// built in since ES2024:
+Object.groupBy(users, (u) => u.role);           // null-prototype object
+Map.groupBy(users, (u) => u.team);              // Map, keys can be objects
+  </script>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="polyfills"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= THEORY ================= -->
+<section class="page" id="theory" data-n="💡" data-lab="Theory round" data-short="Frontend theory" data-title="Common frontend theory" data-hook="rendering, event loop, hydration, memory, Web Vitals">
+  <div class="ep">Theory round</div>
+  <h2>Common frontend theory</h2>
+  <div class="cloud"><b>How to answer theory questions:</b> one-line definition, then <i>why it matters</i>, then a real example from your work, then the trade-off. “Hydration attaches event handlers to server HTML. It matters because… I hit a mismatch when… the fix was…”</div>
+
+  <h3><span class="star">★</span>Browser rendering pipeline</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 240" role="img" aria-label="HTML becomes the DOM and CSS becomes the CSSOM. Together they form the render tree, then layout, paint and composite. Changing geometry reruns layout onward, changing colors reruns paint onward, transform and opacity only rerun composite.">
+      <g filter="url(#rough)">
+        <rect x="10" y="14" width="110" height="44" rx="10" class="s fw"/>
+        <rect x="10" y="104" width="110" height="44" rx="10" class="s fw"/>
+        <rect x="160" y="14" width="110" height="44" rx="10" class="s fb"/>
+        <rect x="160" y="104" width="110" height="44" rx="10" class="s fb"/>
+        <rect x="310" y="58" width="130" height="50" rx="12" class="s fy"/>
+        <rect x="470" y="58" width="110" height="50" rx="12" class="s p fp"/>
+        <rect x="610" y="58" width="110" height="50" rx="12" class="s b fb"/>
+        <rect x="750" y="58" width="122" height="50" rx="12" class="s g fg"/>
+        <path d="M120 36 L156 36" class="s" marker-end="url(#ah)"/>
+        <path d="M120 126 L156 126" class="s" marker-end="url(#ah)"/>
+        <path d="M270 36 Q 292 36 306 70" class="s" marker-end="url(#ah)"/>
+        <path d="M270 126 Q 292 126 306 98" class="s" marker-end="url(#ah)"/>
+        <path d="M440 83 L466 83" class="s" marker-end="url(#ah)"/>
+        <path d="M580 83 L606 83" class="s" marker-end="url(#ah)"/>
+        <path d="M720 83 L746 83" class="s" marker-end="url(#ah)"/>
+        <path d="M470 172 L870 172" class="s p"/>
+        <path d="M610 200 L870 200" class="s b"/>
+        <path d="M750 228 L870 228" class="s g"/>
+      </g>
+      <text x="65" y="42" text-anchor="middle" class="h">HTML</text>
+      <text x="65" y="132" text-anchor="middle" class="h">CSS</text>
+      <text x="215" y="42" text-anchor="middle" class="h">DOM</text>
+      <text x="215" y="132" text-anchor="middle" class="h">CSSOM</text>
+      <text x="375" y="88" text-anchor="middle" class="h">Render tree</text>
+      <text x="525" y="88" text-anchor="middle" class="h p">Layout</text>
+      <text x="665" y="88" text-anchor="middle" class="h b">Paint</text>
+      <text x="811" y="88" text-anchor="middle" class="h g">Composite</text>
+      <text x="375" y="130" text-anchor="middle" class="sm">visible nodes only</text>
+      <text x="525" y="130" text-anchor="middle" class="sm">size + position</text>
+      <text x="665" y="130" text-anchor="middle" class="sm">pixels per layer</text>
+      <text x="811" y="130" text-anchor="middle" class="sm">GPU joins layers</text>
+      <text x="10" y="177" class="p">width, top, font size, adding nodes: reflow</text>
+      <text x="10" y="205" class="b">color, background, box-shadow: repaint</text>
+      <text x="10" y="233" class="g">transform, opacity: composite only (cheapest)</text>
+    </svg>
+    <figcaption>Each change reruns the pipeline from the stage it affects onward. Animate <code>transform</code> and <code>opacity</code>, not <code>top</code> or <code>width</code>.</figcaption>
+  </figure>
+  <ul>
+    <li><b>CSS is render-blocking:</b> the browser won't paint until the CSSOM is ready, because painting unstyled content then restyling is worse.</li>
+    <li><b>Plain scripts are parser-blocking:</b> the HTML parser stops to download and run them, since a script might call <code>document.write</code> or read styles.</li>
+    <li><code>display: none</code> elements are in the DOM but not the render tree; <code>visibility: hidden</code> ones are in the render tree and take up space.</li>
+  </ul>
+  <div class="tbl"><table>
+    <tr><th>Script tag</th><th>Downloads</th><th>Runs</th><th>Order kept?</th></tr>
+    <tr><td><code>&lt;script&gt;</code></td><td>Blocks parsing</td><td>Immediately</td><td>Yes</td></tr>
+    <tr><td><code>async</code></td><td>In parallel</td><td>As soon as it arrives (pauses the parser then)</td><td>No</td></tr>
+    <tr><td><code>defer</code></td><td>In parallel</td><td>After parsing, before <code>DOMContentLoaded</code></td><td>Yes</td></tr>
+    <tr><td><code>type="module"</code></td><td>In parallel</td><td>Deferred by default</td><td>Yes</td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="layout thrashing: alternating reads and writes forces a layout every loop">
+// bad: write, then read offsetWidth, which forces a fresh layout each time
+items.forEach((el) => { el.style.width = box.offsetWidth + "px"; });
+
+// good: read once, then do all the writes
+const w = box.offsetWidth;
+items.forEach((el) => { el.style.width = w + "px"; });
+  </script>
+
+  <h3><span class="star">★</span>SSR vs CSR (and friends)</h3>
+  <div class="tbl"><table>
+    <tr><th>Strategy</th><th>HTML built</th><th>Strengths</th><th>Costs</th><th>Fits</th></tr>
+    <tr><td><b>CSR</b></td><td>In the browser, from an empty <code>&lt;div id="root"&gt;</code></td><td>Cheap hosting, app-like navigation</td><td>Blank page until JS loads, weaker SEO, slower LCP</td><td>Dashboards, apps behind login</td></tr>
+    <tr><td><b>SSR</b></td><td>On the server, per request</td><td>Fast first paint, SEO, fresh data</td><td>Server cost, TTFB, needs hydration</td><td>E-commerce, personalized pages</td></tr>
+    <tr><td><b>SSG</b></td><td>At build time</td><td>Fastest, served from a CDN</td><td>Stale until rebuilt</td><td>Blogs, docs, marketing</td></tr>
+    <tr><td><b>ISR</b></td><td>At build, regenerated in the background</td><td>Static speed with periodic freshness</td><td>Framework-specific, briefly stale</td><td>Large catalogs</td></tr>
+    <tr><td><b>Streaming SSR + RSC</b></td><td>On the server, sent in chunks</td><td>Shell paints early, less client JS</td><td>Framework complexity</td><td>Modern Next.js apps</td></tr>
+  </table></div>
+  <p>Trade-off sentence for interviews: SSR improves <i>time to see</i> content, but not necessarily <i>time to use</i> it, because the page isn't interactive until hydration finishes.</p>
+
+  <h3><span class="star">★</span>Hydration, and when it fails</h3>
+  <p><b>Hydration</b> is React taking server-rendered HTML and attaching to it: it renders the same tree in the browser, matches it to the existing DOM nodes instead of recreating them, and wires up event handlers. Done with <code>hydrateRoot</code>. React 18 added <b>selective hydration</b>: with <code>Suspense</code> boundaries, parts hydrate independently and the part the user clicks gets priority.</p>
+  <div class="grid2">
+    <div class="box pink"><span class="lbl">causes of mismatches</span><ul>
+      <li><code>Date.now()</code>, <code>new Date()</code>, <code>Math.random()</code> during render</li>
+      <li>Reading <code>window</code>, <code>localStorage</code>, screen size during render</li>
+      <li>Locale or timezone differences between server and browser</li>
+      <li>Invalid HTML nesting (<code>&lt;div&gt;</code> inside <code>&lt;p&gt;</code>), which the browser silently “fixes”</li>
+      <li>Browser extensions injecting markup</li>
+    </ul></div>
+    <div class="box green"><span class="lbl">fixes</span><ul>
+      <li>Render the client-only value in <code>useEffect</code> after mount (two-pass render)</li>
+      <li><code>useId</code> for IDs, not counters or random numbers</li>
+      <li>Load client-only components lazily (Next.js: <code>dynamic(..., { ssr: false })</code>)</li>
+      <li><code>suppressHydrationWarning</code> for one unavoidable text difference, like a timestamp</li>
+    </ul></div>
+  </div>
+  <p><b>Why it matters:</b> on a mismatch React throws away the server HTML for that part and re-renders it on the client, losing the SSR performance gain and possibly causing a visible flash.</p>
+
+  <h3><span class="star">★</span>The event loop</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 150" role="img" aria-label="Event loop: run one task, then drain all microtasks, then requestAnimationFrame callbacks, then style, layout and paint if needed, then repeat">
+      <g filter="url(#rough)">
+        <rect x="10" y="14" width="190" height="64" rx="12" class="s fb"/>
+        <rect x="230" y="14" width="200" height="64" rx="12" class="s p fp"/>
+        <rect x="460" y="14" width="180" height="64" rx="12" class="s fy"/>
+        <rect x="670" y="14" width="200" height="64" rx="12" class="s g fg"/>
+        <path d="M200 46 L226 46" class="s" marker-end="url(#ah)"/>
+        <path d="M430 46 L456 46" class="s" marker-end="url(#ah)"/>
+        <path d="M640 46 L666 46" class="s" marker-end="url(#ah)"/>
+        <path d="M770 78 L770 118 L105 118 L105 84" class="s dash" marker-end="url(#ah)"/>
+      </g>
+      <text x="105" y="42" text-anchor="middle" class="h">1 task</text>
+      <text x="105" y="64" text-anchor="middle" class="sm">script, setTimeout, click</text>
+      <text x="330" y="42" text-anchor="middle" class="h p">ALL microtasks</text>
+      <text x="330" y="64" text-anchor="middle" class="sm">promises, await</text>
+      <text x="550" y="42" text-anchor="middle" class="h">rAF callbacks</text>
+      <text x="550" y="64" text-anchor="middle" class="sm">before the next frame</text>
+      <text x="770" y="42" text-anchor="middle" class="h g">render</text>
+      <text x="770" y="64" text-anchor="middle" class="sm">style, layout, paint if due</text>
+      <text x="440" y="140" text-anchor="middle" class="sm">repeat: pick the next task</text>
+    </svg>
+    <figcaption>JavaScript is single-threaded. The event loop takes one task, empties the whole microtask queue, lets the browser render, and repeats.</figcaption>
+  </figure>
+  <p>Key consequences: a microtask that keeps scheduling microtasks starves rendering (the page freezes), while <code>setTimeout(fn, 0)</code> always waits for the current task and every pending microtask. Web APIs (timers, fetch, DOM events) run outside the JS thread and only queue the callback.</p>
+  <div class="puzzle"><div class="t">Output order?</div>
+    <script type="text/x-code" data-cap="">
+console.log("1");
+setTimeout(() => console.log("2"), 0);
+Promise.resolve().then(() => console.log("3"));
+queueMicrotask(() => console.log("4"));
+(async () => { console.log("5"); await null; console.log("6"); })();
+console.log("7");
+    </script>
+    <details><summary>Reveal</summary><div>
+      <p><b>1, 5, 7, 3, 4, 6, 2</b>. Synchronous code first: 1, then the async function runs synchronously up to its first <code>await</code> (5), then 7. Microtasks in the order they were queued: 3, 4, then the code after <code>await</code> (6). The timer is a new task, so 2 comes last.</p>
+    </div></details>
+  </div>
+
+  <h3><span class="star">★</span>Breaking up long tasks</h3>
+  <p>Any task over <b>50 ms</b> is a “long task”: clicks and keystrokes wait behind it, which hurts INP. Fixes, from simplest:</p>
+  <ul>
+    <li><b>Yield to the main thread</b> regularly so input and rendering can run in between (below).</li>
+    <li><b>Web Workers</b> for pure computation (parsing, image processing, search indexes). No DOM access; talk via <code>postMessage</code>.</li>
+    <li><b>React:</b> <code>useTransition</code> / <code>useDeferredValue</code> so heavy re-renders become interruptible; list virtualization so you render 20 rows, not 10,000.</li>
+    <li><code>requestIdleCallback</code> for non-urgent work like analytics.</li>
+  </ul>
+  <script type="text/x-code" data-cap="process a big array without freezing the page">
+const yieldToMain = () =>
+  globalThis.scheduler?.yield
+    ? scheduler.yield()                          // newer API, resumes with priority
+    : new Promise((resolve) => setTimeout(resolve, 0));
+
+async function processAll(items) {
+  let deadline = performance.now() + 50;
+  for (const item of items) {
+    process(item);
+    if (performance.now() > deadline) {          // used our 50 ms budget
+      await yieldToMain();                       // let clicks and paints happen
+      deadline = performance.now() + 50;
+    }
+  }
+}
+  </script>
+
+  <h3><span class="star">★</span>Event delegation</h3>
+  <p>Events go through three phases: <b>capture</b> (window down to the target), <b>target</b>, then <b>bubble</b> (back up). Delegation uses bubbling: put <i>one</i> listener on a parent instead of one per child. Fewer listeners, less memory, and it works for children added later.</p>
+  <script type="text/x-code" data-cap="one listener for the whole list">
+document.querySelector("#todo-list").addEventListener("click", (e) => {
+  const btn = e.target.closest("button[data-action]");   // the click may land on an icon inside
+  if (!btn) return;
+  const id = btn.closest("li").dataset.id;
+  if (btn.dataset.action === "delete") removeTodo(id);
+  if (btn.dataset.action === "toggle") toggleTodo(id);
+});
+  </script>
+  <ul>
+    <li><code>e.target</code> is what was actually clicked; <code>e.currentTarget</code> is the element the listener is on.</li>
+    <li><code>stopPropagation()</code> stops bubbling; <code>preventDefault()</code> stops the browser's default action (link navigation, form submit). They're independent.</li>
+    <li><code>focus</code>/<code>blur</code> and <code>mouseenter</code>/<code>mouseleave</code> don't bubble; use <code>focusin</code>/<code>focusout</code> and <code>mouseover</code>/<code>mouseout</code> for delegation.</li>
+    <li>React itself delegates: since React 17 it attaches one listener per event type to the root container.</li>
+  </ul>
+
+  <h3><span class="star">★</span>Garbage collection, memory leaks, WeakMap</h3>
+  <p>JavaScript uses <b>mark-and-sweep</b>: starting from roots (globals, the current call stack), mark everything reachable; whatever isn't marked is freed. Cycles are fine as long as nothing reachable points into them. V8 is <b>generational</b>: most objects die young, so new objects are collected often and cheaply, survivors move to an old space collected less often.</p>
+  <p>A <b>memory leak</b> in JS is memory that's still reachable but no longer needed.</p>
+  <div class="grid2">
+    <div class="box pink"><span class="lbl">usual suspects</span><ul>
+      <li><code>setInterval</code> and listeners never cleared</li>
+      <li>Subscriptions (sockets, stores, emitters) without unsubscribe</li>
+      <li><b>Detached DOM nodes</b> removed from the page but still referenced in a JS variable</li>
+      <li>Closures holding large objects longer than needed</li>
+      <li>Caches and arrays that only grow</li>
+      <li>Accidental globals (assigning to an undeclared variable)</li>
+      <li>React: effects without cleanup, setState on unmounted components after slow fetches</li>
+    </ul></div>
+    <div class="box green"><span class="lbl">how to find them</span><ol>
+      <li>DevTools Memory tab: take a heap snapshot, do the action several times, take another, compare.</li>
+      <li>Filter the snapshot by “Detached” to find removed DOM nodes still held in memory.</li>
+      <li>Performance monitor: JS heap size and DOM node count should come back down, not climb steadily.</li>
+      <li>Read the retainers path to see which reference keeps the object alive.</li>
+    </ol></div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th></th><th>Map</th><th>WeakMap</th></tr>
+    <tr><td>Keys</td><td>Anything</td><td>Objects only (and non-registered symbols)</td></tr>
+    <tr><td>Holds keys</td><td>Strongly: keeps them alive</td><td>Weakly: if nothing else references the key, the entry disappears</td></tr>
+    <tr><td>Iterable, <code>size</code></td><td>Yes</td><td>No (contents depend on when GC runs)</td></tr>
+    <tr><td>Use for</td><td>General key-value data</td><td>Extra data attached to objects you don't own: metadata per DOM node, per-object caches, private data</td></tr>
+  </table></div>
+  <script type="text/x-code" data-cap="WeakMap cache: entries vanish with their objects">
+const sizeCache = new WeakMap();
+function measure(el) {
+  if (!sizeCache.has(el)) sizeCache.set(el, el.getBoundingClientRect());
+  return sizeCache.get(el);
+}
+// when el is removed and dropped, its cache entry can be collected too. A Map would leak it.
+  </script>
+  <p>Related: <code>WeakSet</code> (mark objects as seen), <code>WeakRef</code> and <code>FinalizationRegistry</code> (rarely needed, behavior depends on GC timing).</p>
+
+  <h3><span class="star">★</span>Core Web Vitals</h3>
+  <div class="tbl"><table>
+    <tr><th>Metric</th><th>Measures</th><th>Good</th><th>Poor</th><th>Main fixes</th></tr>
+    <tr><td><b>LCP</b> Largest Contentful Paint</td><td>When the main content (hero image, headline) appears</td><td>≤ 2.5 s</td><td>&gt; 4 s</td><td>Faster server/CDN, preload the hero image, avoid render-blocking resources, SSR</td></tr>
+    <tr><td><b>INP</b> Interaction to Next Paint</td><td>Delay from a click/tap/key to the next frame, across the whole visit</td><td>≤ 200 ms</td><td>&gt; 500 ms</td><td>Break long tasks, less JS, cheaper re-renders, debounce</td></tr>
+    <tr><td><b>CLS</b> Cumulative Layout Shift</td><td>How much visible content jumps around</td><td>≤ 0.1</td><td>&gt; 0.25</td><td>Width/height or <code>aspect-ratio</code> on media, reserve space for ads and banners, <code>font-display</code></td></tr>
+  </table></div>
+  <p>Judged at the 75th percentile of real visits. <b>Lab</b> tools (Lighthouse) can't measure INP without real users, so they show Total Blocking Time as a proxy; <b>field</b> data comes from real users (CrUX, the <code>web-vitals</code> library). Supporting metrics: TTFB and FCP. INP replaced FID in March 2024.</p>
+
+  <h3><span class="star">★</span>Babel and tree shaking</h3>
+  <p><b>Babel</b> works in three steps: <b>parse</b> code into an AST, <b>transform</b> the AST with plugins (presets are bundles of plugins: <code>preset-env</code>, <code>preset-react</code>, <code>preset-typescript</code>), and <b>generate</b> code plus source maps. <code>preset-env</code> reads browserslist to decide what to transpile; with core-js and <code>useBuiltIns: "usage"</code> it adds only the polyfills your code uses. SWC and esbuild do the same job much faster and are now common defaults.</p>
+  <p><b>Tree shaking</b> drops unused exports. It needs ES modules (static <code>import</code>/<code>export</code>), works best with <code>"sideEffects": false</code> in package.json (so the bundler can drop whole unused files), and the minifier removes the dead code at the end. Things that defeat it: CommonJS <code>require</code>, modules with side effects on import, and importing a whole library (<code>import _ from "lodash"</code> instead of <code>import debounce from "lodash/debounce"</code>).</p>
+
+  <h3><span class="star">★</span>Bundle optimization</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">ship less</span><ul>
+      <li>Route- and component-level code splitting with <code>lazy()</code> and dynamic <code>import()</code></li>
+      <li>Analyze first: source-map-explorer, webpack-bundle-analyzer, rollup-plugin-visualizer</li>
+      <li>Replace heavy dependencies (moment → date-fns or native <code>Intl</code>)</li>
+      <li>Target modern browsers so fewer polyfills and less transpiled code ship</li>
+    </ul></div>
+    <div class="box green"><span class="lbl">ship it faster</span><ul>
+      <li>Brotli/gzip compression, HTTP/2 or 3, a CDN</li>
+      <li>Content-hashed filenames + long <code>Cache-Control</code> so unchanged chunks stay cached</li>
+      <li>Split vendor code that changes rarely from app code that changes often</li>
+      <li><code>preload</code> what this page needs now, <code>prefetch</code> what the next page will need</li>
+      <li>Images: AVIF/WebP, <code>srcset</code>, <code>loading="lazy"</code> below the fold</li>
+    </ul></div>
+  </div>
+
+  <h3><span class="star">★</span>Browser compatibility</h3>
+  <ul>
+    <li><b>Decide targets</b> with browserslist (from analytics), check features on caniuse.com or MDN's Baseline status.</li>
+    <li><b>Syntax</b> is transpiled (Babel/SWC); <b>missing APIs</b> are polyfilled (core-js). Transpiling can't add <code>fetch</code>; polyfilling can't add <code>?.</code>.</li>
+    <li><b>Feature detection</b>, not browser sniffing: <code>if ("IntersectionObserver" in window)</code> in JS, <code>@supports (display: grid)</code> in CSS.</li>
+    <li><b>CSS</b>: Autoprefixer (PostCSS) adds vendor prefixes based on the same browserslist.</li>
+    <li><b>Progressive enhancement</b>: the basic experience works everywhere, extras turn on where supported.</li>
+    <li>Test on real devices or services like BrowserStack, especially Safari on iOS.</li>
+  </ul>
+
+  <h3><span class="star">★</span>React Fiber, deeper</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">what a fiber is</span><p>A JS object per component instance or element: its type, props, state, effects, and pointers to <code>child</code>, <code>sibling</code> and <code>return</code> (parent). That linked structure lets React walk the tree in a loop and <b>pause between units of work</b>, which a recursive call stack couldn't.</p></div>
+    <div class="box pink"><span class="lbl">double buffering</span><p>React keeps the <b>current</b> tree (on screen) and builds a <b>work-in-progress</b> tree. When the work-in-progress tree is complete, commit swaps them. An interrupted render just throws the unfinished tree away.</p></div>
+    <div class="box green"><span class="lbl">priorities (lanes)</span><p>Updates get a priority: typing and clicks are urgent, transitions and data loading aren't. React can pause a low-priority render to handle an urgent one, then resume or restart it. That's what powers <code>useTransition</code> and Suspense.</p></div>
+  </div>
+  <p>Render phase: interruptible, must be pure (it may run more than once). Commit phase: synchronous, applies DOM changes, then runs layout effects and schedules effects.</p>
+
+  <h3><span class="star">★</span>Context API</h3>
+  <script type="text/x-code" data-cap="context with a stable value">
+const ThemeContext = createContext("light");
+
+function App() {
+  const [theme, setTheme] = useState("light");
+  const value = useMemo(() => ({ theme, setTheme }), [theme]);  // same object unless theme changes
+  return (
+    <ThemeContext.Provider value={value}>
+      <Page />
+    </ThemeContext.Provider>
+  );
+}
+
+function ThemeToggle() {
+  const { theme, setTheme } = useContext(ThemeContext);   // nearest Provider above wins
+  return <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>{theme}</button>;
+}
+  </script>
+  <ul>
+    <li>Every consumer re-renders when the <code>value</code> changes by <code>Object.is</code>. Passing <code>{{ theme, setTheme }}</code> inline creates a new object every render, so <b>all</b> consumers re-render every time App does. Memoize it.</li>
+    <li>Split contexts by how often they change (theme vs current user vs cart), or put state and setters in separate contexts.</li>
+    <li>Context isn't a state manager; it's a way to pass a value down. For frequently changing shared state, a store with selectors (Redux, Zustand) avoids re-rendering everyone.</li>
+    <li>React 19: <code>&lt;ThemeContext value={...}&gt;</code> works as the provider directly, and <code>use(ThemeContext)</code> can be called conditionally.</li>
+  </ul>
+
+  <h3><span class="star">★</span>useEffect vs useLayoutEffect</h3>
+  <div class="tbl"><table>
+    <tr><th></th><th>useEffect</th><th>useLayoutEffect</th></tr>
+    <tr><td>Runs</td><td>After the browser paints (usually)</td><td>After DOM changes, <b>before</b> paint, synchronously</td></tr>
+    <tr><td>Blocks painting?</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Use for</td><td>Data fetching, subscriptions, logging, most side effects</td><td>Measuring the DOM and adjusting before the user sees it: tooltip position, scroll restore, avoiding a flicker</td></tr>
+    <tr><td>On the server</td><td>Doesn't run</td><td>Doesn't run either; can't measure anything there</td></tr>
+  </table></div>
+  <p>Default to <code>useEffect</code>; switch only when you see a flicker. Also exists: <code>useInsertionEffect</code>, which runs before layout effects and is meant for CSS-in-JS libraries injecting styles.</p>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="theory"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
+<!-- ================= HTML & CSS ================= -->
+<section class="page" id="htmlcss" data-n="🎨" data-lab="Brush-up" data-short="HTML &amp; CSS" data-title="HTML &amp; CSS brush-up" data-hook="semantics, a11y, box model, position, units, specificity">
+  <div class="ep">Quick brush-up</div>
+  <h2>HTML &amp; CSS brush-up</h2>
+  <div class="cloud"><b>The short version:</b> use the element that means what you mean (it gives you accessibility for free), know how a box's size is calculated, know what each <code>position</code> is positioned <i>relative to</i>, and know how the browser picks a winner when rules conflict.</div>
+
+  <h3><span class="star">★</span>Semantic HTML</h3>
+  <div class="versus">
+    <div><h5 class="pk">div soup</h5>
+      <script type="text/x-code" data-cap="">
+<div class="header">
+  <div class="nav">...</div>
+</div>
+<div class="content">
+  <div class="post">
+    <div class="title">Hello</div>
+  </div>
+</div>
+<div onclick="save()">Save</div>
+      </script></div>
+    <div><h5>semantic</h5>
+      <script type="text/x-code" data-cap="">
+<header>
+  <nav aria-label="Main">...</nav>
+</header>
+<main>
+  <article>
+    <h1>Hello</h1>
+  </article>
+</main>
+<button type="button" onclick="save()">Save</button>
+      </script></div>
+  </div>
+  <p><b>Why it matters:</b> screen readers announce landmarks and headings and let users jump between them; search engines understand the structure; and native elements come with behavior built in. A <code>&lt;button&gt;</code> is focusable, works with Enter and Space and is announced as a button. A clickable <code>&lt;div&gt;</code> does none of that.</p>
+  <div class="tbl"><table>
+    <tr><th>Element</th><th>Meaning</th></tr>
+    <tr><td><code>header</code> / <code>footer</code></td><td>Intro or closing content for the page or a section</td></tr>
+    <tr><td><code>nav</code></td><td>A major block of navigation links</td></tr>
+    <tr><td><code>main</code></td><td>The page's primary content; one visible per page</td></tr>
+    <tr><td><code>article</code></td><td>Self-contained, could stand alone (post, product card, comment)</td></tr>
+    <tr><td><code>section</code></td><td>A thematic group, normally with its own heading</td></tr>
+    <tr><td><code>aside</code></td><td>Related but secondary (sidebar, callout)</td></tr>
+    <tr><td><code>figure</code> + <code>figcaption</code>, <code>time</code>, <code>address</code></td><td>Captioned media, machine-readable dates, contact info</td></tr>
+    <tr><td><code>button</code> vs <code>a</code></td><td>Button does an action; link goes somewhere (has an <code>href</code>)</td></tr>
+  </table></div>
+  <p>Headings form an outline: one <code>h1</code>, then don't skip levels for styling (no <code>h2</code> → <code>h4</code>). Use real lists, <code>&lt;table&gt;</code> for tabular data, and <code>&lt;label for&gt;</code> for every input.</p>
+
+  <h3><span class="star">★</span>Accessibility (a11y)</h3>
+  <div class="grid2">
+    <div class="box"><span class="lbl">the essentials</span><ul>
+      <li>Semantic HTML first; it solves most problems</li>
+      <li>Every input has a visible <code>&lt;label&gt;</code></li>
+      <li><code>alt</code> text on meaningful images; <code>alt=""</code> on decorative ones</li>
+      <li>Everything works with the keyboard alone: Tab, Shift+Tab, Enter, Space, Esc, arrows</li>
+      <li>A visible focus style; never <code>outline: none</code> without a replacement</li>
+      <li>Text contrast at least 4.5:1 (3:1 for large text)</li>
+      <li>Don't rely on color alone (error = red text <i>and</i> an icon or message)</li>
+      <li>Respect <code>prefers-reduced-motion</code></li>
+    </ul></div>
+    <div class="box pink"><span class="lbl">ARIA, used carefully</span><ul>
+      <li><b>First rule of ARIA:</b> don't use it if a native element does the job</li>
+      <li><code>aria-label</code> / <code>aria-labelledby</code>: name for icon-only buttons</li>
+      <li><code>aria-describedby</code>: link an input to its error or hint text</li>
+      <li><code>aria-expanded</code>, <code>aria-controls</code>: accordions, menus</li>
+      <li><code>aria-live="polite"</code>: announce toasts and search result counts</li>
+      <li><code>aria-hidden="true"</code>: hide decorative icons from screen readers</li>
+    </ul></div>
+  </div>
+  <ul>
+    <li><b>tabindex:</b> <code>0</code> adds an element to the tab order, <code>-1</code> makes it focusable only by script (for moving focus to a modal or heading). Never use positive values; they break the natural order.</li>
+    <li><b>Modals:</b> move focus inside on open, trap Tab within it, close on Esc, return focus to the trigger on close. The native <code>&lt;dialog&gt;</code> with <code>showModal()</code> handles much of this.</li>
+    <li><b>Testing:</b> axe DevTools or Lighthouse for automated checks (they catch roughly a third of issues), then a keyboard-only pass and a screen reader (VoiceOver on Mac, NVDA on Windows).</li>
+  </ul>
+
+  <h3><span class="star">★</span>Box model, content-box vs border-box</h3>
+  <figure class="fig">
+    <svg class="d" viewBox="0 0 880 250" role="img" aria-label="Box model: content in the middle, surrounded by padding, then border, then margin">
+      <g filter="url(#rough)">
+        <rect x="20" y="10" width="500" height="230" rx="6" class="s o dash"/>
+        <rect x="60" y="44" width="420" height="162" rx="4" class="s p fp" style="stroke-width:5"/>
+        <rect x="90" y="72" width="360" height="106" rx="4" class="s g fg"/>
+        <rect x="150" y="102" width="240" height="46" rx="4" class="s b fb"/>
+      </g>
+      <text x="32" y="32" class="o">margin (transparent, outside)</text>
+      <text x="72" y="64" class="p">border</text>
+      <text x="100" y="94" class="g">padding (shows background)</text>
+      <text x="270" y="131" text-anchor="middle" class="h b">content</text>
+      <text x="560" y="70" class="h">content-box (default)</text>
+      <text x="560" y="94" class="sm">width = content only</text>
+      <text x="560" y="114" class="sm">200 + 2×20 padding + 2×5 border = 250px</text>
+      <text x="560" y="160" class="h g">border-box</text>
+      <text x="560" y="184" class="sm">width = content + padding + border</text>
+      <text x="560" y="204" class="sm">stays 200px; content shrinks to 150px</text>
+    </svg>
+    <figcaption>Example: <code>width: 200px; padding: 20px; border: 5px solid</code>. Margin is never part of the width.</figcaption>
+  </figure>
+  <script type="text/x-code" data-cap="the reset almost every project uses">
+*, *::before, *::after { box-sizing: border-box; }
+  </script>
+  <p><b>Margin collapse:</b> vertical margins between block siblings (and between a parent and its first or last child, when nothing separates them) merge into the larger one: <code>20px</code> + <code>30px</code> gives 30px, not 50px. It doesn't happen in flex or grid containers, or with horizontal margins.</p>
+
+  <h3><span class="star">★</span>CSS position</h3>
+  <div class="tbl"><table>
+    <tr><th>Value</th><th>In normal flow?</th><th>Offsets (<code>top</code>, <code>left</code>…) are relative to</th><th>Remember</th></tr>
+    <tr><td><code>static</code></td><td>Yes</td><td>Ignored</td><td>The default</td></tr>
+    <tr><td><code>relative</code></td><td>Yes, original space kept</td><td>Its own normal position</td><td>Often used just to anchor absolute children</td></tr>
+    <tr><td><code>absolute</code></td><td>No</td><td>Nearest ancestor with a non-static position, else the initial containing block</td><td>Tooltips, badges, overlays</td></tr>
+    <tr><td><code>fixed</code></td><td>No</td><td>The viewport</td><td>Breaks if an ancestor has <code>transform</code>, <code>filter</code> or <code>perspective</code>: that ancestor becomes the reference</td></tr>
+    <tr><td><code>sticky</code></td><td>Yes</td><td>Acts relative until it hits the threshold (<code>top: 0</code>) inside its scroll container, then sticks</td><td>Fails with no threshold, or when an ancestor's <code>overflow</code> creates a different scroll container</td></tr>
+  </table></div>
+  <p><code>z-index</code> only compares elements within the same <b>stacking context</b>. New contexts are created by positioned elements with a z-index, <code>opacity</code> below 1, <code>transform</code>, <code>filter</code>, and more. That's why <code>z-index: 9999</code> sometimes “doesn't work”: its parent's context is underneath.</p>
+
+  <h3><span class="star">★</span>CSS units</h3>
+  <div class="tbl"><table>
+    <tr><th>Unit</th><th>Relative to</th><th>Good for</th></tr>
+    <tr><td><code>px</code></td><td>Fixed (a CSS pixel)</td><td>Borders, shadows, small details</td></tr>
+    <tr><td><code>em</code></td><td>For <code>font-size</code>: the parent's font size. For other properties: the element's own font size</td><td>Padding that scales with a component's text. Compounds when nested</td></tr>
+    <tr><td><code>rem</code></td><td>The root (<code>html</code>) font size</td><td>Font sizes and spacing; respects the user's browser font setting</td></tr>
+    <tr><td><code>%</code></td><td>Usually the parent. Padding and margin percentages use the parent's <b>width</b>, even top and bottom</td><td>Fluid widths</td></tr>
+    <tr><td><code>vw</code> / <code>vh</code></td><td>1% of the viewport width / height</td><td>Full-screen sections</td></tr>
+    <tr><td><code>dvh</code> / <code>svh</code> / <code>lvh</code></td><td>Dynamic / smallest / largest viewport height</td><td>Mobile, where <code>100vh</code> hides behind the browser toolbar</td></tr>
+    <tr><td><code>ch</code></td><td>Width of the “0” character</td><td>Readable line length: <code>max-width: 65ch</code></td></tr>
+    <tr><td><code>fr</code></td><td>A share of free space in a grid</td><td><code>grid-template-columns: 1fr 2fr</code></td></tr>
+  </table></div>
+  <p><code>clamp(min, preferred, max)</code> gives fluid sizes with limits: <code>font-size: clamp(1rem, 2.5vw, 2rem)</code>. Interview answer for px vs rem: rem text scales when a user raises their default font size; px text doesn't, which is an accessibility problem.</p>
+
+  <h3><span class="star">★</span>Cascade, specificity, inheritance</h3>
+  <p>When several rules set the same property on an element, the <b>cascade</b> picks the winner by checking these in order and stopping at the first difference:</p>
+  <ol>
+    <li><b>Origin and importance:</b> browser defaults &lt; your styles; <code>!important</code> flips the order so important declarations win.</li>
+    <li><b>Cascade layers</b> (<code>@layer</code>): later layers beat earlier ones; styles not in any layer beat all layers.</li>
+    <li><b>Specificity</b> of the selector.</li>
+    <li><b>Order of appearance:</b> the later rule wins.</li>
+  </ol>
+  <div class="tbl"><table>
+    <tr><th>Selector</th><th>Specificity (IDs, classes, elements)</th></tr>
+    <tr><td><code>p</code></td><td>0, 0, 1</td></tr>
+    <tr><td><code>.card p</code></td><td>0, 1, 1</td></tr>
+    <tr><td><code>ul li::before</code></td><td>0, 0, 3 (pseudo-elements count as elements)</td></tr>
+    <tr><td><code>#nav .link:hover</code></td><td>1, 2, 0 (pseudo-classes and attributes count as classes)</td></tr>
+    <tr><td><code>:where(#nav) p</code></td><td>0, 0, 1 (<code>:where()</code> always adds zero)</td></tr>
+    <tr><td><code>:is(#nav, .menu) p</code></td><td>1, 0, 1 (<code>:is()</code> and <code>:not()</code> take their most specific argument)</td></tr>
+    <tr><td><code>style="..."</code></td><td>Beats any selector; only <code>!important</code> beats it</td></tr>
+  </table></div>
+  <p>Compare left to right like version numbers: one ID beats any number of classes. <code>*</code> and combinators (<code>&gt;</code>, <code>+</code>, <code>~</code>) add nothing.</p>
+  <div class="versus">
+    <div><h5>Inherited by default</h5><p>Mostly text-related: <code>color</code>, <code>font-*</code>, <code>line-height</code>, <code>text-align</code>, <code>visibility</code>, <code>cursor</code>, <code>list-style</code>.</p></div>
+    <div><h5 class="pk">Not inherited</h5><p>Mostly box-related: <code>margin</code>, <code>padding</code>, <code>border</code>, <code>background</code>, <code>width</code>, <code>height</code>, <code>display</code>, <code>position</code>.</p></div>
+  </div>
+  <p>Control it with <code>inherit</code> (take the parent's value), <code>initial</code> (the CSS spec default), <code>unset</code> (inherit if the property normally inherits, else initial) and <code>revert</code> (back to the browser's default style). An inherited value always loses to any rule that targets the element directly, however weak its selector.</p>
+
+  <h3><span class="star">★</span>Interview cards</h3>
+  <div class="qa-wrap" data-qa="htmlcss"></div>
+  <div class="pfoot" data-foot></div>
+</section>
+
 <!-- ================= DRILL ================= -->
 <section class="page" id="drill" data-n="⚡" data-short="Rapid-fire drill" data-title="Rapid-fire drill" data-hook="every card, shuffled">
   <div class="ep">Rapid-fire</div>
@@ -1599,9 +2779,102 @@ sde2: [
  ["How do you find a performance problem in React?", "React DevTools Profiler (which components rendered, why, how long), Chrome Performance panel, Lighthouse/Web Vitals (LCP, INP, CLS), bundle analyzer. Then fix the measured hot spot."],
  ["How would you design an autocomplete?", "Controlled input → debounced query → fetch with AbortController (or a query cache) → keyboard navigation with <code>aria-activedescendant</code> → loading/empty/error states → highlight matches → cache recent results."],
  ["What are portals used for?", "Rendering into a different DOM node (modals, toasts, tooltips) to escape overflow/z-index stacking. Events still bubble through the React tree, not the DOM tree."]
+],
+security: [
+ ["What does HTTPS protect, and what doesn't it?", "It encrypts data in transit, prevents tampering, and proves the server owns the domain. It doesn't stop XSS, CSRF, bad auth, or a malicious server. It secures the pipe, not the app."],
+ ["What is HSTS and why does the preload list exist?", "<code>Strict-Transport-Security</code> makes the browser use HTTPS only for that domain, blocking downgrade attacks. The header is learned on the first visit, which is still exposed; the preload list ships the rule inside browsers."],
+ ["What counts as the same origin?", "Same protocol, host and port. <code>http</code> vs <code>https</code>, a subdomain, or a different port each make it cross-origin. The path doesn't matter."],
+ ["When does the browser send a CORS preflight?", "For non-simple requests: methods other than GET/HEAD/POST, custom headers like <code>Authorization</code>, or a <code>Content-Type</code> such as <code>application/json</code>. It sends <code>OPTIONS</code> first and proceeds only if the server's headers allow it."],
+ ["Can you use Access-Control-Allow-Origin: * with cookies?", "No. With credentials the server must echo the exact origin and send <code>Access-Control-Allow-Credentials: true</code> (plus <code>Vary: Origin</code> for caches)."],
+ ["Does CORS protect my server?", "No. It's browser-enforced and protects users. Non-browser clients ignore it, and simple requests still reach the server even if the response is blocked, so it isn't CSRF protection."],
+ ["Explain the three types of XSS.", "Stored: payload saved on the server and shown to everyone. Reflected: payload in the URL, echoed back by the server. DOM-based: client JS writes untrusted data (hash, query, postMessage) into a sink like <code>innerHTML</code>."],
+ ["How does React prevent XSS, and where can it still happen?", "JSX escapes values in <code>{}</code>. Holes: <code>dangerouslySetInnerHTML</code> without sanitizing, <code>javascript:</code> URLs in <code>href</code>, direct DOM access via refs/innerHTML/eval, and unescaped SSR state in script tags."],
+ ["What is CSP and how does a nonce work?", "A header that allowlists where resources may load from and blocks inline scripts. With a nonce, the server sends a random value per response in the header and on its own script tags; injected scripts don't have it, so they don't run."],
+ ["Validation vs sanitization vs encoding?", "Validation rejects bad input. Sanitization removes dangerous parts. Encoding makes data safe for the specific output context (HTML, attribute, URL, JS). Client-side validation is UX only; the server validates again."],
+ ["Authentication vs authorization? 401 vs 403?", "Authentication is who you are; authorization is what you may do. 401 means not authenticated (log in); 403 means authenticated but not allowed."],
+ ["Where should a SPA store its auth token?", "Avoid localStorage: any XSS can read it. Common answer: short-lived access token in memory, refresh token in an <code>HttpOnly; Secure; SameSite</code> cookie, refreshed on 401. Mention that HttpOnly stops theft, not misuse during an XSS."],
+ ["Is a JWT encrypted?", "Usually not. It's base64url-encoded and signed: anyone can read the payload, but can't change it without breaking the signature. Never put secrets in it; keep it short-lived because it's hard to revoke."],
+ ["Explain HttpOnly, Secure and SameSite.", "HttpOnly: hidden from JS. Secure: HTTPS only. SameSite: Strict never sends on cross-site requests, Lax only on top-level GET navigations (Chrome's default), None sends everywhere and needs Secure."],
+ ["What is CSRF and how do you prevent it?", "A malicious site makes the user's browser send a request to your site, and cookies are attached automatically. Prevent with SameSite cookies, CSRF tokens, Origin/Referer checks, and never changing state on GET."],
+ ["XSS vs CSRF?", "XSS runs attacker code on your origin and can read anything. CSRF only triggers requests from another site and can't read responses. XSS defeats CSRF tokens, because the script can read the token."],
+ ["What is clickjacking and how do you stop it?", "Your page is loaded in an invisible iframe and the user is tricked into clicking it. Stop it with CSP <code>frame-ancestors 'none'</code>/<code>'self'</code>, or <code>X-Frame-Options: DENY</code> for older browsers."],
+ ["How do you use postMessage safely?", "On receive, check <code>event.origin</code> against an exact allowlist and validate the data shape. On send, pass the exact target origin, never <code>\"*\"</code>."],
+ ["What is the iframe sandbox attribute?", "It strips an embedded frame's powers (scripts, forms, popups, same-origin access); you add back only what's needed. Don't combine <code>allow-scripts</code> with <code>allow-same-origin</code> for same-origin content, or it can remove the sandbox."],
+ ["What is SRI?", "Subresource Integrity: an <code>integrity</code> hash on a CDN script/style. If the file changes, the browser refuses it. Needs a pinned version and <code>crossorigin=\"anonymous\"</code>."],
+ ["What is SSRF?", "Server-Side Request Forgery: the server fetches a user-supplied URL, so attackers reach internal services or cloud metadata. Fix with host allowlists, blocking private IPs after DNS resolution, and limiting redirects."],
+ ["What is SSJI?", "Server-Side JavaScript Injection: user input executed as code in Node via <code>eval</code>, <code>new Function</code>, string <code>setTimeout</code>, or Mongo <code>$where</code>. It can mean full server takeover. Never execute input."],
+ ["Are frontend environment variables secret?", "No. <code>VITE_</code>/<code>NEXT_PUBLIC_</code>/<code>REACT_APP_</code> values are compiled into the bundle and visible to anyone. Keep secrets on a backend that proxies the call."],
+ ["What is prototype pollution?", "Merging user-controlled objects with keys like <code>__proto__</code> modifies <code>Object.prototype</code>, so every object gains attacker properties. Block those keys, use <code>Object.create(null)</code> or <code>Map</code>, keep libraries updated."],
+ ["What is an open redirect?", "A parameter like <code>?next=</code> that redirects anywhere, used to make phishing links look like your domain. Allow only relative paths or an allowlist of hosts."]
+],
+polyfills: [
+ ["What are the three states of a promise, and can it change state twice?", "Pending, fulfilled, rejected. Once fulfilled or rejected it's settled and never changes; later calls to resolve or reject are ignored."],
+ ["Why does then() return a new promise?", "That's what makes chaining work. The new promise resolves with whatever the callback returns, adopts it if it's a promise, and rejects if the callback throws."],
+ ["Why are then callbacks run with queueMicrotask?", "The spec requires them to always be asynchronous, even if the promise is already settled, so code behaves the same either way. Microtasks run right after the current task, before timers."],
+ ["Promise.all vs allSettled vs race vs any?", "all: every one fulfils, or the first rejection. allSettled: waits for all, never rejects. race: first to settle either way. any: first to fulfil, AggregateError if all reject."],
+ ["What does Promise.all return for an empty array? And Promise.race?", "all fulfils immediately with <code>[]</code>. race stays pending forever, because nothing ever settles."],
+ ["How do you keep results in order in Promise.all?", "Write <code>results[i] = value</code> using the input index, and count completions with a separate <code>remaining</code> counter rather than checking <code>results.length</code>."],
+ ["Why can't you write a prototype polyfill with an arrow function?", "Arrow functions don't have their own <code>this</code>; it comes from where they're defined. A method on <code>Array.prototype</code> needs <code>this</code> to be the array it's called on."],
+ ["How does reduce behave without an initial value?", "The first element becomes the accumulator and iteration starts at index 1. On an empty array it throws a TypeError."],
+ ["call vs apply vs bind?", "call and apply invoke immediately with a chosen <code>this</code>; call takes arguments individually, apply as an array. bind returns a new function with <code>this</code> (and optional leading arguments) fixed."],
+ ["How does a call polyfill set this?", "It temporarily attaches the function to the context object under a unique Symbol key and calls it as a method (<code>ctx[key](...args)</code>), so <code>this</code> is ctx. Then it deletes the key."],
+ ["What happens when you call a bound function with new?", "The bound <code>this</code> is ignored and a new instance is created; preset arguments still apply. A polyfill handles this with <code>new.target</code>."],
+ ["Debounce vs throttle?", "Debounce waits until calls stop for N ms, then runs once (search input). Throttle runs at most once every N ms during continuous calls (scroll). Throttle with a trailing call doesn't lose the final event."],
+ ["How do you use debounce correctly in React?", "Create it once with <code>useMemo</code> or <code>useRef</code>, not inline on each render, and cancel it in the effect cleanup on unmount."],
+ ["What are the limits of a memoize that uses JSON.stringify?", "Fails on functions, cyclic objects, and object identity. The cache grows forever. Async results should cache the promise and evict it on rejection."],
+ ["Why copy the listeners array before emitting in an EventEmitter?", "A <code>once</code> listener removes itself during the loop, which shifts the array and would skip the next listener."],
+ ["How would you implement get(obj, 'a.b[0].c')?", "Convert brackets to dots, split into keys, walk the object, and return the default as soon as a step is null or undefined, or if the final value is undefined."],
+ ["Is there a built-in groupBy?", "Yes, since ES2024: <code>Object.groupBy(items, fn)</code> returns a null-prototype object, and <code>Map.groupBy</code> returns a Map (so keys can be objects)."]
+],
+theory: [
+ ["Walk me through what happens from HTML to pixels.", "HTML is parsed into the DOM and CSS into the CSSOM. They combine into the render tree (visible nodes only), then layout computes geometry, paint fills pixels into layers, and composite joins the layers on the GPU."],
+ ["Reflow vs repaint vs composite?", "Reflow (layout) recalculates sizes and positions and is the most expensive. Repaint redraws pixels without geometry changes. Changes to transform and opacity can skip both and only composite."],
+ ["What is layout thrashing?", "Interleaving DOM writes with reads like <code>offsetWidth</code>, which forces the browser to recalculate layout synchronously each time. Batch reads first, then writes."],
+ ["async vs defer?", "Both download in parallel. async runs as soon as it's downloaded, in any order. defer runs in order after the HTML is parsed, before DOMContentLoaded."],
+ ["SSR vs CSR?", "CSR builds HTML in the browser: cheap and app-like, but a blank page until JS loads and weaker SEO. SSR builds it on the server per request: faster first paint and SEO, but server cost and hydration."],
+ ["What is hydration?", "React rendering the same tree in the browser, attaching to the server-rendered DOM instead of recreating it, and adding event handlers. The page looks ready before hydration but isn't interactive until it finishes."],
+ ["What causes hydration mismatches and how do you fix them?", "Different output on server and client: dates, random values, window/localStorage reads, locale, invalid HTML nesting. Fix by rendering client-only values after mount in useEffect, useId for IDs, or client-only components."],
+ ["Explain the event loop.", "One thread. Run one task, then run every microtask in the queue (promises, await continuations), then the browser may render, then the next task. Timers and events only queue callbacks."],
+ ["Microtask vs macrotask examples?", "Microtasks: promise callbacks, code after <code>await</code>, <code>queueMicrotask</code>, MutationObserver. Tasks: script, setTimeout/setInterval, events, MessageChannel."],
+ ["What is a long task and how do you break it up?", "Any task over 50 ms; input waits behind it, hurting INP. Yield to the main thread periodically (<code>scheduler.yield</code> or <code>setTimeout</code>), move pure work to a Web Worker, use useTransition, virtualize lists."],
+ ["What is event delegation?", "One listener on a parent handles events for its children via bubbling, using <code>e.target.closest()</code>. Fewer listeners, and it works for children added later."],
+ ["target vs currentTarget?", "target is the element where the event started. currentTarget is the element whose listener is currently running."],
+ ["How does garbage collection work in JS?", "Mark-and-sweep: everything reachable from the roots (globals, stack) is kept, the rest is freed. Cycles are collected if unreachable. V8 collects young objects often and old ones less often."],
+ ["Common memory leaks in a SPA?", "Uncleared intervals and listeners, subscriptions without unsubscribe, detached DOM nodes held in variables, ever-growing caches, closures holding large data, effects without cleanup."],
+ ["How do you debug a memory leak?", "DevTools Memory tab: heap snapshot, repeat the action, snapshot again, compare. Filter for Detached nodes. Check the retainers to see what's holding the object."],
+ ["Map vs WeakMap?", "WeakMap keys must be objects and are held weakly, so entries disappear when the key is otherwise unreachable. Not iterable, no size. Good for per-object metadata and caches that shouldn't cause leaks."],
+ ["What are the Core Web Vitals?", "LCP (main content visible, good ≤ 2.5 s), INP (responsiveness, good ≤ 200 ms), CLS (layout stability, good ≤ 0.1), measured at the 75th percentile of real users."],
+ ["How do you improve CLS?", "Set width/height or aspect-ratio on images and video, reserve space for ads, banners and late content, avoid inserting content above existing content, and manage font swaps."],
+ ["What does Babel do?", "Parses code to an AST, transforms it with plugins and presets (preset-env uses browserslist), and generates older JS plus source maps. Polyfills for missing APIs come from core-js."],
+ ["What does tree shaking need to work?", "Static ES module imports and exports, side-effect-free modules (<code>\"sideEffects\": false</code>), and specific imports instead of whole libraries. CommonJS defeats it."],
+ ["How would you reduce bundle size?", "Analyze the bundle, code-split by route, lazy-load heavy components, replace heavy dependencies, target modern browsers, compress with Brotli, and use hashed filenames for long-term caching."],
+ ["Transpiling vs polyfilling vs feature detection?", "Transpiling rewrites new syntax. Polyfilling adds missing APIs. Feature detection checks support at runtime (<code>'x' in window</code>, <code>@supports</code>) so you can enhance progressively."],
+ ["What problem did React Fiber solve?", "The old reconciler recursed through the tree and couldn't stop. Fiber turns each node into a unit of work in a linked list, so rendering can pause, prioritize urgent updates and resume."],
+ ["Why can a Context provider re-render every consumer unnecessarily?", "If its value is an inline object, it's new on every render, so <code>Object.is</code> fails and every consumer re-renders. Memoize the value or split contexts."],
+ ["When would you use useLayoutEffect?", "When you must measure or change the DOM before the browser paints to avoid a visible flicker, like positioning a tooltip. It blocks paint, so it's not the default."]
+],
+htmlcss: [
+ ["Why does semantic HTML matter?", "Screen readers use landmarks and headings to navigate, search engines understand the structure, and native elements bring keyboard support and roles for free."],
+ ["section vs article vs div?", "article: self-contained content that could stand alone. section: a themed group with a heading. div: no meaning, purely for styling or layout."],
+ ["Why is a clickable div bad?", "It isn't focusable, doesn't respond to Enter or Space, and isn't announced as a button. Use <code>&lt;button&gt;</code>, or you'd need role, tabindex and key handlers to recreate it."],
+ ["What's the first rule of ARIA?", "Don't use ARIA if a native HTML element gives you the semantics and behavior. ARIA only changes what's announced, not how anything behaves."],
+ ["tabindex 0 vs -1 vs positive?", "0 puts the element in the natural tab order. -1 makes it focusable only via script. Positive values force a custom order and should be avoided."],
+ ["What makes a modal accessible?", "Focus moves into it on open, Tab is trapped inside, Esc closes it, focus returns to the trigger, and it has a label. Native <code>&lt;dialog&gt;</code> with <code>showModal()</code> helps."],
+ ["Explain the box model.", "Content, then padding, then border, then margin. Background shows under padding and border; margin is transparent space outside."],
+ ["content-box vs border-box?", "content-box (default): width covers content only, so padding and border are added on top. border-box: width includes padding and border, which makes layouts predictable."],
+ ["What is margin collapse?", "Adjacent vertical margins of block elements merge into the larger one instead of adding up. It doesn't happen in flex or grid layouts or horizontally."],
+ ["relative vs absolute vs fixed vs sticky?", "relative: offset from its normal spot, still in flow. absolute: out of flow, placed against the nearest positioned ancestor. fixed: against the viewport. sticky: in flow until a threshold, then sticks within its scroll container."],
+ ["Why might position: sticky not work?", "No <code>top</code> (or other) threshold, an ancestor with <code>overflow: hidden/auto</code> becoming the scroll container, or a parent no taller than the element."],
+ ["Why doesn't z-index: 9999 work sometimes?", "z-index only compares within a stacking context. If an ancestor creates one (opacity, transform, positioned with z-index), the element can't rise above things outside that context."],
+ ["em vs rem?", "rem is relative to the root font size and stays consistent. em is relative to the parent's font size (for font-size) or the element's own, so it compounds when nested."],
+ ["Why prefer rem over px for font sizes?", "rem scales when users increase their browser's default font size; px ignores it, which hurts accessibility."],
+ ["How is specificity calculated?", "Count IDs, then classes/attributes/pseudo-classes, then elements/pseudo-elements, and compare left to right. Inline styles beat selectors; !important beats inline."],
+ ["What order does the cascade check?", "Origin and importance, then cascade layers, then specificity, then source order (later wins)."],
+ ["Which properties inherit?", "Mostly text properties: color, font, line-height, text-align, visibility. Box properties (margin, padding, border, background, width) don't."],
+ ["inherit vs initial vs unset vs revert?", "inherit: parent's value. initial: the spec's default. unset: inherit if the property normally inherits, else initial. revert: back to the browser's default stylesheet."]
 ]
 };
-const TITLES = {ep1:"Ep 1 · Inception",ep2:"Ep 2 · Igniting",ep3:"Ep 3 · Foundation",ep4:"Ep 4 · Show me the code",ep5:"Ep 5 · Hooked",ep6:"Ep 6 · Exploring",ep7:"Ep 7 · Finding the Path",ep8:"Ep 8 · Classy",ep9:"Ep 9 · Optimizing",ep10:"Ep 10–13 · Crash course",sde2:"SDE-2 deep cuts"};
+const TITLES = {ep1:"Ep 1 · Inception",ep2:"Ep 2 · Igniting",ep3:"Ep 3 · Foundation",ep4:"Ep 4 · Show me the code",ep5:"Ep 5 · Hooked",ep6:"Ep 6 · Exploring",ep7:"Ep 7 · Finding the Path",ep8:"Ep 8 · Classy",ep9:"Ep 9 · Optimizing",ep10:"Ep 10–13 · Crash course",sde2:"SDE-2 deep cuts",security:"Frontend security",polyfills:"JS polyfills",theory:"Frontend theory",htmlcss:"HTML & CSS"};
 
 /* ---------- code blocks ---------- */
 const KW = /\b(const|let|var|function|return|import|from|export|default|class|extends|new|async|await|if|else|this|super|try|catch|static|of|in|typeof)\b/;
@@ -1662,7 +2935,7 @@ pages.forEach(p=>{
 const idx = document.getElementById("idx");
 pages.filter(p=>p.dataset.hook).forEach(p=>{
   const a=document.createElement("a"); a.href="#"+p.id; a.dataset.id=p.id;
-  const lab = /^\d+$/.test(p.dataset.n) && p.id!=="ep10" ? "Episode-0"+p.dataset.n : (p.id==="ep10"?"Episodes 10–13":p.id==="sde2"?"Beyond the course":"Practice");
+  const lab = p.dataset.lab || (/^\d+$/.test(p.dataset.n) && p.id!=="ep10" ? "Episode-0"+p.dataset.n : (p.id==="ep10"?"Episodes 10–13":(p.id==="sde2"||p.id==="security")?"Beyond the course":"Practice"));
   a.innerHTML='<span class="e">'+lab+'</span><span class="tt">'+p.dataset.title+'</span><span class="hk">'+p.dataset.hook+'</span>';
   idx.appendChild(a);
 });
